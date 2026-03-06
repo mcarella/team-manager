@@ -11,11 +11,13 @@ import CompanyProfilePage from './pages/CompanyProfilePage.js'
 import TeamsPage from './pages/TeamsPage.js'
 import TeamDashboardPage from './pages/TeamDashboardPage.js'
 import RolesConfigPage from './pages/RolesConfigPage.js'
+import SeedPage from './pages/SeedPage.js'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/seed" element={<SeedPage />} />
       {/* Member */}
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/assessment/leadership" element={<LeadershipAssessmentPage />} />
