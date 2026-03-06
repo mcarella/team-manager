@@ -90,6 +90,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.43.0
         version: 2.98.0
+      '@team-manager/core':
+        specifier: workspace:*
+        version: link:../../packages/team-manager-core
       '@team-manager/shared':
         specifier: workspace:*
         version: link:../../packages/shared
