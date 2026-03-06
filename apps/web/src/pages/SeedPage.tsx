@@ -61,8 +61,9 @@ export default function SeedPage() {
           </div>
 
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-500">Company profile:</p>
-            <div className="flex gap-2 text-xs">
+            <p className="text-xs font-semibold text-gray-500">Company (login as company):</p>
+            <p className="text-sm font-mono bg-gray-50 rounded px-3 py-1.5">{result.companyName}</p>
+            <div className="flex gap-2 text-xs mt-1">
               {Object.entries(result.companyProfile).map(([k, v]) => (
                 <span key={k} className="px-2 py-1 bg-purple-50 text-purple-700 rounded capitalize">
                   {k}: {v}
@@ -71,9 +72,12 @@ export default function SeedPage() {
             </div>
           </div>
 
-          <p className="text-xs text-gray-400">
-            Login as <strong>company</strong> (any name) to see everything, or use a manager name above.
-          </p>
+          <div className="space-y-1">
+            <p className="text-xs font-semibold text-gray-500">Sample members (login as member):</p>
+            {result.sampleMembers.map(m => (
+              <p key={m} className="text-sm font-mono bg-gray-50 rounded px-3 py-1.5">{m}</p>
+            ))}
+          </div>
         </div>
       )}
     </main>

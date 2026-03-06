@@ -261,10 +261,14 @@ export function seed() {
 
   localStorage.setItem('team-manager-store', JSON.stringify(state))
 
+  const companyName = 'Acme Corp'
+
   return {
     members: members.length,
     teams: teams.length,
     managers,
+    companyName,
     companyProfile,
+    sampleMembers: members.slice(0, 3).map(m => m.user.id),
   }
 }

@@ -18,7 +18,7 @@ interface ImportResult {
 
 export default function TeamDashboardPage() {
   const { id } = useParams<{ id: string }>()
-  const { teams, roles, companyProfile, teamDesiredCVF, importMemberToTeam, saveTeamDesiredCVF, currentRole } = useStore()
+  const { teams, roles, companyProfile, teamDesiredCVF, managerTeamIds, importMemberToTeam, saveTeamDesiredCVF, currentRole } = useStore()
   const backPath = currentRole === 'company' ? '/company' : currentRole === 'manager' ? '/manager' : '/teams'
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importing, setImporting] = useState(false)
@@ -85,7 +85,17 @@ export default function TeamDashboardPage() {
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
       <div className="w-full max-w-5xl flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{team.name}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">{team.name}</h1>
+            {(() => {
+              const mgr = Object.entries(managerTeamIds).find(([, tids]) => tids.includes(id!))
+              return mgr ? (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-600">
+                  {mgr[0]}
+                </span>
+              ) : null
+            })()}
+          </div>
           <p className="text-gray-500 mt-1">{members.length} member{members.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex items-center gap-4">

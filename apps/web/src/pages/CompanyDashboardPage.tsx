@@ -3,7 +3,7 @@ import { computeKiviatData } from '@team-manager/core'
 import { useStore } from '../store/index.js'
 
 export default function CompanyDashboardPage() {
-  const { currentUserId, currentRole, teams, members, companyProfile, logout } = useStore()
+  const { currentUserId, currentRole, teams, members, companyProfile, managerTeamIds, logout } = useStore()
   const navigate = useNavigate()
 
   if (!currentUserId || currentRole !== 'company') {
@@ -12,6 +12,14 @@ export default function CompanyDashboardPage() {
   }
 
   const totalMembers = new Set(teams.flatMap(t => t.members.map(m => m.user.id))).size
+
+  // Reverse lookup: teamId → manager name
+  const teamManager = new Map<string, string>()
+  for (const [managerId, teamIds] of Object.entries(managerTeamIds)) {
+    for (const tid of teamIds) {
+      teamManager.set(tid, managerId)
+    }
+  }
 
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
@@ -66,6 +74,7 @@ export default function CompanyDashboardPage() {
               const archetypes = Object.entries(kiviat.archetypeDistribution)
                 .filter(([, v]) => v > 0)
                 .sort(([, a], [, b]) => b - a)
+              const manager = teamManager.get(team.id)
               return (
                 <Link
                   key={team.id}
@@ -73,7 +82,14 @@ export default function CompanyDashboardPage() {
                   className="flex flex-col gap-2 px-5 py-4 bg-white rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-sm transition-all"
                 >
                   <div className="flex items-center justify-between">
-                    <p className="font-semibold text-gray-800">{team.name}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-gray-800">{team.name}</p>
+                      {manager && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-orange-50 text-orange-600">
+                          {manager}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-xs text-gray-400">{team.members.length} members</span>
                   </div>
                   {archetypes.length > 0 && (
