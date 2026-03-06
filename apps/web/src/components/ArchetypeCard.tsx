@@ -1,4 +1,72 @@
-import type { LeadershipAssessment, Archetype } from '@team-manager/shared'
+import { useState } from 'react'
+import type { LeadershipAssessment, Archetype, GolemansStyle } from '@team-manager/shared'
+
+interface BehaviorDetail {
+  label: string
+  who: string
+  leaderImage: string
+  behaviors: string
+  motivators: string
+  demotivators: string
+  whatSticks: string
+}
+
+const BEHAVIOR_DETAILS: Record<GolemansStyle, BehaviorDetail> = {
+  coercive: {
+    label: 'Directing',
+    who: 'An expert accountable for team results',
+    leaderImage: 'An authority',
+    behaviors: 'Discussions are not welcome',
+    motivators: 'Clear direction, desire to learn',
+    demotivators: 'On the long term',
+    whatSticks: 'Direct relationship, consequences of failure',
+  },
+  authoritative: {
+    label: 'Inspiring',
+    who: 'Inspire people providing a vision of future',
+    leaderImage: 'An enabler',
+    behaviors: 'Shared sense of responsibility',
+    motivators: 'Shared sense of safety, being able to achieve more together',
+    demotivators: 'People must share purpose',
+    whatSticks: 'Team identity and shared purpose',
+  },
+  pacesetting: {
+    label: 'Demanding',
+    who: 'High working standards applied to their own and others\' work',
+    leaderImage: 'Someone who sets the bar high and leads by example',
+    behaviors: 'Not afraid to push the group; models what success looks like',
+    motivators: 'Being part of a winning group',
+    demotivators: 'People must share purpose',
+    whatSticks: 'Meeting targets and leader\'s conflict-solving behaviour',
+  },
+  democratic: {
+    label: 'Conducting',
+    who: 'Coordinator who channels collaboration and creates cooperation',
+    leaderImage: 'An organizer',
+    behaviors: 'Encourages people to work together as a prerequisite for quality',
+    motivators: 'Self-organising their own work and helping as needed',
+    demotivators: 'Static equilibrium of roles and dynamics',
+    whatSticks: 'Clarity of roles and dynamics',
+  },
+  coaching: {
+    label: 'Coaching',
+    who: 'Makes the team more effective as a whole',
+    leaderImage: 'Servant leader / Coach',
+    behaviors: 'Trust, respect, pushing people out of comfort zone, creating purpose and autonomy',
+    motivators: 'Being part of a winning group',
+    demotivators: 'Requires a good level of maturity in the team',
+    whatSticks: 'Sense of belonging, challenge of reaching their potential',
+  },
+  visionary: {
+    label: 'Catalyzing',
+    who: 'Amplifies success connecting teams with the rest of the organisation',
+    leaderImage: 'A challenger, an amplifier',
+    behaviors: 'Sees the whole; emphasises synergies and connections',
+    motivators: 'Self-governed work (both execution and goals)',
+    demotivators: 'People must be prepared for that delegation level',
+    whatSticks: 'Mutual trust, creating value for customers together',
+  },
+}
 
 const ARCHETYPE_DESCRIPTIONS: Record<string, string> = {
   expert:      'Drives results through deep expertise and high standards.',
@@ -8,37 +76,85 @@ const ARCHETYPE_DESCRIPTIONS: Record<string, string> = {
   strategist:  'Shapes the future by inspiring systemic thinking.',
 }
 
+interface Item {
+  label: string
+  detail: string
+}
+
 interface ArchetypeProfile {
-  skills: string[]
-  characteristics: string[]
   roleLabel: string
+  skills: Item[]
+  characteristics: Item[]
 }
 
 const ARCHETYPE_PROFILES: Record<Archetype, ArchetypeProfile> = {
   expert: {
     roleLabel: 'Expert',
-    skills: ['Technical Expert', 'Planner & Organizer', 'Delegator', 'Controller'],
-    characteristics: ['Controlling / Hierarchy', 'Individual Evaluation', 'Individual Reward'],
+    skills: [
+      { label: 'Technical Expert',       detail: 'Deep domain knowledge enabling accurate problem assessment, solution design, and quality judgment. The Expert leader is often the go-to person for the hardest technical challenges.' },
+      { label: 'Planner & Organizer',    detail: 'Structures complex work into clear plans with defined milestones, dependencies, and responsibilities. Ensures the team knows what to do, when, and in what order.' },
+      { label: 'Delegator',              detail: 'Assigns tasks based on individual capabilities and availability. Monitors delivery and provides guidance without doing the work themselves.' },
+      { label: 'Controller',             detail: 'Maintains close oversight of execution to ensure standards, timelines, and quality are upheld. Spots deviations early and corrects them.' },
+    ],
+    characteristics: [
+      { label: 'Controlling / Hierarchy', detail: 'Authority flows top-down. Decisions are made by the leader and communicated clearly downward. The chain of command is well defined and respected.' },
+      { label: 'Individual Evaluation',   detail: "Each person's performance is assessed independently based on personal output, adherence to standards, and delivery of assigned tasks." },
+      { label: 'Individual Reward',       detail: 'Recognition and compensation tied directly to individual contribution and personal achievement. High performers are identified and rewarded separately.' },
+    ],
   },
   coordinator: {
     roleLabel: 'Co-ordinator',
-    skills: ['Group Communication', 'Problem Solver', 'Conflicts Resolution', 'Group Dynamic'],
-    characteristics: ['Participative', 'Individual Evaluation', 'Individual Reward'],
+    skills: [
+      { label: 'Group Communication',   detail: 'Ensures information flows effectively across all team members and stakeholders. Runs clear meetings, creates shared context, and prevents information silos.' },
+      { label: 'Problem Solver',        detail: 'Identifies root causes of issues and drives structured resolution. Brings the group together to diagnose problems and agree on the path forward.' },
+      { label: 'Conflicts Resolution',  detail: 'Steps in when tensions arise to mediate and restore productive collaboration. Addresses conflict directly rather than letting it fester.' },
+      { label: 'Group Dynamic',         detail: 'Reads and actively shapes the energy and mood of the team. Knows when to push, when to ease off, and how to maintain cohesion under pressure.' },
+    ],
+    characteristics: [
+      { label: 'Participative',          detail: 'Team members contribute opinions and ideas to decisions, while the Coordinator retains accountability for the final call.' },
+      { label: 'Individual Evaluation',  detail: "Each person's contribution is assessed independently. Performance conversations happen one-to-one." },
+      { label: 'Individual Reward',      detail: 'Recognition and compensation reflect individual effort and results, even within a collaborative team context.' },
+    ],
   },
   peer: {
     roleLabel: 'Enabler',
-    skills: ['Facilitator', 'Enabler', 'Conflict Resolution'],
-    characteristics: ['Participative', 'Collaborative (also in decision making)', 'Team Evaluation', 'Team Reward'],
+    skills: [
+      { label: 'Facilitator',         detail: 'Creates the conditions for productive group discussion and shared decision-making. Ensures all voices are heard and the group reaches meaningful conclusions.' },
+      { label: 'Enabler',             detail: 'Removes obstacles, secures resources, and clears the path so the team can self-organise and deliver without bottlenecks.' },
+      { label: 'Conflict Resolution', detail: 'Addresses tensions through open dialogue, preserving psychological safety and enabling the team to process disagreement constructively.' },
+    ],
+    characteristics: [
+      { label: 'Participative',                            detail: 'Decisions are made collectively, with full team involvement. The Peer leader participates as an equal, not a superior.' },
+      { label: 'Collaborative (also in decision making)', detail: 'Collaboration extends beyond execution into strategy and direction. The team jointly owns outcomes, including key decisions.' },
+      { label: 'Team Evaluation',                         detail: 'Performance is assessed as a collective. The team reflects on how it works together, not just what individuals produce.' },
+      { label: 'Team Reward',                             detail: 'Recognition and compensation are shared equally across the team, reinforcing collective ownership.' },
+    ],
   },
   coach: {
     roleLabel: 'Coach / Amplifier',
-    skills: ['Coach', 'Amplify team results', 'Benchmarking and help to self-measure and improve'],
-    characteristics: ['Collaborative', 'Peer Evaluation', 'Team Reward'],
+    skills: [
+      { label: 'Coach',                                          detail: 'Uses powerful questions and reflection to help individuals grow and solve their own problems. Resists providing answers; instead builds capability.' },
+      { label: 'Amplify team results',                          detail: 'Identifies what the team is already doing well and scales it. Removes friction, celebrates wins, and creates conditions for peak performance.' },
+      { label: 'Benchmarking and help to self-measure and improve', detail: 'Introduces external reference points and metrics to help the team calibrate their performance and set meaningful stretch goals.' },
+    ],
+    characteristics: [
+      { label: 'Collaborative',      detail: 'The leader participates as an equal in team discussions, contributing without dominating. Collaboration is the default mode.' },
+      { label: 'Peer Evaluation',    detail: 'Team members assess each other\'s growth and contribution through structured peer feedback. The leader facilitates but does not own the evaluation.' },
+      { label: 'Team Reward',        detail: 'Outcomes and recognition are distributed across the whole team. Individual stars are celebrated as contributors to collective success.' },
+    ],
   },
   strategist: {
     roleLabel: 'Catalyst',
-    skills: ['Strategic Planner', 'Catalyze team outcome'],
-    characteristics: ['Empowered', 'Peer Evaluation', 'Team Reward', 'Team Recruitment'],
+    skills: [
+      { label: 'Strategic Planner',      detail: 'Translates long-term vision into a strategic roadmap connecting the team\'s daily work to organisational goals. Thinks in systems and trends, not just tasks.' },
+      { label: 'Catalyze team outcome',  detail: 'Amplifies team impact by connecting them with the broader organisation, removing systemic obstacles, and creating conditions for emergent results.' },
+    ],
+    characteristics: [
+      { label: 'Empowered',          detail: 'The team has full autonomy over both execution and goal setting. Leadership is distributed and self-governing.' },
+      { label: 'Peer Evaluation',    detail: 'Mutual assessment within the team, without hierarchical oversight. Everyone is accountable to each other.' },
+      { label: 'Team Reward',        detail: 'Collective recognition tied to shared outcomes. The team succeeds or learns together.' },
+      { label: 'Team Recruitment',   detail: 'The team participates in selecting new members, ensuring cultural fit, complementary skills, and shared values.' },
+    ],
   },
 }
 
@@ -48,6 +164,30 @@ const ARCHETYPE_COLORS: Record<string, string> = {
   peer:        'bg-blue-50 border-blue-200 text-blue-800',
   coach:       'bg-green-50 border-green-200 text-green-800',
   strategist:  'bg-purple-50 border-purple-200 text-purple-800',
+}
+
+function ExpandableItem({ label, detail }: Item) {
+  const [open, setOpen] = useState(false)
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className="flex items-start gap-2 w-full text-left group"
+      >
+        <span className="mt-1 w-1.5 h-1.5 rounded-full bg-current opacity-60 shrink-0" />
+        <span className="text-sm flex-1">{label}</span>
+        <span className="text-xs opacity-40 group-hover:opacity-70 shrink-0 mt-0.5">
+          {open ? '▲' : '▼'}
+        </span>
+      </button>
+      {open && (
+        <p className="mt-1.5 ml-3.5 text-xs opacity-70 leading-relaxed border-l-2 border-current/20 pl-3">
+          {detail}
+        </p>
+      )}
+    </li>
+  )
 }
 
 interface Props {
@@ -72,26 +212,16 @@ export default function ArchetypeCard({ assessment }: Props) {
       {/* Leader's Skills */}
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">Leader's Skills</p>
-        <ul className="space-y-1">
-          {profile.skills.map(skill => (
-            <li key={skill} className="flex items-start gap-2 text-sm">
-              <span className="mt-1 w-1.5 h-1.5 rounded-full bg-current opacity-60 shrink-0" />
-              {skill}
-            </li>
-          ))}
+        <ul className="space-y-2">
+          {profile.skills.map(item => <ExpandableItem key={item.label} {...item} />)}
         </ul>
       </div>
 
       {/* Characteristics */}
       <div>
         <p className="text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">Characteristics</p>
-        <ul className="space-y-1">
-          {profile.characteristics.map(c => (
-            <li key={c} className="flex items-start gap-2 text-sm">
-              <span className="mt-1 w-1.5 h-1.5 rounded-full bg-current opacity-60 shrink-0" />
-              {c}
-            </li>
-          ))}
+        <ul className="space-y-2">
+          {profile.characteristics.map(item => <ExpandableItem key={item.label} {...item} />)}
         </ul>
       </div>
 
@@ -108,16 +238,34 @@ export default function ArchetypeCard({ assessment }: Props) {
         </div>
       </div>
 
-      {/* Goleman Styles */}
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-wider opacity-60 mb-2">Goleman Styles</p>
-        <div className="flex flex-wrap gap-2">
-          {golemansStyles.map(style => (
-            <span key={style} className="px-3 py-1 bg-white/60 rounded-full text-xs font-medium capitalize">
-              {style}
-            </span>
-          ))}
-        </div>
+      {/* Goleman Behavior Deep-Dive */}
+      <div className="space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Goleman Styles — In Depth</p>
+        {golemansStyles.map(style => {
+          const d = BEHAVIOR_DETAILS[style]
+          return (
+            <div key={style} className="bg-white/50 rounded-xl p-4 space-y-2">
+              <p className="font-bold capitalize text-sm">{d.label} <span className="font-normal opacity-50 text-xs">({style})</span></p>
+              <table className="w-full text-xs border-separate border-spacing-y-1">
+                <tbody>
+                  {[
+                    ['Who is he/she',          d.who],
+                    ['Leader\'s image',         d.leaderImage],
+                    ['Behaviours',             d.behaviors],
+                    ['Motivators',             d.motivators],
+                    ['Demotivators',           d.demotivators],
+                    ['What sticks people',     d.whatSticks],
+                  ].map(([label, value]) => (
+                    <tr key={label}>
+                      <td className="font-semibold opacity-60 pr-3 whitespace-nowrap align-top w-32">{label}</td>
+                      <td className="opacity-90">{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
