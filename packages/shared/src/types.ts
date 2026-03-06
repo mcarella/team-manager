@@ -1,0 +1,103 @@
+export type PermissionLevel = 'manager-led' | 'self-managing' | 'self-designing' | 'self-governing'
+
+export interface User {
+  id: string
+  email: string
+  name: string
+  orgId: string
+  role: 'manager' | 'member'
+}
+
+export interface Organization {
+  id: string
+  name: string
+  permissionLevel: PermissionLevel
+}
+
+// Leadership Assessment
+
+export interface LeadershipScores {
+  catalyzing: number   // 2-20
+  envisioning: number
+  demanding: number
+  coaching: number
+  conducting: number
+  directing: number
+}
+
+export type Archetype = 'expert' | 'coordinator' | 'peer' | 'coach' | 'strategist'
+
+export type GolemansStyle = 'coercive' | 'authoritative' | 'pacesetting' | 'democratic' | 'coaching' | 'visionary'
+
+export interface LeadershipAssessment {
+  userId: string
+  answers: number[] // [q1..q12], 1-10
+  scores: LeadershipScores
+  archetype: Archetype
+  golemansStyles: GolemansStyle[] // Goleman's 6 leadership styles
+  completedAt: Date
+}
+
+// CVF Assessment
+
+export interface CVFCategory {
+  clan: number
+  adhocracy: number
+  market: number
+  hierarchy: number
+}
+
+export interface CVFScores {
+  clan: number
+  adhocracy: number
+  market: number
+  hierarchy: number
+}
+
+export interface CVFAssessment {
+  userId: string
+  categories: CVFCategory[] // 6 categories × 4 values
+  results: CVFScores        // sum per quadrant (0-600)
+  completedAt: Date
+}
+
+// Skills Assessment
+
+export type SkillLevel = 0 | 1 | 2 | 3 | 4
+
+export interface Skill {
+  id: string
+  orgId: string
+  name: string
+  description?: string
+}
+
+export interface SkillAssessment {
+  userId: string
+  skillId: string
+  level: SkillLevel
+}
+
+// Team
+
+export interface TeamMemberProfile {
+  user: User
+  leadership?: LeadershipAssessment
+  cvf?: CVFAssessment
+  skills: SkillAssessment[]
+}
+
+export interface Team {
+  id: string
+  orgId: string
+  name: string
+  members: TeamMemberProfile[]
+}
+
+// Kiviat / Team Balance
+
+export interface KiviatData {
+  archetypeDistribution: Record<Archetype, number>
+  cvfAverage: CVFScores
+  skillsAverage: Record<string, number> // skillId → avg level
+}
