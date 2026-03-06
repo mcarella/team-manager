@@ -54,6 +54,9 @@ export default function CompanyDashboardPage() {
 
       {/* Quick links */}
       <div className="w-full max-w-4xl flex gap-3">
+        <Link to="/reteaming" className="flex-1 text-center px-4 py-2.5 bg-teal-600 text-white text-sm font-semibold rounded-lg hover:bg-teal-700">
+          Reteaming
+        </Link>
         <Link to="/company-profile" className="flex-1 text-center px-4 py-2.5 bg-amber-600 text-white text-sm font-semibold rounded-lg hover:bg-amber-700">
           Company Culture Profile
         </Link>

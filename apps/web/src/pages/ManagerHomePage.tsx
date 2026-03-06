@@ -54,6 +54,9 @@ export default function ManagerHomePage() {
         <Link to="/roles" className="flex-1 text-center px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700">
           Roles &amp; Skills
         </Link>
+        <Link to="/reteaming" className="flex-1 text-center px-4 py-2.5 bg-teal-600 text-white text-sm font-semibold rounded-lg hover:bg-teal-700">
+          Reteaming
+        </Link>
       </div>
 
       {/* Create team */}

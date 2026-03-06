@@ -12,6 +12,7 @@ import TeamsPage from './pages/TeamsPage.js'
 import TeamDashboardPage from './pages/TeamDashboardPage.js'
 import RolesConfigPage from './pages/RolesConfigPage.js'
 import SeedPage from './pages/SeedPage.js'
+import ReteamingPage from './pages/ReteamingPage.js'
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
       {/* Shared */}
       <Route path="/company-profile" element={<CompanyProfilePage />} />
       <Route path="/roles" element={<RolesConfigPage />} />
+      <Route path="/reteaming" element={<ReteamingPage />} />
       <Route path="/teams" element={<TeamsPage />} />
       <Route path="/teams/:id" element={<TeamDashboardPage />} />
     </Routes>
