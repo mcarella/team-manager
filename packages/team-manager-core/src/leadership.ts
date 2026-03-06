@@ -39,9 +39,11 @@ export function computeLeadershipScores(answers: number[]): LeadershipScores {
     }
   }
 
-  return Object.fromEntries(
-    Object.entries(PAIRS).map(([behavior, [i, j]]) => [behavior, answers[i] + answers[j]])
-  ) as LeadershipScores
+  const scores = {} as LeadershipScores
+  for (const [behavior, [i, j]] of Object.entries(PAIRS) as [keyof LeadershipScores, [number, number]][]) {
+    scores[behavior] = answers[i]! + answers[j]!
+  }
+  return scores
 }
 
 export function computeArchetype(scores: LeadershipScores): Archetype {
@@ -56,7 +58,7 @@ export function computeArchetype(scores: LeadershipScores): Archetype {
   // for equal primary too, preserve order (coach before strategist)
   archetypeScores.sort((a, b) => b.combined - a.combined || b.primary - a.primary)
 
-  return archetypeScores[0].archetype
+  return archetypeScores[0]!.archetype
 }
 
 export function computeGolemansStyles(archetype: Archetype): GolemansStyle[] {

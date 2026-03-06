@@ -23,14 +23,16 @@ export function computeKiviatData(members: TeamMemberProfile[]): KiviatData {
 
   // CVF average
   const cvfMembers = members.filter(m => m.cvf)
-  const cvfAverage: CVFScores = cvfMembers.length === 0
-    ? { clan: 0, adhocracy: 0, market: 0, hierarchy: 0 }
-    : Object.fromEntries(
-        CVF_QUADRANTS.map(q => [
-          q,
-          cvfMembers.reduce((sum, m) => sum + m.cvf!.results[q], 0) / cvfMembers.length,
-        ])
-      ) as CVFScores
+  let cvfAverage: CVFScores = { clan: 0, adhocracy: 0, market: 0, hierarchy: 0 }
+  if (cvfMembers.length > 0) {
+    const n = cvfMembers.length
+    cvfAverage = {
+      clan:      cvfMembers.reduce((sum, m) => sum + m.cvf!.results.clan, 0) / n,
+      adhocracy: cvfMembers.reduce((sum, m) => sum + m.cvf!.results.adhocracy, 0) / n,
+      market:    cvfMembers.reduce((sum, m) => sum + m.cvf!.results.market, 0) / n,
+      hierarchy: cvfMembers.reduce((sum, m) => sum + m.cvf!.results.hierarchy, 0) / n,
+    }
+  }
 
   // Skills average
   const skillBuckets = new Map<string, number[]>()
