@@ -72,6 +72,12 @@ export interface Skill {
   description?: string
 }
 
+export interface SkillRole {
+  id: string
+  name: string
+  skills: { id: string; name: string }[]
+}
+
 export interface SkillAssessment {
   userId: string
   skillId: string

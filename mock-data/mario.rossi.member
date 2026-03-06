@@ -1,0 +1,54 @@
+{
+  "version": "1",
+  "exportedAt": "2026-03-06T09:00:00.000Z",
+  "user": {
+    "id": "mario.rossi",
+    "email": "mario.rossi@example.com",
+    "name": "Mario Rossi",
+    "orgId": "default",
+    "role": "member"
+  },
+  "leadership": {
+    "userId": "mario.rossi",
+    "answers": [2, 3, 8, 3, 5, 9, 5, 9, 3, 3, 2, 8],
+    "scores": {
+      "catalyzing": 4,
+      "envisioning": 6,
+      "demanding": 16,
+      "coaching": 6,
+      "conducting": 10,
+      "directing": 18
+    },
+    "archetype": "expert",
+    "golemansStyles": ["coercive", "pacesetting"],
+    "completedAt": "2026-03-06T09:00:00.000Z"
+  },
+  "cvf": {
+    "userId": "mario.rossi",
+    "categories": [
+      { "clan": 10, "adhocracy": 20, "market": 30, "hierarchy": 40 },
+      { "clan": 10, "adhocracy": 20, "market": 30, "hierarchy": 40 },
+      { "clan": 10, "adhocracy": 20, "market": 30, "hierarchy": 40 },
+      { "clan": 10, "adhocracy": 20, "market": 30, "hierarchy": 40 },
+      { "clan": 10, "adhocracy": 20, "market": 30, "hierarchy": 40 },
+      { "clan": 10, "adhocracy": 20, "market": 30, "hierarchy": 40 }
+    ],
+    "results": {
+      "clan": 60,
+      "adhocracy": 120,
+      "market": 180,
+      "hierarchy": 240
+    },
+    "completedAt": "2026-03-06T09:05:00.000Z"
+  },
+  "skills": [
+    { "userId": "mario.rossi", "skillId": "agile",        "level": 3 },
+    { "userId": "mario.rossi", "skillId": "coaching",     "level": 1 },
+    { "userId": "mario.rossi", "skillId": "facilitation", "level": 2 },
+    { "userId": "mario.rossi", "skillId": "strategy",     "level": 2 },
+    { "userId": "mario.rossi", "skillId": "tech-lead",    "level": 4 },
+    { "userId": "mario.rossi", "skillId": "conflict",     "level": 2 },
+    { "userId": "mario.rossi", "skillId": "feedback",     "level": 2 },
+    { "userId": "mario.rossi", "skillId": "hiring",       "level": 3 }
+  ]
+}

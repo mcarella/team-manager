@@ -3,18 +3,18 @@ import type { LeadershipAssessment } from '@team-manager/shared'
 import { computeLeadershipScores, computeArchetype, computeGolemansStyles } from '@team-manager/core'
 
 const QUESTIONS = [
-  'I set clear, non-negotiable standards and enforce them consistently.',        // q1  → catalyzing (1+11)
-  'I articulate a compelling long-term vision that others rally around.',        // q2  → envisioning (2+9)
-  'I challenge people to exceed their current performance levels.',              // q3  → demanding (3+12)
-  'I invest time in understanding each person\'s strengths and development.',    // q4  → coaching (4+10)
-  'I involve the team in decisions and build consensus before acting.',          // q5  → conducting (5+7)
-  'I give precise instructions and expect them to be followed.',                 // q6  → directing (6+8)
-  'I facilitate discussions to surface the best ideas from the group.',          // q7  → conducting
-  'I monitor execution closely and correct deviations immediately.',             // q8  → directing
-  'I help people connect their work to a bigger organisational purpose.',        // q9  → envisioning
-  'I create personalised growth plans and follow up on them regularly.',         // q10 → coaching
-  'I inspire people to see patterns and possibilities beyond the obvious.',      // q11 → catalyzing
-  'I push myself and others to deliver at maximum pace without excuses.',        // q12 → demanding
+  'I am good at encouraging teams to challenge their assumptions and break through to new levels of performance',  // q1  → catalyzing (1+11)
+  'I am good at getting people on board, motivating them towards compelling strategic goals',                      // q2  → envisioning (2+9)
+  'I believe in modeling desired behaviors and expecting others to follow my lead',                                // q3  → demanding (3+12)
+  'I believe that my solution is never going to be as effective as a solution my people come up with by themselves', // q4 → coaching (4+10)
+  'I encourage people to work together while making sure they are meeting their targets',                          // q5  → conducting (5+7)
+  'I like to ensure high quality by being very clear about what I expect of people',                              // q6  → directing (6+8)
+  'I like to make sure that individuals can get access to the people and resources they need in order to do their jobs', // q7 → conducting
+  'I like to make sure the right work is always allocated to the right people',                                   // q8  → directing
+  'I like to share with people goals to reach for, rather than tasks to complete',                                // q9  → envisioning
+  'I prioritize long-term individual and team growth over short-term results',                                     // q10 → coaching
+  'I take a back seat from active team leadership and instead support my team to govern themselves',               // q11 → catalyzing
+  'I will delegate tasks but reserve the right to resume control if people are not performing adequately',         // q12 → demanding
 ]
 
 interface Props {

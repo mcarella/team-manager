@@ -1,0 +1,54 @@
+{
+  "version": "1",
+  "exportedAt": "2026-03-06T09:20:00.000Z",
+  "user": {
+    "id": "luca.bianchi",
+    "email": "luca.bianchi@example.com",
+    "name": "Luca Bianchi",
+    "orgId": "default",
+    "role": "member"
+  },
+  "leadership": {
+    "userId": "luca.bianchi",
+    "answers": [5, 6, 3, 8, 9, 2, 9, 2, 5, 8, 5, 3],
+    "scores": {
+      "catalyzing": 10,
+      "envisioning": 11,
+      "demanding": 6,
+      "coaching": 16,
+      "conducting": 18,
+      "directing": 4
+    },
+    "archetype": "peer",
+    "golemansStyles": ["democratic", "coaching"],
+    "completedAt": "2026-03-06T09:20:00.000Z"
+  },
+  "cvf": {
+    "userId": "luca.bianchi",
+    "categories": [
+      { "clan": 35, "adhocracy": 30, "market": 20, "hierarchy": 15 },
+      { "clan": 35, "adhocracy": 30, "market": 20, "hierarchy": 15 },
+      { "clan": 35, "adhocracy": 30, "market": 20, "hierarchy": 15 },
+      { "clan": 35, "adhocracy": 30, "market": 20, "hierarchy": 15 },
+      { "clan": 35, "adhocracy": 30, "market": 20, "hierarchy": 15 },
+      { "clan": 35, "adhocracy": 30, "market": 20, "hierarchy": 15 }
+    ],
+    "results": {
+      "clan": 210,
+      "adhocracy": 180,
+      "market": 120,
+      "hierarchy": 90
+    },
+    "completedAt": "2026-03-06T09:25:00.000Z"
+  },
+  "skills": [
+    { "userId": "luca.bianchi", "skillId": "agile",        "level": 3 },
+    { "userId": "luca.bianchi", "skillId": "coaching",     "level": 3 },
+    { "userId": "luca.bianchi", "skillId": "facilitation", "level": 4 },
+    { "userId": "luca.bianchi", "skillId": "strategy",     "level": 2 },
+    { "userId": "luca.bianchi", "skillId": "tech-lead",    "level": 2 },
+    { "userId": "luca.bianchi", "skillId": "conflict",     "level": 3 },
+    { "userId": "luca.bianchi", "skillId": "feedback",     "level": 3 },
+    { "userId": "luca.bianchi", "skillId": "hiring",       "level": 2 }
+  ]
+}

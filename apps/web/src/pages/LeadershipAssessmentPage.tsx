@@ -1,29 +1,32 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { LeadershipAssessment } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import LeadershipForm from '../components/LeadershipForm.js'
 import ArchetypeCard from '../components/ArchetypeCard.js'
 
 export default function LeadershipAssessmentPage() {
-  const { addMember, saveLeadershipAssessment, members } = useStore()
-  const [userId, setUserId] = useState('')
+  const { currentUserId, saveLeadershipAssessment, members } = useStore()
+  const navigate = useNavigate()
   const [result, setResult] = useState<LeadershipAssessment | null>(null)
-  const [started, setStarted] = useState(false)
+  const [retaking, setRetaking] = useState(false)
 
-  const handleStart = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!userId.trim()) return
-    addMember({ id: userId.trim(), email: '', name: userId.trim(), orgId: 'default', role: 'member' })
-    setStarted(true)
+  const userId = currentUserId ?? ''
+  const member = members.find(m => m.user.id === userId)
+  const existingAssessment = member?.leadership
+
+  if (!userId) {
+    navigate('/', { replace: true })
+    return null
   }
 
   const handleComplete = (assessment: LeadershipAssessment) => {
     saveLeadershipAssessment(assessment)
     setResult(assessment)
+    setRetaking(false)
   }
 
-  const existingAssessment = members.find(m => m.user.id === userId)?.leadership
+  const displayResult = result ?? (!retaking ? existingAssessment ?? null : null)
 
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
@@ -32,40 +35,18 @@ export default function LeadershipAssessmentPage() {
         <p className="text-gray-500 mt-2">Answer 12 questions to discover your leadership archetype.</p>
       </div>
 
-      {!started ? (
-        <form onSubmit={handleStart} className="flex flex-col gap-3 w-full max-w-sm">
-          <label className="text-sm font-medium text-gray-700">Your name or ID</label>
-          <input
-            type="text"
-            value={userId}
-            onChange={e => setUserId(e.target.value)}
-            placeholder="e.g. mario.rossi"
-            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {existingAssessment && (
-            <p className="text-xs text-amber-600">
-              You already have an assessment. Submitting again will overwrite it.
-            </p>
-          )}
-          <button
-            type="submit"
-            className="py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
-          >
-            Start
-          </button>
-        </form>
-      ) : result ? (
+      {displayResult ? (
         <div className="flex flex-col items-center gap-6">
-          <ArchetypeCard assessment={result} />
+          <ArchetypeCard assessment={displayResult} />
           <div className="flex gap-4">
             <button
-              onClick={() => { setResult(null); setStarted(false); setUserId('') }}
+              onClick={() => { setResult(null); setRetaking(true) }}
               className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
             >
-              New assessment
+              Retake assessment
             </button>
-            <Link to="/" className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
-              Back to home
+            <Link to="/onboarding" className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+              Continue
             </Link>
           </div>
         </div>

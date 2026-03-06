@@ -1,0 +1,54 @@
+{
+  "version": "1",
+  "exportedAt": "2026-03-06T09:40:00.000Z",
+  "user": {
+    "id": "marco.esposito",
+    "email": "marco.esposito@example.com",
+    "name": "Marco Esposito",
+    "orgId": "default",
+    "role": "member"
+  },
+  "leadership": {
+    "userId": "marco.esposito",
+    "answers": [9, 6, 3, 7, 4, 2, 4, 2, 6, 7, 9, 3],
+    "scores": {
+      "catalyzing": 18,
+      "envisioning": 12,
+      "demanding": 6,
+      "coaching": 14,
+      "conducting": 8,
+      "directing": 4
+    },
+    "archetype": "strategist",
+    "golemansStyles": ["visionary", "coaching"],
+    "completedAt": "2026-03-06T09:40:00.000Z"
+  },
+  "cvf": {
+    "userId": "marco.esposito",
+    "categories": [
+      { "clan": 25, "adhocracy": 40, "market": 20, "hierarchy": 15 },
+      { "clan": 25, "adhocracy": 40, "market": 20, "hierarchy": 15 },
+      { "clan": 25, "adhocracy": 40, "market": 20, "hierarchy": 15 },
+      { "clan": 25, "adhocracy": 40, "market": 20, "hierarchy": 15 },
+      { "clan": 25, "adhocracy": 40, "market": 20, "hierarchy": 15 },
+      { "clan": 25, "adhocracy": 40, "market": 20, "hierarchy": 15 }
+    ],
+    "results": {
+      "clan": 150,
+      "adhocracy": 240,
+      "market": 120,
+      "hierarchy": 90
+    },
+    "completedAt": "2026-03-06T09:45:00.000Z"
+  },
+  "skills": [
+    { "userId": "marco.esposito", "skillId": "agile",        "level": 2 },
+    { "userId": "marco.esposito", "skillId": "coaching",     "level": 3 },
+    { "userId": "marco.esposito", "skillId": "facilitation", "level": 2 },
+    { "userId": "marco.esposito", "skillId": "strategy",     "level": 4 },
+    { "userId": "marco.esposito", "skillId": "tech-lead",    "level": 2 },
+    { "userId": "marco.esposito", "skillId": "conflict",     "level": 2 },
+    { "userId": "marco.esposito", "skillId": "feedback",     "level": 3 },
+    { "userId": "marco.esposito", "skillId": "hiring",       "level": 2 }
+  ]
+}

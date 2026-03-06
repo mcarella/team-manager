@@ -1,0 +1,54 @@
+{
+  "version": "1",
+  "exportedAt": "2026-03-06T09:10:00.000Z",
+  "user": {
+    "id": "anna.ferrari",
+    "email": "anna.ferrari@example.com",
+    "name": "Anna Ferrari",
+    "orgId": "default",
+    "role": "member"
+  },
+  "leadership": {
+    "userId": "anna.ferrari",
+    "answers": [8, 5, 3, 9, 6, 2, 6, 2, 5, 9, 8, 3],
+    "scores": {
+      "catalyzing": 16,
+      "envisioning": 10,
+      "demanding": 6,
+      "coaching": 18,
+      "conducting": 12,
+      "directing": 4
+    },
+    "archetype": "coach",
+    "golemansStyles": ["coaching", "visionary"],
+    "completedAt": "2026-03-06T09:10:00.000Z"
+  },
+  "cvf": {
+    "userId": "anna.ferrari",
+    "categories": [
+      { "clan": 40, "adhocracy": 25, "market": 15, "hierarchy": 20 },
+      { "clan": 40, "adhocracy": 25, "market": 15, "hierarchy": 20 },
+      { "clan": 40, "adhocracy": 25, "market": 15, "hierarchy": 20 },
+      { "clan": 40, "adhocracy": 25, "market": 15, "hierarchy": 20 },
+      { "clan": 40, "adhocracy": 25, "market": 15, "hierarchy": 20 },
+      { "clan": 40, "adhocracy": 25, "market": 15, "hierarchy": 20 }
+    ],
+    "results": {
+      "clan": 240,
+      "adhocracy": 150,
+      "market": 90,
+      "hierarchy": 120
+    },
+    "completedAt": "2026-03-06T09:15:00.000Z"
+  },
+  "skills": [
+    { "userId": "anna.ferrari", "skillId": "agile",        "level": 2 },
+    { "userId": "anna.ferrari", "skillId": "coaching",     "level": 4 },
+    { "userId": "anna.ferrari", "skillId": "facilitation", "level": 4 },
+    { "userId": "anna.ferrari", "skillId": "strategy",     "level": 3 },
+    { "userId": "anna.ferrari", "skillId": "tech-lead",    "level": 1 },
+    { "userId": "anna.ferrari", "skillId": "conflict",     "level": 4 },
+    { "userId": "anna.ferrari", "skillId": "feedback",     "level": 4 },
+    { "userId": "anna.ferrari", "skillId": "hiring",       "level": 2 }
+  ]
+}

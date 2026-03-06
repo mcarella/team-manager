@@ -1,0 +1,54 @@
+{
+  "version": "1",
+  "exportedAt": "2026-03-06T09:30:00.000Z",
+  "user": {
+    "id": "giulia.romano",
+    "email": "giulia.romano@example.com",
+    "name": "Giulia Romano",
+    "orgId": "default",
+    "role": "member"
+  },
+  "leadership": {
+    "userId": "giulia.romano",
+    "answers": [2, 3, 9, 5, 8, 6, 8, 5, 3, 5, 2, 9],
+    "scores": {
+      "catalyzing": 4,
+      "envisioning": 6,
+      "demanding": 18,
+      "coaching": 10,
+      "conducting": 16,
+      "directing": 11
+    },
+    "archetype": "coordinator",
+    "golemansStyles": ["pacesetting", "democratic"],
+    "completedAt": "2026-03-06T09:30:00.000Z"
+  },
+  "cvf": {
+    "userId": "giulia.romano",
+    "categories": [
+      { "clan": 20, "adhocracy": 15, "market": 35, "hierarchy": 30 },
+      { "clan": 20, "adhocracy": 15, "market": 35, "hierarchy": 30 },
+      { "clan": 20, "adhocracy": 15, "market": 35, "hierarchy": 30 },
+      { "clan": 20, "adhocracy": 15, "market": 35, "hierarchy": 30 },
+      { "clan": 20, "adhocracy": 15, "market": 35, "hierarchy": 30 },
+      { "clan": 20, "adhocracy": 15, "market": 35, "hierarchy": 30 }
+    ],
+    "results": {
+      "clan": 120,
+      "adhocracy": 90,
+      "market": 210,
+      "hierarchy": 180
+    },
+    "completedAt": "2026-03-06T09:35:00.000Z"
+  },
+  "skills": [
+    { "userId": "giulia.romano", "skillId": "agile",        "level": 4 },
+    { "userId": "giulia.romano", "skillId": "coaching",     "level": 2 },
+    { "userId": "giulia.romano", "skillId": "facilitation", "level": 3 },
+    { "userId": "giulia.romano", "skillId": "strategy",     "level": 3 },
+    { "userId": "giulia.romano", "skillId": "tech-lead",    "level": 2 },
+    { "userId": "giulia.romano", "skillId": "conflict",     "level": 3 },
+    { "userId": "giulia.romano", "skillId": "feedback",     "level": 3 },
+    { "userId": "giulia.romano", "skillId": "hiring",       "level": 4 }
+  ]
+}

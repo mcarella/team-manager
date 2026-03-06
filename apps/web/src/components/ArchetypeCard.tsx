@@ -3,68 +3,68 @@ import type { LeadershipAssessment, Archetype, GolemansStyle } from '@team-manag
 
 interface BehaviorDetail {
   label: string
-  who: string
-  leaderImage: string
-  behaviors: string
-  motivators: string
-  demotivators: string
-  whatSticks: string
+  leaderAttitude: string
+  leaderStance: string
+  workManagement: string
+  definitionOfSuccess: string
+  motivationalStyle: string
+  groupUnity: string
 }
 
 const BEHAVIOR_DETAILS: Record<GolemansStyle, BehaviorDetail> = {
-  coercive: {
-    label: 'Directing',
-    who: 'An expert accountable for team results',
-    leaderImage: 'An authority',
-    behaviors: 'Discussions are not welcome',
-    motivators: 'Clear direction, desire to learn',
-    demotivators: 'On the long term',
-    whatSticks: 'Direct relationship, consequences of failure',
+  visionary: {
+    label: 'Catalyzing',
+    leaderAttitude: 'You can do even better',
+    leaderStance: 'Leader is challenger',
+    workManagement: 'Self governing, purpose-driven',
+    definitionOfSuccess: 'Open-minded independence',
+    motivationalStyle: 'Awareness of the impact the team has on the rest of the organization, market... world',
+    groupUnity: 'Proactively looking for new challenges, trust in the team and accountability are very high',
   },
   authoritative: {
-    label: 'Inspiring',
-    who: 'Inspire people providing a vision of future',
-    leaderImage: 'An enabler',
-    behaviors: 'Shared sense of responsibility',
-    motivators: 'Shared sense of safety, being able to achieve more together',
-    demotivators: 'People must share purpose',
-    whatSticks: 'Team identity and shared purpose',
+    label: 'Envisioning',
+    leaderAttitude: 'We can do this together',
+    leaderStance: 'Leader is enabler',
+    workManagement: 'Collaboratively agreed',
+    definitionOfSuccess: 'Collaboration',
+    motivationalStyle: 'Shared responsibility creates safety and collective sense of belonging',
+    groupUnity: 'The team identity and the shared inspiring and appealing purpose hold the group together',
   },
   pacesetting: {
     label: 'Demanding',
-    who: 'High working standards applied to their own and others\' work',
-    leaderImage: 'Someone who sets the bar high and leads by example',
-    behaviors: 'Not afraid to push the group; models what success looks like',
-    motivators: 'Being part of a winning group',
-    demotivators: 'People must share purpose',
-    whatSticks: 'Meeting targets and leader\'s conflict-solving behaviour',
-  },
-  democratic: {
-    label: 'Conducting',
-    who: 'Coordinator who channels collaboration and creates cooperation',
-    leaderImage: 'An organizer',
-    behaviors: 'Encourages people to work together as a prerequisite for quality',
-    motivators: 'Self-organising their own work and helping as needed',
-    demotivators: 'Static equilibrium of roles and dynamics',
-    whatSticks: 'Clarity of roles and dynamics',
+    leaderAttitude: 'I expect you to meet my standards',
+    leaderStance: 'Leader sets the bar',
+    workManagement: 'Assigns targets to individuals',
+    definitionOfSuccess: 'Meeting targets',
+    motivationalStyle: 'Patronage and individual incentives',
+    groupUnity: "Realistic and achievable targets. Leader's capability to resolve conflicts",
   },
   coaching: {
     label: 'Coaching',
-    who: 'Makes the team more effective as a whole',
-    leaderImage: 'Servant leader / Coach',
-    behaviors: 'Trust, respect, pushing people out of comfort zone, creating purpose and autonomy',
-    motivators: 'Being part of a winning group',
-    demotivators: 'Requires a good level of maturity in the team',
-    whatSticks: 'Sense of belonging, challenge of reaching their potential',
+    leaderAttitude: 'You can do this without me',
+    leaderStance: 'Leader is servant',
+    workManagement: 'Self-directed',
+    definitionOfSuccess: 'Autonomy',
+    motivationalStyle: 'Proud to be part of the tribe, profound trust in the team and their potential',
+    groupUnity: 'Team are aware of their potential and are able to master their own destiny',
   },
-  visionary: {
-    label: 'Catalyzing',
-    who: 'Amplifies success connecting teams with the rest of the organisation',
-    leaderImage: 'A challenger, an amplifier',
-    behaviors: 'Sees the whole; emphasises synergies and connections',
-    motivators: 'Self-governed work (both execution and goals)',
-    demotivators: 'People must be prepared for that delegation level',
-    whatSticks: 'Mutual trust, creating value for customers together',
+  democratic: {
+    label: 'Conducting',
+    leaderAttitude: 'I encourage you to work together while meeting your targets',
+    leaderStance: 'Leader is organizer',
+    workManagement: 'Coordinates work between individuals',
+    definitionOfSuccess: 'Cooperation',
+    motivationalStyle: 'Opportunity to manage my own work and seek support from people I trust within the team',
+    groupUnity: 'Clarity of roles within the team and development of group dynamics towards team identity',
+  },
+  coercive: {
+    label: 'Directing',
+    leaderAttitude: 'This is exactly what I want, how and when',
+    leaderStance: 'Leader is authority',
+    workManagement: 'Assigns work to individuals',
+    definitionOfSuccess: 'Full compliance',
+    motivationalStyle: "Threat of non compliance, failure isn't an option",
+    groupUnity: 'Direct relationship to leader who holds the group together. Absolute clarity about what needs to be done and how',
   },
 }
 
@@ -240,7 +240,7 @@ export default function ArchetypeCard({ assessment }: Props) {
 
       {/* Goleman Behavior Deep-Dive */}
       <div className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Goleman Styles — In Depth</p>
+        <p className="text-xs font-semibold uppercase tracking-wider opacity-60">Leadership Styles — Attitudes & Behaviors</p>
         {golemansStyles.map(style => {
           const d = BEHAVIOR_DETAILS[style]
           return (
@@ -249,12 +249,12 @@ export default function ArchetypeCard({ assessment }: Props) {
               <table className="w-full text-xs border-separate border-spacing-y-1">
                 <tbody>
                   {[
-                    ['Who is he/she',          d.who],
-                    ['Leader\'s image',         d.leaderImage],
-                    ['Behaviours',             d.behaviors],
-                    ['Motivators',             d.motivators],
-                    ['Demotivators',           d.demotivators],
-                    ['What sticks people',     d.whatSticks],
+                    ['Leader Attitude',        d.leaderAttitude],
+                    ['Leader Stance',          d.leaderStance],
+                    ['Work Management',        d.workManagement],
+                    ['Definition of Success',  d.definitionOfSuccess],
+                    ['Motivational Style',     d.motivationalStyle],
+                    ['Group Unity',            d.groupUnity],
                   ].map(([label, value]) => (
                     <tr key={label}>
                       <td className="font-semibold opacity-60 pr-3 whitespace-nowrap align-top w-32">{label}</td>
