@@ -1,15 +1,17 @@
 import { Router, type Router as ExpressRouter } from 'express'
 import { z } from 'zod'
-import { aggregatePeerSkillAssessments } from '@team-manager/core'
-import type { PeerSkillAssessment } from '@team-manager/shared'
+import { aggregatePeerSkillAssessments, aggregatePeerLeadershipAssessments, computeLeadershipScores, computeArchetype } from '@team-manager/core'
+import type { PeerSkillAssessment, PeerLeadershipAssessment } from '@team-manager/shared'
 
 export const peerAssessmentsRouter: ExpressRouter = Router()
 
-// In-memory store (will be replaced by DB)
+// In-memory stores (will be replaced by DB)
 const peerSkillStore: PeerSkillAssessment[] = []
+const peerLeadershipStore: PeerLeadershipAssessment[] = []
 
 export function _resetStore(): void {
   peerSkillStore.length = 0
+  peerLeadershipStore.length = 0
 }
 
 const PeerSkillSchema = z.object({
@@ -64,4 +66,62 @@ peerAssessmentsRouter.get('/skills/:subjectId/summary', (req, res) => {
 
   const summary = aggregatePeerSkillAssessments(subjectId, peerSkillStore)
   res.json(summary)
+})
+
+// ─── Peer Leadership ────────────────────────────────────────────────────────
+
+const PeerLeadershipSchema = z.object({
+  assessorId: z.string().min(1),
+  subjectId:  z.string().min(1),
+  answers:    z.array(z.number().int().min(1).max(10)).length(12),
+})
+
+peerAssessmentsRouter.post('/leadership', (req, res) => {
+  const parsed = PeerLeadershipSchema.safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() })
+    return
+  }
+
+  const { assessorId, subjectId, answers } = parsed.data
+
+  if (assessorId === subjectId) {
+    res.status(400).json({ error: 'Cannot evaluate yourself' })
+    return
+  }
+
+  const scores = computeLeadershipScores(answers)
+  const archetype = computeArchetype(scores)
+  const assessment: PeerLeadershipAssessment = {
+    assessorId, subjectId, answers, scores, archetype, createdAt: new Date(),
+  }
+
+  const existingIdx = peerLeadershipStore.findIndex(
+    (a) => a.assessorId === assessorId && a.subjectId === subjectId,
+  )
+  if (existingIdx >= 0) {
+    peerLeadershipStore[existingIdx] = assessment
+  } else {
+    peerLeadershipStore.push(assessment)
+  }
+
+  res.status(201).json(assessment)
+})
+
+peerAssessmentsRouter.get('/leadership/:subjectId/summary', (req, res) => {
+  const { subjectId } = req.params
+  if (!subjectId) {
+    res.status(400).json({ error: 'subjectId is required' })
+    return
+  }
+  const summary = aggregatePeerLeadershipAssessments(subjectId, peerLeadershipStore)
+  res.json(summary)
+})
+
+peerAssessmentsRouter.get('/leadership/:subjectId/my-assessment/:assessorId', (req, res) => {
+  const { subjectId, assessorId } = req.params
+  const found = peerLeadershipStore.find(
+    (a) => a.subjectId === subjectId && a.assessorId === assessorId,
+  )
+  res.json(found ?? null)
 })

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { computeProfileReliability } from '@team-manager/core'
+import type { PeerLeadershipSummary, LeadershipAssessment } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import ArchetypeCard from '../components/ArchetypeCard.js'
 import CVFRadarChart from '../components/CVFRadarChart.js'
@@ -42,13 +43,14 @@ export default function MemberDetailPage() {
   const member = members.find(m => m.user.id === userId)
 
   const [peerSummary, setPeerSummary] = useState<PeerSkillSummary | null>(null)
+  const [peerLeadership, setPeerLeadership] = useState<PeerLeadershipSummary | null>(null)
 
   useEffect(() => {
     if (!userId) return
     fetch(`${API}/peer-assessments/skills/${userId}/summary`)
-      .then(r => r.json())
-      .then(setPeerSummary)
-      .catch(() => {})
+      .then(r => r.json()).then(setPeerSummary).catch(() => {})
+    fetch(`${API}/peer-assessments/leadership/${userId}/summary`)
+      .then(r => r.json()).then(setPeerLeadership).catch(() => {})
   }, [userId])
 
   // Team size for this member (use the largest team they belong to)
@@ -117,9 +119,16 @@ export default function MemberDetailPage() {
       {/* Content */}
       <div className="w-full max-w-2xl">
         {section === 'archetype' && (
-          leadership
-            ? <ArchetypeCard assessment={leadership} />
-            : <p className="text-gray-400 text-center py-16">No leadership assessment yet.</p>
+          leadership ? (
+            <div className="space-y-6">
+              <ArchetypeCard assessment={leadership} />
+              {peerLeadership && peerLeadership.totalEvaluators > 0 && (
+                <PeerLeadershipDelta self={leadership} peer={peerLeadership} />
+              )}
+            </div>
+          ) : (
+            <p className="text-gray-400 text-center py-16">No leadership assessment yet.</p>
+          )
         )}
 
         {section === 'cvf' && (
@@ -200,5 +209,108 @@ export default function MemberDetailPage() {
         )}
       </div>
     </main>
+  )
+}
+
+// ── Peer Leadership Delta ─────────────────────────────────────────────────────
+
+const BEHAVIOR_PAIRS = ['catalyzing', 'envisioning', 'demanding', 'coaching', 'conducting', 'directing'] as const
+const BEHAVIOR_LABELS: Record<string, string> = {
+  catalyzing: 'Catalyzing', envisioning: 'Envisioning', demanding: 'Demanding',
+  coaching: 'Coaching', conducting: 'Conducting', directing: 'Directing',
+}
+const GOLEMAN_MOTTOS: Record<string, string> = {
+  catalyzing: '"See the whole picture"', envisioning: '"Come with me"',
+  demanding: '"Do as I do, now"', coaching: '"Try this"',
+  conducting: '"What do you think?"', directing: '"Do what I tell you"',
+}
+const ARCHETYPE_COLORS: Record<string, string> = {
+  expert: 'bg-red-100 text-red-700', coordinator: 'bg-orange-100 text-orange-700',
+  peer: 'bg-blue-100 text-blue-700', coach: 'bg-green-100 text-green-700',
+  strategist: 'bg-purple-100 text-purple-700',
+}
+
+function PeerLeadershipDelta({
+  self,
+  peer,
+}: {
+  self: LeadershipAssessment
+  peer: PeerLeadershipSummary
+}) {
+  const mismatch = peer.dominantArchetype && self.archetype !== peer.dominantArchetype
+  const lowConfidence = peer.totalEvaluators < 3
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Peer Leadership Delta</h3>
+        <span className="text-xs text-gray-400">{peer.totalEvaluators} evaluator{peer.totalEvaluators !== 1 ? 's' : ''}</span>
+      </div>
+
+      {lowConfidence && (
+        <p className="text-xs text-amber-700 bg-amber-50 rounded-lg px-3 py-2">
+          ⚠️ Low confidence — only {peer.totalEvaluators}/3+ peers evaluated. Results may not be representative.
+        </p>
+      )}
+
+      {/* Archetype comparison */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-400">Self</span>
+          <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize ${ARCHETYPE_COLORS[self.archetype] ?? 'bg-gray-100 text-gray-600'}`}>{self.archetype}</span>
+        </div>
+        {peer.dominantArchetype && (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-400">Peers</span>
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize ${ARCHETYPE_COLORS[peer.dominantArchetype] ?? 'bg-gray-100 text-gray-600'}`}>{peer.dominantArchetype}</span>
+          </div>
+        )}
+      </div>
+
+      {mismatch && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800">
+          <span className="font-semibold">Archetype mismatch</span> — self-assessed as <span className="font-semibold capitalize">{self.archetype}</span>, peers perceive <span className="font-semibold capitalize">{peer.dominantArchetype}</span>.
+        </div>
+      )}
+
+      {/* Behavior bars */}
+      <div className="space-y-3">
+        {BEHAVIOR_PAIRS.map(b => {
+          const selfScore = self.scores[b] ?? 0
+          const peerAvg = peer.behaviors[b].average
+          const delta = peerAvg - selfScore
+          return (
+            <div key={b} className="space-y-1">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-gray-700">{BEHAVIOR_LABELS[b]}</span>
+                  <span className="text-xs text-gray-400 ml-2">{GOLEMAN_MOTTOS[b]}</span>
+                </div>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                  Math.abs(delta) <= 2 ? 'bg-green-100 text-green-700' :
+                  delta < 0 ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
+                }`}>
+                  {Math.abs(delta) <= 2 ? 'Aligned' : delta < 0 ? '⚠ Blind spot' : '✨ Hidden strength'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400 w-12 shrink-0 text-right">Self</span>
+                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(selfScore / 20) * 100}%` }} />
+                </div>
+                <span className="text-xs text-gray-500 w-6 shrink-0">{selfScore}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400 w-12 shrink-0 text-right">Peers</span>
+                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-400 opacity-60 rounded-full" style={{ width: `${(peerAvg / 20) * 100}%` }} />
+                </div>
+                <span className="text-xs text-gray-500 w-6 shrink-0">{peerAvg.toFixed(1)}</span>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
   )
 }

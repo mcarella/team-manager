@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { computeProfileReliability } from '@team-manager/core'
-import type { TeamMemberProfile, SkillRole } from '@team-manager/shared'
+import type { TeamMemberProfile, SkillRole, PeerLeadershipSummary } from '@team-manager/shared'
 import ReliabilityCoverage from './ReliabilityCoverage.js'
 
 
@@ -49,6 +49,7 @@ interface Props {
 export default function MemberProfileModal({ member, roles, teamSize = 0, initialSection, onClose }: Props) {
   const { user, leadership, cvf, skills } = member
   const [peerSummary, setPeerSummary] = useState<PeerSkillSummary | null>(null)
+  const [peerLeadership, setPeerLeadership] = useState<PeerLeadershipSummary | null>(null)
   const navigate = useNavigate()
 
   // Build skill name lookup
@@ -61,9 +62,9 @@ export default function MemberProfileModal({ member, roles, teamSize = 0, initia
 
   useEffect(() => {
     fetch(`${API}/peer-assessments/skills/${user.id}/summary`)
-      .then(r => r.json())
-      .then(setPeerSummary)
-      .catch(() => {})
+      .then(r => r.json()).then(setPeerSummary).catch(() => {})
+    fetch(`${API}/peer-assessments/leadership/${user.id}/summary`)
+      .then(r => r.json()).then(setPeerLeadership).catch(() => {})
   }, [user.id])
 
   // Compute deltas for skills that have both self + peer data
@@ -137,6 +138,15 @@ export default function MemberProfileModal({ member, roles, teamSize = 0, initia
                 <ReliabilityCoverage
                   reliability={computeProfileReliability(peerSummary.totalEvaluators, teamSize)}
                 />
+              )}
+              {leadership && peerLeadership && peerLeadership.dominantArchetype &&
+               peerLeadership.dominantArchetype !== leadership.archetype && (
+                <button
+                  onClick={() => { onClose(); navigate(`/members/${user.id}?section=archetype`) }}
+                  className="px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700 hover:bg-amber-200 transition-colors"
+                >
+                  Peers: {peerLeadership.dominantArchetype}
+                </button>
               )}
             </div>
 
