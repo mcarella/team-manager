@@ -116,6 +116,32 @@ export interface PeerSkillSummary {
   totalEvaluators: number
 }
 
+// Peer Leadership Assessment (360° feedback)
+
+export interface PeerLeadershipAssessment {
+  assessorId: string
+  subjectId: string
+  answers: number[]   // [q1..q12], 1-10
+  scores: LeadershipScores
+  archetype: Archetype
+  createdAt: Date
+}
+
+export interface PeerLeadershipSummary {
+  subjectId: string
+  behaviors: {
+    catalyzing:  { average: number; count: number }
+    envisioning: { average: number; count: number }
+    demanding:   { average: number; count: number }
+    coaching:    { average: number; count: number }
+    conducting:  { average: number; count: number }
+    directing:   { average: number; count: number }
+  }
+  archetypeCounts: Record<string, number>
+  dominantArchetype: Archetype | null
+  totalEvaluators: number
+}
+
 // Profile Reliability (360° coverage)
 
 export type ReliabilityStatus = 'reliable' | 'partial' | 'none'

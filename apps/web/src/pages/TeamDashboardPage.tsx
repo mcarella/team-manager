@@ -9,6 +9,7 @@ import InlineCVFEditor from '../components/InlineCVFEditor.js'
 import MemberList from '../components/MemberList.js'
 import TeamCVFComparisonTable from '../components/TeamCVFComparisonTable.js'
 import TeamSkillsMatrix from '../components/TeamSkillsMatrix.js'
+import TeamMemberComparisonTable from '../components/TeamMemberComparisonTable.js'
 
 interface ImportResult {
   name: string
@@ -234,6 +235,12 @@ export default function TeamDashboardPage() {
           {/* Skills distribution matrix — full width */}
           <div className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
             <TeamSkillsMatrix members={members} roles={roles} />
+          </div>
+
+          {/* Member comparison table */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Member Comparison</h3>
+            <TeamMemberComparisonTable members={members} roles={roles} />
           </div>
 
           {/* Members */}
