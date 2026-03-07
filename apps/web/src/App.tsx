@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import TopBar from './components/TopBar.js'
 import HomePage from './pages/HomePage.js'
 import OnboardingPage from './pages/OnboardingPage.js'
 import LeadershipAssessmentPage from './pages/LeadershipAssessmentPage.js'
@@ -16,8 +17,16 @@ import ReteamingPage from './pages/ReteamingPage.js'
 import PeerSkillAssessmentPage from './pages/PeerSkillAssessmentPage.js'
 import MemberDetailPage from './pages/MemberDetailPage.js'
 
+const NO_TOPBAR = new Set(['/', '/seed'])
+
 export default function App() {
+  const { pathname } = useLocation()
+  const hasTopBar = !NO_TOPBAR.has(pathname)
+
   return (
+    <>
+      <TopBar />
+      <div className={hasTopBar ? 'pt-14' : ''}>
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/seed" element={<SeedPage />} />
@@ -40,5 +49,7 @@ export default function App() {
       <Route path="/teams/:id" element={<TeamDashboardPage />} />
       <Route path="/members/:userId" element={<MemberDetailPage />} />
     </Routes>
+      </div>
+    </>
   )
 }

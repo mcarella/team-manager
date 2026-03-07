@@ -19,7 +19,7 @@ interface PeerSkillSummary {
 }
 
 export default function ManagerHomePage() {
-  const { currentUserId, currentRole, teams, members, roles, managerTeamIds, addTeam, assignTeamToManager, logout } = useStore()
+  const { currentUserId, currentRole, teams, members, roles, managerTeamIds, addTeam, assignTeamToManager } = useStore()
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [error, setError] = useState('')
@@ -68,30 +68,9 @@ export default function ManagerHomePage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
-      <div className="w-full max-w-lg flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-400">Manager</p>
-          <h1 className="text-3xl font-bold">{currentUserId}</h1>
-        </div>
-        <button
-          onClick={() => { logout(); navigate('/') }}
-          className="text-sm text-gray-400 hover:text-gray-600"
-        >
-          Log out
-        </button>
-      </div>
-
-      {/* Quick links */}
-      <div className="w-full max-w-lg flex gap-3">
-        <Link to="/company-profile" className="flex-1 text-center px-4 py-2.5 bg-amber-600 text-white text-sm font-semibold rounded-lg hover:bg-amber-700">
-          Company Culture
-        </Link>
-        <Link to="/roles" className="flex-1 text-center px-4 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700">
-          Roles &amp; Skills
-        </Link>
-        <Link to="/reteaming" className="flex-1 text-center px-4 py-2.5 bg-teal-600 text-white text-sm font-semibold rounded-lg hover:bg-teal-700">
-          Reteaming
-        </Link>
+      <div className="w-full max-w-lg">
+        <p className="text-sm text-gray-400">Manager</p>
+        <h1 className="text-3xl font-bold">{currentUserId}</h1>
       </div>
 
       {/* Create team */}
