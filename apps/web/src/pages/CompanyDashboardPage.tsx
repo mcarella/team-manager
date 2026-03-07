@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { computeKiviatData } from '@team-manager/core'
 import { useStore } from '../store/index.js'
+import MemberList from '../components/MemberList.js'
 
 export default function CompanyDashboardPage() {
-  const { currentUserId, currentRole, teams, members, companyProfile, managerTeamIds, logout } = useStore()
+  const { currentUserId, currentRole, teams, members, roles, companyProfile, managerTeamIds, logout } = useStore()
   const navigate = useNavigate()
 
   if (!currentUserId || currentRole !== 'company') {
@@ -117,46 +118,7 @@ export default function CompanyDashboardPage() {
         {members.length === 0 ? (
           <p className="text-center py-8 text-gray-400">No individual profiles yet.</p>
         ) : (
-          <div className="space-y-2">
-            {members.map(m => {
-              const teamNames = teams
-                .filter(t => t.members.some(tm => tm.user.id === m.user.id))
-                .map(t => t.name)
-              return (
-                <div
-                  key={m.user.id}
-                  className="flex items-center gap-3 px-4 py-3 bg-white rounded-xl border border-gray-100 shadow-sm"
-                >
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-600 shrink-0">
-                    {m.user.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate">{m.user.name}</p>
-                    <p className="text-xs text-gray-400">
-                      {teamNames.length > 0 ? teamNames.join(', ') : 'No team'}
-                    </p>
-                  </div>
-                  <div className="flex gap-1.5 shrink-0">
-                    {m.leadership ? (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 capitalize">
-                        {m.leadership.archetype}
-                      </span>
-                    ) : (
-                      <span className="px-2 py-0.5 rounded-full text-xs text-gray-400 bg-gray-100">no leadership</span>
-                    )}
-                    {m.cvf && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">CVF</span>
-                    )}
-                    {m.skills.length > 0 && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
-                        {m.skills.length} skills
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          <MemberList members={members} roles={roles} />
         )}
       </div>
     </main>

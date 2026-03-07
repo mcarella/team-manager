@@ -2,6 +2,7 @@ import express, { type Express } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import { assessmentsRouter } from './routes/assessments.js'
+import { peerAssessmentsRouter } from './routes/peer-assessments.js'
 
 export function createApp(): Express {
   const app = express()
@@ -15,6 +16,7 @@ export function createApp(): Express {
   })
 
   app.use('/assessments', assessmentsRouter)
+  app.use('/peer-assessments', peerAssessmentsRouter)
 
   return app
 }

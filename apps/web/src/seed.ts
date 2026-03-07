@@ -171,9 +171,61 @@ function generateDesiredCVF() {
   return { clan: a, adhocracy: b, market: c, hierarchy: Math.max(0, d) }
 }
 
+const API = 'http://localhost:3001'
+
+// --- Peer skill assessment seeding ---
+
+type SeedProfile = { user: { id: string; role: string }; skills: { skillId: string; level: number }[] }
+
+async function seedPeerSkillAssessments(
+  teams: { id: string; members: SeedProfile[] }[],
+  managerProfiles: SeedProfile[],
+  managerTeamIds: Record<string, string[]>,
+) {
+  const posts: Promise<Response>[] = []
+
+  function postAssessment(assessorId: string, subjectId: string, skillId: string, baseLevel: number) {
+    const variation = randInt(-1, 1)
+    const level = Math.max(0, Math.min(4, baseLevel + variation)) as 0|1|2|3|4
+    posts.push(fetch(`${API}/peer-assessments/skills`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assessorId, subjectId, skillId, level }),
+    }))
+  }
+
+  // Peer evaluations within teams (2-4 evaluators per member)
+  for (const team of teams) {
+    for (const subject of team.members) {
+      const potentialAssessors = team.members.filter(m => m.user.id !== subject.user.id)
+      const assessorCount = randInt(2, Math.min(4, potentialAssessors.length))
+      const assessors = [...potentialAssessors].sort(() => Math.random() - 0.5).slice(0, assessorCount)
+      for (const assessor of assessors) {
+        for (const s of subject.skills) postAssessment(assessor.user.id, subject.user.id, s.skillId, s.level)
+      }
+    }
+  }
+
+  // Team members evaluate their manager (2-4 members per manager)
+  for (const manager of managerProfiles) {
+    const managedTeamIds = managerTeamIds[manager.user.id] ?? []
+    const teamMembers = teams
+      .filter(t => managedTeamIds.includes(t.id))
+      .flatMap(t => t.members)
+    const evaluatorCount = randInt(2, Math.min(4, teamMembers.length))
+    const evaluators = [...teamMembers].sort(() => Math.random() - 0.5).slice(0, evaluatorCount)
+    for (const evaluator of evaluators) {
+      for (const s of manager.skills) postAssessment(evaluator.user.id, manager.user.id, s.skillId, s.level)
+    }
+  }
+
+  await Promise.all(posts)
+  return posts.length
+}
+
 // --- Main seed function ---
 
-export function seed() {
+export async function seed() {
   // Wipe
   localStorage.removeItem('team-manager-store')
 
@@ -228,11 +280,18 @@ export function seed() {
 
   // Managers: 2 managers, each owns 2 teams
   const managerTeamIds: Record<string, string[]> = {}
-  const managers = MANAGER_NAMES.map((m, i) => {
+  const managerProfiles = MANAGER_NAMES.map((m, i) => {
     const id = makeId(m.first, m.last)
     managerTeamIds[id] = teams.slice(i * 2, i * 2 + 2).map(t => t.id)
-    return id
+    const roleId = pick(memberRoles)
+    return {
+      user: { id, email: `${id}@example.com`, name: `${m.first} ${m.last}`, orgId: 'default', role: 'manager' as const },
+      leadership: generateLeadership(id),
+      cvf: generateCVF(id),
+      skills: generateSkills(id, roleId),
+    }
   })
+  const managers = managerProfiles.map(m => m.user.id)
 
   // Company profile
   const companyProfile = generateCompanyProfile()
@@ -249,7 +308,7 @@ export function seed() {
       currentRole: null,
       currentUserId: null,
       managerTeamIds,
-      members,
+      members: [...members, ...managerProfiles],
       teams,
       skills: [],
       roles: DEFAULT_ROLES,
@@ -262,6 +321,7 @@ export function seed() {
   localStorage.setItem('team-manager-store', JSON.stringify(state))
 
   const companyName = 'Acme Corp'
+  const peerAssessments = await seedPeerSkillAssessments(teams, managerProfiles, managerTeamIds)
 
   return {
     members: members.length,
@@ -270,5 +330,6 @@ export function seed() {
     companyName,
     companyProfile,
     sampleMembers: members.slice(0, 3).map(m => m.user.id),
+    peerAssessments,
   }
 }

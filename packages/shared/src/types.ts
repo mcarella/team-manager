@@ -100,6 +100,22 @@ export interface Team {
   members: TeamMemberProfile[]
 }
 
+// Peer Skill Assessment (360° feedback)
+
+export interface PeerSkillAssessment {
+  assessorId: string
+  subjectId: string
+  skillId: string
+  level: SkillLevel
+  createdAt: Date
+}
+
+export interface PeerSkillSummary {
+  subjectId: string
+  skills: Record<string, { average: number; count: number }>
+  totalEvaluators: number
+}
+
 // Kiviat / Team Balance
 
 export interface KiviatData {
