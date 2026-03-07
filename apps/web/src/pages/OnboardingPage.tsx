@@ -3,8 +3,8 @@ import type { MemberFile } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 
 export default function OnboardingPage() {
-  const { currentUserId, currentRole, members, logout } = useStore()
   const navigate = useNavigate()
+  const { currentUserId, currentRole, members } = useStore()
 
   if (!currentUserId || currentRole !== 'member') {
     navigate('/', { replace: true })
@@ -120,12 +120,6 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      <button
-        onClick={() => { logout(); navigate('/') }}
-        className="text-sm text-gray-400 hover:text-gray-600"
-      >
-        Log out
-      </button>
     </main>
   )
 }
