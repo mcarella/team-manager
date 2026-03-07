@@ -2,12 +2,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import type { MemberFile } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 
-const STEPS = [
-  { key: 'leadership', label: 'Leadership Assessment', path: '/assessment/leadership', color: 'bg-blue-600', desc: '12 questions to find your archetype' },
-  { key: 'cvf',        label: 'CVF Assessment',        path: '/assessment/cvf',        color: 'bg-purple-600', desc: 'Define your culture profile' },
-  { key: 'skills',     label: 'Skills Assessment',     path: '/assessment/skills',     color: 'bg-green-600', desc: 'Rate your proficiency by role' },
-] as const
-
 export default function OnboardingPage() {
   const { currentUserId, currentRole, members, logout } = useStore()
   const navigate = useNavigate()
@@ -21,8 +15,13 @@ export default function OnboardingPage() {
   const hasLeadership = Boolean(member?.leadership)
   const hasCVF = Boolean(member?.cvf)
   const hasSkills = (member?.skills.length ?? 0) > 0
-  const done = [hasLeadership, hasCVF, hasSkills]
-  const completedCount = done.filter(Boolean).length
+  const completedCount = [hasLeadership, hasCVF, hasSkills].filter(Boolean).length
+
+  const STEPS = [
+    { key: 'leadership', label: 'Leadership Assessment', path: '/assessment/leadership', color: 'bg-blue-600', desc: '12 questions to find your archetype', done: hasLeadership },
+    { key: 'cvf',        label: 'CVF Assessment',        path: '/assessment/cvf',        color: 'bg-purple-600', desc: 'Define your culture profile',       done: hasCVF },
+    { key: 'skills',     label: 'Skills Assessment',     path: '/assessment/skills',     color: 'bg-green-600', desc: 'Rate your proficiency by role',      done: hasSkills },
+  ]
 
   const handleExport = () => {
     if (!member) return
@@ -48,7 +47,7 @@ export default function OnboardingPage() {
       <div className="text-center">
         <p className="text-sm text-gray-400">Logged in as</p>
         <h1 className="text-3xl font-bold">{currentUserId}</h1>
-        <p className="text-gray-500 mt-1">{completedCount}/3 assessments completed</p>
+        <p className="text-gray-500 mt-1">{completedCount}/3 self-assessments completed</p>
       </div>
 
       {/* Progress bar */}
@@ -61,39 +60,53 @@ export default function OnboardingPage() {
         </div>
       </div>
 
-      {/* Assessment steps */}
+      {/* Self-assessment steps */}
       <div className="w-full max-w-md space-y-3">
-        {STEPS.map((step, i) => {
-          const isDone = done[i]
-          return (
-            <Link
-              key={step.key}
-              to={step.path}
-              className={`flex items-center gap-4 px-5 py-4 rounded-xl border transition-all ${
-                isDone
-                  ? 'border-green-200 bg-green-50'
-                  : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
-              }`}
-            >
-              <span className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 ${
-                isDone ? 'bg-green-500' : step.color
-              }`}>
-                {isDone ? '\u2713' : i + 1}
-              </span>
-              <div className="flex-1">
-                <p className={`text-sm font-semibold ${isDone ? 'text-green-700' : 'text-gray-800'}`}>
-                  {step.label}
-                </p>
-                <p className="text-xs text-gray-400">{step.desc}</p>
-              </div>
-              <span className="text-gray-400 text-sm">{isDone ? 'Redo' : 'Start'} →</span>
-            </Link>
-          )
-        })}
+        {STEPS.map((step, i) => (
+          <Link
+            key={step.key}
+            to={step.path}
+            className={`flex items-center gap-4 px-5 py-4 rounded-xl border transition-all ${
+              step.done
+                ? 'border-green-200 bg-green-50'
+                : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
+            }`}
+          >
+            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 ${
+              step.done ? 'bg-green-500' : step.color
+            }`}>
+              {step.done ? '✓' : i + 1}
+            </span>
+            <div className="flex-1">
+              <p className={`text-sm font-semibold ${step.done ? 'text-green-700' : 'text-gray-800'}`}>
+                {step.label}
+              </p>
+              <p className="text-xs text-gray-400">{step.desc}</p>
+            </div>
+            <span className="text-gray-400 text-sm">{step.done ? 'Redo' : 'Start'} →</span>
+          </Link>
+        ))}
       </div>
 
-      {/* Export */}
-      {completedCount > 0 && (
+      {/* 360° peer evaluation */}
+      <div className="w-full max-w-md">
+        <Link
+          to="/assessment/peer-skills"
+          className="flex items-center gap-4 px-5 py-4 rounded-xl border border-indigo-300 bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all"
+        >
+          <span className="w-10 h-10 rounded-full flex items-center justify-center text-indigo-600 bg-white text-sm font-bold shrink-0">
+            360°
+          </span>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-white">Rate your teammates</p>
+            <p className="text-xs text-indigo-200">And see how others are rating you</p>
+          </div>
+          <span className="text-indigo-200 text-sm">Go →</span>
+        </Link>
+      </div>
+
+      {/* Export — only if member has skills in the local store */}
+      {hasSkills && (
         <div className="w-full max-w-md space-y-3">
           <button
             onClick={handleExport}
@@ -103,14 +116,6 @@ export default function OnboardingPage() {
           </button>
           <p className="text-xs text-gray-400 text-center">
             Share this file with your manager so they can import your profile into a team.
-          </p>
-        </div>
-      )}
-
-      {completedCount === 3 && (
-        <div className="bg-green-50 border border-green-200 rounded-xl px-5 py-4 w-full max-w-md text-center">
-          <p className="text-sm text-green-700 font-medium">
-            All done! Export your .member file and share it with your manager.
           </p>
         </div>
       )}

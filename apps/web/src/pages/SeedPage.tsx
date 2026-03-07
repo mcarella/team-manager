@@ -1,16 +1,22 @@
 import { useState } from 'react'
 import { seed } from '../seed.js'
 
-export default function SeedPage() {
-  const [result, setResult] = useState<ReturnType<typeof seed> | null>(null)
+type SeedResult = Awaited<ReturnType<typeof seed>>
 
-  const handleSeed = () => {
-    const res = seed()
+export default function SeedPage() {
+  const [result, setResult] = useState<SeedResult | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const handleSeed = async () => {
+    setLoading(true)
+    const res = await seed()
     setResult(res)
+    setLoading(false)
   }
 
-  const handleSeedAndReload = () => {
-    seed()
+  const handleSeedAndReload = async () => {
+    setLoading(true)
+    await seed()
     window.location.href = '/'
   }
 
@@ -27,13 +33,15 @@ export default function SeedPage() {
       <div className="flex gap-4">
         <button
           onClick={handleSeed}
-          className="px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors"
+          disabled={loading}
+          className="px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
         >
-          Seed data
+          {loading ? 'Seeding…' : 'Seed data'}
         </button>
         <button
           onClick={handleSeedAndReload}
-          className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors"
+          disabled={loading}
+          className="px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50"
         >
           Seed &amp; go to login
         </button>
@@ -42,7 +50,7 @@ export default function SeedPage() {
       {result && (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full max-w-md space-y-3">
           <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Generated</h2>
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="grid grid-cols-3 gap-3 text-sm">
             <div className="bg-blue-50 rounded-xl px-4 py-3 text-center">
               <p className="text-2xl font-bold text-blue-600">{result.members}</p>
               <p className="text-xs text-blue-500">Members</p>
@@ -50,6 +58,10 @@ export default function SeedPage() {
             <div className="bg-orange-50 rounded-xl px-4 py-3 text-center">
               <p className="text-2xl font-bold text-orange-600">{result.teams}</p>
               <p className="text-xs text-orange-500">Teams</p>
+            </div>
+            <div className="bg-indigo-50 rounded-xl px-4 py-3 text-center">
+              <p className="text-2xl font-bold text-indigo-600">{result.peerAssessments}</p>
+              <p className="text-xs text-indigo-500">Peer ratings</p>
             </div>
           </div>
 

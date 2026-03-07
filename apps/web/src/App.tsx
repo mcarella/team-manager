@@ -13,6 +13,8 @@ import TeamDashboardPage from './pages/TeamDashboardPage.js'
 import RolesConfigPage from './pages/RolesConfigPage.js'
 import SeedPage from './pages/SeedPage.js'
 import ReteamingPage from './pages/ReteamingPage.js'
+import PeerSkillAssessmentPage from './pages/PeerSkillAssessmentPage.js'
+import MemberDetailPage from './pages/MemberDetailPage.js'
 
 export default function App() {
   return (
@@ -24,6 +26,7 @@ export default function App() {
       <Route path="/assessment/leadership" element={<LeadershipAssessmentPage />} />
       <Route path="/assessment/cvf" element={<CVFAssessmentPage />} />
       <Route path="/assessment/skills" element={<SkillsAssessmentPage />} />
+      <Route path="/assessment/peer-skills" element={<PeerSkillAssessmentPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       {/* Manager */}
       <Route path="/manager" element={<ManagerHomePage />} />
@@ -35,6 +38,7 @@ export default function App() {
       <Route path="/reteaming" element={<ReteamingPage />} />
       <Route path="/teams" element={<TeamsPage />} />
       <Route path="/teams/:id" element={<TeamDashboardPage />} />
+      <Route path="/members/:userId" element={<MemberDetailPage />} />
     </Routes>
   )
 }
