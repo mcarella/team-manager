@@ -116,6 +116,18 @@ export interface PeerSkillSummary {
   totalEvaluators: number
 }
 
+// Profile Reliability (360° coverage)
+
+export type ReliabilityStatus = 'reliable' | 'partial' | 'none'
+
+export interface ProfileReliability {
+  evaluators: number
+  teamSize: number     // total members including self
+  peers: number        // teamSize - 1
+  coverage: number     // evaluators / peers (0–1), or 0 if no peers
+  status: ReliabilityStatus
+}
+
 // Kiviat / Team Balance
 
 export interface KiviatData {

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
+import { computeProfileReliability } from '@team-manager/core'
 import { useStore } from '../store/index.js'
 import ArchetypeCard from '../components/ArchetypeCard.js'
 import CVFRadarChart from '../components/CVFRadarChart.js'
+import ReliabilityCoverage from '../components/ReliabilityCoverage.js'
 
 const API = 'http://localhost:3001'
 
@@ -34,7 +36,7 @@ export default function MemberDetailPage() {
   const { userId } = useParams<{ userId: string }>()
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { members, roles } = useStore()
+  const { members, roles, teams } = useStore()
 
   const section = (searchParams.get('section') as Section) ?? 'archetype'
   const member = members.find(m => m.user.id === userId)
@@ -48,6 +50,10 @@ export default function MemberDetailPage() {
       .then(setPeerSummary)
       .catch(() => {})
   }, [userId])
+
+  // Team size for this member (use the largest team they belong to)
+  const memberTeams = teams.filter(t => t.members.some(m => m.user.id === userId))
+  const teamSize = memberTeams.reduce((max, t) => Math.max(max, t.members.length), 0)
 
   const nameMap = new Map<string, string>()
   for (const r of roles) {
@@ -138,10 +144,13 @@ export default function MemberDetailPage() {
         {section === 'skills' && (
           skills.length > 0 ? (
             <div className="space-y-4">
-              {peerSummary && peerSummary.totalEvaluators > 0 && (
-                <p className="text-xs text-gray-500">
-                  Peer data from <span className="font-semibold text-gray-700">{peerSummary.totalEvaluators}</span> evaluator{peerSummary.totalEvaluators !== 1 ? 's' : ''}. Individual responses are anonymous.
-                </p>
+              {peerSummary && (
+                <div className="bg-white rounded-xl border border-gray-100 p-4">
+                  <ReliabilityCoverage
+                    reliability={computeProfileReliability(peerSummary.totalEvaluators, teamSize)}
+                    full
+                  />
+                </div>
               )}
               <div className="space-y-5">
                 {skills

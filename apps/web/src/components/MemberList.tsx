@@ -13,9 +13,10 @@ const ARCHETYPE_COLORS: Record<string, string> = {
 interface Props {
   members: TeamMemberProfile[]
   roles?: SkillRole[]
+  teamSize?: number
 }
 
-export default function MemberList({ members, roles = [] }: Props) {
+export default function MemberList({ members, roles = [], teamSize }: Props) {
   const [selected, setSelected] = useState<TeamMemberProfile | null>(null)
   const [initialSection, setInitialSection] = useState<SectionType | undefined>(undefined)
   const [query, setQuery] = useState('')
@@ -108,6 +109,7 @@ export default function MemberList({ members, roles = [] }: Props) {
         <MemberProfileModal
           member={selected}
           roles={roles}
+          {...(teamSize !== undefined ? { teamSize } : {})}
           {...(initialSection ? { initialSection } : {})}
           onClose={() => setSelected(null)}
         />

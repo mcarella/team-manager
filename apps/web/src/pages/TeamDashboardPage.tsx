@@ -239,7 +239,7 @@ export default function TeamDashboardPage() {
           {/* Members */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
             <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Members</h3>
-            <MemberList members={members} roles={roles} />
+            <MemberList members={members} roles={roles} teamSize={members.length} />
           </div>
         </div>
       )}

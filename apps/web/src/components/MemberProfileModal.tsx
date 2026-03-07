@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { computeProfileReliability } from '@team-manager/core'
 import type { TeamMemberProfile, SkillRole } from '@team-manager/shared'
+import ReliabilityCoverage from './ReliabilityCoverage.js'
 
 
 export type SectionType = 'archetype' | 'cvf' | 'skills'
@@ -39,11 +41,12 @@ interface PeerSkillSummary {
 interface Props {
   member: TeamMemberProfile
   roles: SkillRole[]
+  teamSize?: number
   initialSection?: SectionType
   onClose: () => void
 }
 
-export default function MemberProfileModal({ member, roles, initialSection, onClose }: Props) {
+export default function MemberProfileModal({ member, roles, teamSize = 0, initialSection, onClose }: Props) {
   const { user, leadership, cvf, skills } = member
   const [peerSummary, setPeerSummary] = useState<PeerSkillSummary | null>(null)
   const navigate = useNavigate()
@@ -130,10 +133,10 @@ export default function MemberProfileModal({ member, roles, initialSection, onCl
                   {skills.length} skills
                 </button>
               )}
-              {peerSummary && peerSummary.totalEvaluators > 0 && (
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-                  {peerSummary.totalEvaluators} peer eval{peerSummary.totalEvaluators !== 1 ? 's' : ''}
-                </span>
+              {peerSummary && (
+                <ReliabilityCoverage
+                  reliability={computeProfileReliability(peerSummary.totalEvaluators, teamSize)}
+                />
               )}
             </div>
 
