@@ -20,6 +20,7 @@ interface StoreState {
   currentRole: AppRole | null
   currentUserId: string | null
   managerTeamIds: Record<string, string[]> // managerId → teamIds they own
+  memberTeamId: Record<string, string>     // memberId  → teamId they belong to
 
   // Data
   members: TeamMemberProfile[]
@@ -65,6 +66,7 @@ export const useStore = create<StoreState>()(
       currentRole: null,
       currentUserId: null,
       managerTeamIds: {},
+      memberTeamId: {},
 
       members: [],
       teams: [],
@@ -152,6 +154,7 @@ export const useStore = create<StoreState>()(
           const member = state.members.find(m => m.user.id === userId)
           if (!member) return state
           return {
+            memberTeamId: { ...state.memberTeamId, [userId]: teamId },
             teams: state.teams.map(t =>
               t.id === teamId && !t.members.some(m => m.user.id === userId)
                 ? { ...t, members: [...t.members, member] }
@@ -163,6 +166,7 @@ export const useStore = create<StoreState>()(
 
       importMemberToTeam: (teamId, profile) => {
         set(state => ({
+          memberTeamId: { ...state.memberTeamId, [profile.user.id]: teamId },
           teams: state.teams.map(t => {
             if (t.id !== teamId) return t
             const idx = t.members.findIndex(m => m.user.id === profile.user.id)

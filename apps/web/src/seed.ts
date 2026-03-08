@@ -363,12 +363,21 @@ export async function seed() {
     teamDesiredCVF[team.id] = generateDesiredCVF()
   }
 
+  // memberId → teamId (mirrors managerTeamIds pattern for reliable TopBar lookup)
+  const memberTeamId: Record<string, string> = {}
+  for (const team of teams) {
+    for (const m of team.members) {
+      memberTeamId[m.user.id] = team.id
+    }
+  }
+
   // Persist to localStorage (no companyProfile — computed from members' CVFs)
   const state = {
     state: {
       currentRole: null,
       currentUserId: null,
       managerTeamIds,
+      memberTeamId,
       members: [...members, ...managerProfiles],
       teams,
       skills: [],

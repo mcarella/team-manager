@@ -36,14 +36,14 @@ const HIDDEN_PATHS = new Set(['/', '/seed'])
 export default function TopBar() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { currentUserId, currentRole, logout, teams, managerTeamIds } = useStore()
+  const { currentUserId, currentRole, logout, teams, managerTeamIds, memberTeamId } = useStore()
 
   if (HIDDEN_PATHS.has(pathname) || !currentUserId || !currentRole) return null
 
-  // Team badge: member's team or manager's teams
+  // Team badge: same direct-map pattern for both member and manager
   const teamNames =
     currentRole === 'member'
-      ? teams.filter(t => t.members.some(m => m.user.id === currentUserId)).map(t => t.name)
+      ? [teams.find(t => t.id === memberTeamId[currentUserId])?.name].filter(Boolean) as string[]
       : currentRole === 'manager'
       ? (managerTeamIds[currentUserId] ?? []).map(id => teams.find(t => t.id === id)?.name).filter(Boolean) as string[]
       : []

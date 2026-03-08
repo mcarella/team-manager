@@ -4,7 +4,7 @@ import { useStore } from '../store/index.js'
 
 export default function OnboardingPage() {
   const navigate = useNavigate()
-  const { currentUserId, currentRole, members, teams, managerTeamIds } = useStore()
+  const { currentUserId, currentRole, members, teams, managerTeamIds, memberTeamId } = useStore()
 
   if (!currentUserId || currentRole !== 'member') {
     navigate('/', { replace: true })
@@ -13,8 +13,9 @@ export default function OnboardingPage() {
 
   const member = members.find(m => m.user.id === currentUserId)
 
-  // Manager detection
-  const myTeams = teams.filter(t => t.members.some(m => m.user.id === currentUserId))
+  // Team lookup via direct map (same pattern as managerTeamIds)
+  const myTeam = teams.find(t => t.id === memberTeamId[currentUserId]) ?? null
+  const myTeams = myTeam ? [myTeam] : []
   const myManagerIds = new Set(
     myTeams.flatMap(t =>
       Object.entries(managerTeamIds)
