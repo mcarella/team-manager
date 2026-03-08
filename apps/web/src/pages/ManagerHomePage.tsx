@@ -105,7 +105,7 @@ export default function ManagerHomePage() {
       {error && <p className="text-sm text-red-600 -mt-4 w-full max-w-lg">{error}</p>}
 
       {/* How my team rates me */}
-      <div className="w-full max-w-lg space-y-3">
+      {/* <div className="w-full max-w-lg space-y-3">
         <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">How my team rates me</h2>
         {!peerSummary ? (
           <p className="text-sm text-gray-400">Loading…</p>
@@ -161,10 +161,10 @@ export default function ManagerHomePage() {
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* How my team sees my leadership */}
-      <div className="w-full max-w-lg space-y-3">
+      {/* <div className="w-full max-w-lg space-y-3">
         <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">How my team sees my leadership</h2>
         {!peerLeadership ? (
           <p className="text-sm text-gray-400">Loading…</p>
@@ -230,7 +230,7 @@ export default function ManagerHomePage() {
             </div>
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* 360° Coverage dashboard */}
       {myTeams.length > 0 && (
