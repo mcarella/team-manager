@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../store/index.js'
-import TeamCoverageTable from '../components/TeamCoverageTable.js'
 import type { PeerLeadershipSummary } from '@team-manager/shared'
 
 const API = 'http://localhost:3001'
@@ -231,21 +230,6 @@ export default function ManagerHomePage() {
           </div>
         )}
       </div> */}
-
-      {/* 360° Coverage dashboard */}
-      {myTeams.length > 0 && (
-        <div className="w-full max-w-lg space-y-3">
-          <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">360° Coverage</h2>
-          {myTeams.map(team => (
-            <div key={team.id} className="space-y-2">
-              {myTeams.length > 1 && (
-                <p className="text-xs font-medium text-gray-500">{team.name}</p>
-              )}
-              <TeamCoverageTable members={team.members} />
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Team list */}
       <div className="w-full max-w-lg space-y-3">

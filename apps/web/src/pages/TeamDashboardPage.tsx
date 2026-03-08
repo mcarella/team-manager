@@ -10,6 +10,7 @@ import MemberList from '../components/MemberList.js'
 import TeamCVFComparisonTable from '../components/TeamCVFComparisonTable.js'
 import TeamSkillsMatrix from '../components/TeamSkillsMatrix.js'
 import TeamMemberComparisonTable from '../components/TeamMemberComparisonTable.js'
+import TeamCoverageTable from '../components/TeamCoverageTable.js'
 
 // interface ImportResult {
 //   name: string
@@ -231,6 +232,12 @@ export default function TeamDashboardPage() {
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
             <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Member Comparison</h3>
             <TeamMemberComparisonTable members={members} roles={roles} />
+          </div>
+
+          {/* 360° Coverage */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">360° Coverage</h3>
+            <TeamCoverageTable members={members} />
           </div>
 
           {/* Members */}
