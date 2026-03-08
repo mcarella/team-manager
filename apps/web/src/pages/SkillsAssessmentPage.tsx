@@ -171,8 +171,8 @@ export default function SkillsAssessmentPage() {
 
   const TABS: { key: MainTab; label: string }[] = [
     { key: 'mine',   label: 'My Skills' },
-    { key: 'rate',   label: 'Feedback to Others' },
     { key: 'others', label: 'How Others See Me' },
+    { key: 'rate',   label: 'Feedback to Others' },
   ]
 
   return (

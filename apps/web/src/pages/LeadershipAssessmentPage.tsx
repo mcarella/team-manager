@@ -160,8 +160,8 @@ export default function LeadershipAssessmentPage() {
 
   const TABS: { key: MainTab; label: string }[] = [
     { key: 'mine',   label: 'My Leadership' },
-    { key: 'rate',   label: 'Feedback to Others' },
     { key: 'others', label: 'How Others See Me' },
+    { key: 'rate',   label: 'Feedback to Others' },
   ]
 
   return (
