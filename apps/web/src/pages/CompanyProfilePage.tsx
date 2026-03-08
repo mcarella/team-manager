@@ -1,69 +1,139 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import type { CVFAssessment } from '@team-manager/shared'
+import { useState, useMemo } from 'react'
+import { computeKiviatData } from '@team-manager/core'
+import type { CVFScores } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
-import CVFForm from '../components/CVFForm.js'
 import CVFRadarChart from '../components/CVFRadarChart.js'
+import CVFResultCard from '../components/CVFResultCard.js'
+
+type EntityId = string // 'org' | 'team:<id>' | 'manager:<id>'
 
 export default function CompanyProfilePage() {
-  const { companyProfile, saveCompanyProfile, currentRole } = useStore()
-  const backPath = currentRole === 'company' ? '/company' : currentRole === 'manager' ? '/manager' : '/'
-  const [redefining, setRedefining] = useState(false)
+  const { members, teams } = useStore()
 
-  const handleComplete = (assessment: CVFAssessment) => {
-    saveCompanyProfile(assessment.results)
-    setRedefining(false)
+  const [entityA, setEntityA] = useState<EntityId>('org')
+  const [entityB, setEntityB] = useState<EntityId>('')
+
+  // Org CVF average
+  const membersWithCVF = members.filter(m => m.cvf)
+  const orgCVF = membersWithCVF.length > 0 ? computeKiviatData(membersWithCVF).cvfAverage : null
+
+  // Team CVF averages
+  const teamCVFs = useMemo(() => {
+    return teams.map(t => {
+      const withCVF = t.members.filter(m => m.cvf)
+      return {
+        id: `team:${t.id}`,
+        label: t.name,
+        scores: withCVF.length > 0 ? computeKiviatData(withCVF).cvfAverage : null,
+      }
+    })
+  }, [teams])
+
+  // Manager CVF profiles
+  const managerCVFs = useMemo(() => {
+    return members
+      .filter(m => m.user.role === 'manager' && m.cvf)
+      .map(m => ({ id: `manager:${m.user.id}`, label: m.user.name, scores: m.cvf!.results }))
+  }, [members])
+
+  const entities = [
+    { id: 'org', label: 'Org average', scores: orgCVF },
+    ...teamCVFs,
+    ...managerCVFs,
+  ]
+
+  function resolveScores(id: EntityId): { scores: CVFScores; label: string } | null {
+    const e = entities.find(x => x.id === id)
+    return e?.scores ? { scores: e.scores, label: e.label } : null
   }
 
-  const showForm = !companyProfile || redefining
+  const a = entityA ? resolveScores(entityA) : null
+  const b = entityB ? resolveScores(entityB) : null
 
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
-      <div className="w-full max-w-2xl flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Company Culture Profile</h1>
-          <p className="text-gray-500 mt-1">Define your target culture baseline for team comparison.</p>
-        </div>
-        <Link to={backPath} className="text-blue-600 hover:underline text-sm">← Back</Link>
+      <div className="text-center">
+        <h1 className="text-3xl font-bold">Culture Comparison</h1>
+        <p className="text-gray-500 mt-2">
+          Compare CVF profiles across teams, managers, and the whole organisation.
+        </p>
       </div>
 
-      {showForm ? (
-        <CVFForm userId="__company__" onComplete={handleComplete} />
+      {/* Entity pickers */}
+      <div className="w-full max-w-lg grid grid-cols-2 gap-4">
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Entity A</label>
+          <select
+            value={entityA}
+            onChange={e => setEntityA(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
+          >
+            <option value="">Pick entity…</option>
+            <optgroup label="Organisation">
+              <option value="org">Org average</option>
+            </optgroup>
+            <optgroup label="Teams">
+              {teamCVFs.map(t => (
+                <option key={t.id} value={t.id} disabled={!t.scores}>{t.label}{!t.scores ? ' (no data)' : ''}</option>
+              ))}
+            </optgroup>
+            <optgroup label="Managers">
+              {managerCVFs.map(m => (
+                <option key={m.id} value={m.id}>{m.label}</option>
+              ))}
+            </optgroup>
+          </select>
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Entity B</label>
+          <select
+            value={entityB}
+            onChange={e => setEntityB(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
+          >
+            <option value="">None</option>
+            <optgroup label="Organisation">
+              <option value="org">Org average</option>
+            </optgroup>
+            <optgroup label="Teams">
+              {teamCVFs.map(t => (
+                <option key={t.id} value={t.id} disabled={!t.scores}>{t.label}{!t.scores ? ' (no data)' : ''}</option>
+              ))}
+            </optgroup>
+            <optgroup label="Managers">
+              {managerCVFs.map(m => (
+                <option key={m.id} value={m.id}>{m.label}</option>
+              ))}
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      {/* Chart */}
+      {a ? (
+        <div className="w-full max-w-lg flex flex-col items-center gap-6">
+          <CVFRadarChart
+            scores={a.scores}
+            label={a.label}
+            {...(b ? { compareScores: b.scores, compareLabel: b.label } : {})}
+          />
+          <div className={`w-full grid gap-4 ${b ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            <div className="space-y-2">
+              {b && <p className="text-xs font-semibold text-purple-600 uppercase tracking-wide">{a.label}</p>}
+              <CVFResultCard results={a.scores} />
+            </div>
+            {b && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">{b.label}</p>
+                <CVFResultCard results={b.scores} />
+              </div>
+            )}
+          </div>
+        </div>
       ) : (
-        <div className="w-full max-w-2xl space-y-6">
-          <div className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
-            <CVFRadarChart scores={companyProfile} />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            {(['clan', 'adhocracy', 'market', 'hierarchy'] as const).map(q => {
-              const colors = {
-                clan:      'bg-green-50  border-green-200  text-green-800',
-                adhocracy: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-                market:    'bg-red-50    border-red-200    text-red-800',
-                hierarchy: 'bg-blue-50   border-blue-200   text-blue-800',
-              }
-              const labels = { clan: 'Clan', adhocracy: 'Adhocracy', market: 'Market', hierarchy: 'Hierarchy' }
-              return (
-                <div key={q} className={`flex items-center justify-between px-4 py-3 rounded-xl border ${colors[q]}`}>
-                  <span className="text-sm font-semibold">{labels[q]}</span>
-                  <span className="text-lg font-bold">{companyProfile[q]}</span>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="flex gap-4">
-            <button
-              onClick={() => setRedefining(true)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
-            >
-              Redefine profile
-            </button>
-            <Link to={backPath} className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm hover:bg-orange-700">
-              Back →
-            </Link>
-          </div>
+        <div className="text-center py-16 text-gray-400">
+          <p className="text-lg">Select an entity to view its CVF profile.</p>
         </div>
       )}
     </main>

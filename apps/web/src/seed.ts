@@ -329,7 +329,7 @@ export async function seed() {
     }
   })
 
-  // 4 teams, 5 members each
+  // 4 teams, 5 members each — every member is assigned, no one is left out
   const shuffled = [...members].sort(() => Math.random() - 0.5)
   const teamNames = [...TEAM_NAMES].sort(() => Math.random() - 0.5).slice(0, 4)
   const teams = teamNames.map((tName, i) => ({
@@ -338,6 +338,10 @@ export async function seed() {
     name: `Team ${tName}`,
     members: shuffled.slice(i * 5, i * 5 + 5),
   }))
+  // Sanity check: all members must be in exactly one team
+  const assignedIds = new Set(teams.flatMap(t => t.members.map(m => m.user.id)))
+  const unassigned = members.filter(m => !assignedIds.has(m.user.id))
+  if (unassigned.length > 0) throw new Error(`Seed error: ${unassigned.length} members not assigned to a team`)
 
   // 2 managers, each owns 2 teams, also have full self-assessments
   const managerTeamIds: Record<string, string[]> = {}
@@ -382,11 +386,14 @@ export async function seed() {
     seedPeerCVFAssessments(teams, managerProfiles, managerTeamIds),
   ])
 
+  // One representative member per team — so each hint shows a member with a team
+  const sampleMembers = teams.map(t => ({ teamName: t.name, userId: t.members[0]!.user.id }))
+
   return {
     members: members.length,
     teams: teams.length,
     managers: managerProfiles.map(m => m.user.id),
-    sampleMembers: members.slice(0, 3).map(m => m.user.id),
+    sampleMembers,
     peerSkills,
     peerLeadership,
     peerCVF,

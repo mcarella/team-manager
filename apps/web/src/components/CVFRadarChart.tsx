@@ -9,20 +9,24 @@ interface Props {
   label?: string
   companyScores?: CVFScores
   desiredScores?: CVFScores
+  compareScores?: CVFScores
+  compareLabel?: string
 }
 
-export default function CVFRadarChart({ scores, label, companyScores, desiredScores }: Props) {
-  const hasOverlay = !!(companyScores || desiredScores)
+export default function CVFRadarChart({ scores, label, companyScores, desiredScores, compareScores, compareLabel }: Props) {
+  const hasOverlay = !!(companyScores || desiredScores || compareScores)
 
   const data = QUADRANTS.map(q => ({
     quadrant: LABELS[q],
     [label ?? 'Team']: scores[q],
     ...(companyScores ? { Company: companyScores[q] } : {}),
     ...(desiredScores ? { Desired: desiredScores[q] } : {}),
+    ...(compareScores ? { [compareLabel ?? 'Compare']: compareScores[q] } : {}),
     fullMark: 600,
   }))
 
   const mainKey = label ?? 'Team'
+  const cmpKey  = compareLabel ?? 'Compare'
 
   return (
     <div className="w-full space-y-4">
@@ -43,6 +47,9 @@ export default function CVFRadarChart({ scores, label, companyScores, desiredSco
         )}
         {desiredScores && (
           <Radar name="Desired" dataKey="Desired" stroke="#22c55e" fill="#22c55e" fillOpacity={0.15} strokeDasharray="5 5" />
+        )}
+        {compareScores && (
+          <Radar name={cmpKey} dataKey={cmpKey} stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.18} strokeDasharray="4 4" />
         )}
         <Tooltip formatter={(v) => [`${v}`, '']} />
         {hasOverlay && <Legend />}

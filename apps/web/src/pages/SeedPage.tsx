@@ -93,9 +93,12 @@ export default function SeedPage() {
           </div>
 
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-gray-500">Sample members (login as member):</p>
-            {result.sampleMembers.map(m => (
-              <p key={m} className="text-sm font-mono bg-gray-50 rounded px-3 py-1.5">{m}</p>
+            <p className="text-xs font-semibold text-gray-500">Members (one per team, login as member):</p>
+            {result.sampleMembers.map(({ teamName, userId }) => (
+              <div key={userId} className="flex items-center justify-between bg-gray-50 rounded px-3 py-1.5">
+                <span className="text-sm font-mono">{userId}</span>
+                <span className="text-xs text-gray-400">{teamName}</span>
+              </div>
             ))}
           </div>
         </div>

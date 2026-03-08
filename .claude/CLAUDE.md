@@ -236,6 +236,19 @@ Per `ui`/`config`: usa `[skip-tests]`, documenta motivo nel PR.
 - **Sonnet**: implement, review
 - **Opus**: architettura only
 
+## localStorage + Seed Pattern
+
+This project uses the **localStorage + Seed Page** rapid-prototyping pattern.
+Full reference: [`docs/localStorage-seed-pattern.md`](../docs/localStorage-seed-pattern.md)
+
+**IMPORTANT — opt-in only**: Do NOT propose or apply this pattern (or any part of it — seed file, in-memory API, Zustand persist, role-based login) unless the user explicitly requests it with phrases like:
+- "use the seed pattern"
+- "add a seed page"
+- "set up localStorage state"
+- "use the localStorage approach"
+
+Do not suggest it proactively, even when it might seem helpful.
+
 ## Skills & Commands
 - `/init` — carica contesto progetto
 - `/implement <desc>` — workflow TDD
