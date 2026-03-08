@@ -8,17 +8,19 @@ interface NavItem {
 }
 
 const MEMBER_NAV: NavItem[] = [
-  { label: 'My Profile',   to: '/onboarding', end: true },
-  { label: 'Leadership',   to: '/assessment/leadership' },
-  { label: 'CVF',          to: '/assessment/cvf' },
-  { label: 'Skills',       to: '/assessment/skills' },
+  { label: 'Dashboard',  to: '/onboarding', end: true },
+  { label: 'Leadership', to: '/assessment/leadership' },
+  { label: 'Skills',     to: '/assessment/skills' },
+  { label: 'Culture',    to: '/assessment/cvf' },
 ]
 
 const MANAGER_NAV: NavItem[] = [
-  { label: 'Dashboard',    to: '/manager', end: true },
-  { label: 'Reteaming',   to: '/reteaming' },
-  { label: 'Culture',     to: '/company-profile' },
-  { label: 'Roles',       to: '/roles' },
+  { label: 'Dashboard',  to: '/manager', end: true },
+  { label: 'Leadership', to: '/assessment/leadership' },
+  { label: 'Skills',     to: '/assessment/skills' },
+  { label: 'Culture',    to: '/company-profile' },
+  { label: 'Roles',      to: '/roles' },
+  { label: 'Reteaming',  to: '/reteaming' },
 ]
 
 const COMPANY_NAV: NavItem[] = [
