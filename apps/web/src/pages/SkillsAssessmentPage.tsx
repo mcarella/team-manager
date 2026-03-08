@@ -49,11 +49,12 @@ export default function SkillsAssessmentPage() {
   const [saved, setSaved] = useState(false)
   const [levels, setLevels] = useState<Record<string, number>>({})
 
-  // Rate Others state
+  // Feedback to Others state
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null)
   const [peerLevels, setPeerLevels] = useState<Record<string, number>>({})
   const [peerSaving, setPeerSaving] = useState(false)
   const [peerSaved, setPeerSaved] = useState(false)
+  const [evaluatedIds, setEvaluatedIds] = useState<Set<string>>(new Set())
 
   // How Others See Me state
   const [summary, setSummary] = useState<SkillSummary | null>(null)
@@ -156,6 +157,7 @@ export default function SkillsAssessmentPage() {
         )
       )
       setPeerSaved(true)
+      setEvaluatedIds(prev => new Set([...prev, selectedSubjectId]))
     } finally {
       setPeerSaving(false)
     }
@@ -169,7 +171,7 @@ export default function SkillsAssessmentPage() {
 
   const TABS: { key: MainTab; label: string }[] = [
     { key: 'mine',   label: 'My Skills' },
-    { key: 'rate',   label: 'Rate Others' },
+    { key: 'rate',   label: 'Feedback to Others' },
     { key: 'others', label: 'How Others See Me' },
   ]
 
@@ -296,7 +298,7 @@ export default function SkillsAssessmentPage() {
         </div>
       )}
 
-      {/* ── Rate Others ───────────────────────────────────────────────────────── */}
+      {/* ── Feedback to Others ────────────────────────────────────────────────── */}
       {mainTab === 'rate' && (
         <div className="w-full max-w-2xl flex gap-6">
           {/* Sidebar */}
@@ -304,19 +306,23 @@ export default function SkillsAssessmentPage() {
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Teammates</p>
               {teammates.length === 0 && <p className="text-sm text-gray-400">No teammates yet.</p>}
-              {teammates.map(m => (
-                <button
-                  key={m.user.id}
-                  onClick={() => handleSelectSubject(m.user.id)}
-                  className={`w-full text-left px-3 py-2 rounded-lg border text-sm font-medium transition-colors mb-1 ${
-                    selectedSubjectId === m.user.id
-                      ? 'bg-gray-800 text-white border-gray-800'
-                      : 'bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50'
-                  }`}
-                >
-                  {m.user.name}
-                </button>
-              ))}
+              {teammates.map(m => {
+                const evaluated = evaluatedIds.has(m.user.id)
+                return (
+                  <button
+                    key={m.user.id}
+                    onClick={() => handleSelectSubject(m.user.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg border text-sm font-medium transition-colors mb-1 flex items-center justify-between ${
+                      selectedSubjectId === m.user.id
+                        ? 'bg-gray-800 text-white border-gray-800'
+                        : 'bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span>{m.user.name}</span>
+                    {evaluated && <span className={`text-xs font-bold ${selectedSubjectId === m.user.id ? 'text-green-300' : 'text-green-600'}`}>✓</span>}
+                  </button>
+                )
+              })}
             </div>
           </div>
 

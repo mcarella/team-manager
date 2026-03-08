@@ -58,11 +58,12 @@ export default function LeadershipAssessmentPage() {
   const [result, setResult] = useState<LeadershipAssessment | null>(null)
   const [retaking, setRetaking] = useState(false)
 
-  // Rate Others state
+  // Feedback to Others state
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null)
   const [answers, setAnswers] = useState<number[]>(Array(12).fill(5))
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [evaluatedIds, setEvaluatedIds] = useState<Set<string>>(new Set())
 
   // How Others See Me state
   const [peerSummary, setPeerSummary] = useState<PeerLeadershipSummary | null>(null)
@@ -87,6 +88,22 @@ export default function LeadershipAssessmentPage() {
   const teammates = members.filter(
     m => m.user.id !== userId && !myManagerIds.has(m.user.id) && m.user.role !== 'manager'
   )
+
+  // Pre-populate evaluated set when entering the feedback tab
+  useEffect(() => {
+    if (mainTab !== 'rate') return
+    Promise.all(
+      teammates.map(m =>
+        fetch(`${API}/peer-assessments/leadership/${m.user.id}/my-assessment/${userId}`)
+          .then(r => r.json())
+          .then((data: { answers: number[] } | null) => data ? m.user.id : null)
+          .catch(() => null)
+      )
+    ).then(results => {
+      const ids = results.filter((id): id is string => id !== null)
+      if (ids.length > 0) setEvaluatedIds(prev => new Set([...prev, ...ids]))
+    })
+  }, [mainTab])
 
   // Prefetch previous answers when subject changes
   useEffect(() => {
@@ -133,6 +150,7 @@ export default function LeadershipAssessmentPage() {
         body: JSON.stringify({ assessorId: userId, subjectId: selectedSubjectId, answers }),
       })
       setSaved(true)
+      setEvaluatedIds(prev => new Set([...prev, selectedSubjectId]))
     } finally {
       setSaving(false)
     }
@@ -142,7 +160,7 @@ export default function LeadershipAssessmentPage() {
 
   const TABS: { key: MainTab; label: string }[] = [
     { key: 'mine',   label: 'My Leadership' },
-    { key: 'rate',   label: 'Rate Others' },
+    { key: 'rate',   label: 'Feedback to Others' },
     { key: 'others', label: 'How Others See Me' },
   ]
 
@@ -192,7 +210,7 @@ export default function LeadershipAssessmentPage() {
         </div>
       )}
 
-      {/* ── Rate Others ───────────────────────────────────────────────────────── */}
+      {/* ── Feedback to Others ────────────────────────────────────────────────── */}
       {mainTab === 'rate' && (
         <div className="w-full max-w-2xl flex gap-6">
           {/* Sidebar */}
@@ -200,19 +218,23 @@ export default function LeadershipAssessmentPage() {
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Teammates</p>
               {teammates.length === 0 && <p className="text-sm text-gray-400">No teammates yet.</p>}
-              {teammates.map(m => (
-                <button
-                  key={m.user.id}
-                  onClick={() => handleSelectSubject(m.user.id)}
-                  className={`w-full text-left px-3 py-2 rounded-lg border text-sm font-medium transition-colors mb-1 ${
-                    selectedSubjectId === m.user.id
-                      ? 'bg-gray-800 text-white border-gray-800'
-                      : 'bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50'
-                  }`}
-                >
-                  {m.user.name}
-                </button>
-              ))}
+              {teammates.map(m => {
+                const evaluated = evaluatedIds.has(m.user.id)
+                return (
+                  <button
+                    key={m.user.id}
+                    onClick={() => handleSelectSubject(m.user.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg border text-sm font-medium transition-colors mb-1 flex items-center justify-between ${
+                      selectedSubjectId === m.user.id
+                        ? 'bg-gray-800 text-white border-gray-800'
+                        : 'bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span>{m.user.name}</span>
+                    {evaluated && <span className={`text-xs font-bold ${selectedSubjectId === m.user.id ? 'text-green-300' : 'text-green-600'}`}>✓</span>}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
