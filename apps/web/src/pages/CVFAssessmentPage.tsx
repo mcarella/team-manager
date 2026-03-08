@@ -102,9 +102,9 @@ export default function CVFAssessmentPage() {
   const memberEntityB = resolveEntity(memberCompareB, 'member')
 
   const MEMBER_TABS:  { key: MemberTab;  label: string }[] = [
-    { key: 'mine',    label: 'My CVF' },
+    { key: 'mine',    label: 'Me' },
     { key: 'team',    label: 'My Team' },
-    { key: 'org',     label: 'My Org' },
+    { key: 'org',     label: 'Company' },
     { key: 'compare', label: 'Compare' },
   ]
   const MANAGER_TABS: { key: ManagerTab; label: string }[] = [
@@ -129,9 +129,7 @@ export default function CVFAssessmentPage() {
       <div className="text-center">
         <h1 className="text-3xl font-bold">Culture</h1>
         <p className="text-gray-500 mt-2">
-          {isManager
-            ? 'Compare your culture profile with your team and the organisation.'
-            : 'Distribute 100 points across 4 culture quadrants for each of 6 categories.'}
+          Compare your culture profile with your team and the organisation.
         </p>
       </div>
 

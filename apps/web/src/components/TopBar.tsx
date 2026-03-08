@@ -36,9 +36,17 @@ const HIDDEN_PATHS = new Set(['/', '/seed'])
 export default function TopBar() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { currentUserId, currentRole, logout } = useStore()
+  const { currentUserId, currentRole, logout, teams, managerTeamIds } = useStore()
 
   if (HIDDEN_PATHS.has(pathname) || !currentUserId || !currentRole) return null
+
+  // Team badge: member's team or manager's teams
+  const teamNames =
+    currentRole === 'member'
+      ? teams.filter(t => t.members.some(m => m.user.id === currentUserId)).map(t => t.name)
+      : currentRole === 'manager'
+      ? (managerTeamIds[currentUserId] ?? []).map(id => teams.find(t => t.id === id)?.name).filter(Boolean) as string[]
+      : []
 
   const nav =
     currentRole === 'member'  ? MEMBER_NAV  :
@@ -85,6 +93,11 @@ export default function TopBar() {
       {/* User + logout */}
       <div className="shrink-0 flex items-center gap-3">
         <span className="text-xs text-gray-400 hidden sm:block truncate max-w-32">{currentUserId}</span>
+        {teamNames.map(name => (
+          <span key={name} className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 whitespace-nowrap">
+            {name}
+          </span>
+        ))}
         <button
           onClick={handleLogout}
           className="text-xs text-gray-400 hover:text-gray-700 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
