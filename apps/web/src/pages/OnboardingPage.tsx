@@ -4,7 +4,7 @@ import { useStore } from '../store/index.js'
 
 export default function OnboardingPage() {
   const navigate = useNavigate()
-  const { currentUserId, currentRole, members } = useStore()
+  const { currentUserId, currentRole, members, teams, managerTeamIds } = useStore()
 
   if (!currentUserId || currentRole !== 'member') {
     navigate('/', { replace: true })
@@ -12,6 +12,17 @@ export default function OnboardingPage() {
   }
 
   const member = members.find(m => m.user.id === currentUserId)
+
+  // Manager detection
+  const myTeams = teams.filter(t => t.members.some(m => m.user.id === currentUserId))
+  const myManagerIds = new Set(
+    myTeams.flatMap(t =>
+      Object.entries(managerTeamIds)
+        .filter(([, tids]) => tids.includes(t.id))
+        .map(([mid]) => mid)
+    )
+  )
+  const myManager = members.find(m => myManagerIds.has(m.user.id))
   const hasLeadership = Boolean(member?.leadership)
   const hasCVF = Boolean(member?.cvf)
   const hasSkills = (member?.skills.length ?? 0) > 0
@@ -87,6 +98,27 @@ export default function OnboardingPage() {
           </Link>
         ))}
       </div>
+
+      {/* Rate my manager — only if assigned to a team with a manager */}
+      {myManager && (
+        <div className="w-full max-w-md">
+          <Link
+            to="/rate-manager"
+            className="flex items-center gap-4 px-5 py-4 rounded-xl border border-orange-300 bg-orange-600 hover:bg-orange-700 shadow-sm transition-all"
+          >
+            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white shrink-0">
+              <span className="text-orange-600 font-bold text-sm">
+                {myManager.user.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-white">Rate {myManager.user.name}</p>
+              <p className="text-xs text-orange-200">Leadership · Skills · Culture — anonymous</p>
+            </div>
+            <span className="text-orange-200 text-sm">→</span>
+          </Link>
+        </div>
+      )}
 
       {/* Export — only if member has skills in the local store */}
       {/* {hasSkills && (

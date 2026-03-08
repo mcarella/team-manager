@@ -142,6 +142,22 @@ export interface PeerLeadershipSummary {
   totalEvaluators: number
 }
 
+// Peer CVF Assessment (manager rating by team members)
+
+export interface PeerCVFAssessment {
+  assessorId: string
+  subjectId: string
+  categories: CVFCategory[]
+  results: CVFScores
+  createdAt: Date
+}
+
+export interface PeerCVFSummary {
+  subjectId: string
+  results: CVFScores        // averaged across evaluators
+  totalEvaluators: number
+}
+
 // Profile Reliability (360° coverage)
 
 export type ReliabilityStatus = 'reliable' | 'partial' | 'none'

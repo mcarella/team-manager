@@ -197,25 +197,6 @@ export default function LeadershipAssessmentPage() {
         <div className="w-full max-w-2xl flex gap-6">
           {/* Sidebar */}
           <div className="w-44 shrink-0 space-y-2">
-            {myManagers.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">My Manager</p>
-                {myManagers.map(m => (
-                  <button
-                    key={m.user.id}
-                    onClick={() => handleSelectSubject(m.user.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg border text-sm font-medium transition-colors mb-1 ${
-                      selectedSubjectId === m.user.id
-                        ? 'bg-orange-600 text-white border-orange-600'
-                        : 'bg-orange-50 text-orange-700 border-orange-200 hover:border-orange-400'
-                    }`}
-                  >
-                    {m.user.name}
-                    <span className="block text-xs opacity-60">Manager</span>
-                  </button>
-                ))}
-              </div>
-            )}
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Teammates</p>
               {teammates.length === 0 && <p className="text-sm text-gray-400">No teammates yet.</p>}
