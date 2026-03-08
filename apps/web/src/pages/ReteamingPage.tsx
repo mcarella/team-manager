@@ -196,8 +196,9 @@ function archetypeDelta(
 }
 
 export default function ReteamingPage() {
-  const { teams, roles, currentRole } = useStore()
+  const { teams, roles, currentRole, currentUserId, managerTeamIds } = useStore()
   const backPath = currentRole === 'company' ? '/company' : currentRole === 'manager' ? '/manager' : '/'
+  const myTeamIds = new Set(currentRole === 'manager' ? (managerTeamIds[currentUserId ?? ''] ?? []) : [])
 
   // --- Team selection phase ---
   const [pickedIds, setPickedIds] = useState<Set<string> | null>(null)
@@ -357,7 +358,12 @@ export default function ReteamingPage() {
                   className="accent-teal-600 w-4 h-4"
                 />
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-800">{team.name}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-gray-800">{team.name}</p>
+                    {myTeamIds.has(team.id) && (
+                      <span className="px-1.5 py-0.5 rounded text-xs font-semibold bg-orange-100 text-orange-700">Your team</span>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-400">{team.members.length} member{team.members.length !== 1 ? 's' : ''}</p>
                 </div>
               </label>

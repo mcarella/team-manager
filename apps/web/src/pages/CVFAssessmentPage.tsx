@@ -234,7 +234,7 @@ export default function CVFAssessmentPage() {
                     className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
                   >
                     <option value="">Pick a team…</option>
-                    {allManagedTeams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                    {allManagedTeams.map(t => <option key={t.id} value={t.id}>{t.name} (your team)</option>)}
                     <option value="org">Org avg</option>
                   </select>
                 </div>
@@ -246,7 +246,7 @@ export default function CVFAssessmentPage() {
                     className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
                   >
                     <option value="">None</option>
-                    {allManagedTeams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                    {allManagedTeams.map(t => <option key={t.id} value={t.id}>{t.name} (your team)</option>)}
                     <option value="org">Org avg</option>
                   </select>
                 </div>
