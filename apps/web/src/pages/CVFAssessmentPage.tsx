@@ -5,7 +5,7 @@ import type { CVFAssessment, CVFScores } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import CVFForm from '../components/CVFForm.js'
 import CVFResultCard from '../components/CVFResultCard.js'
-import CVFRadarChart from '../components/CVFRadarChart.js'
+import CVFRadarChart, { CVF_COLORS } from '../components/CVFRadarChart.js'
 
 type MemberTab  = 'mine' | 'team' | 'org' | 'compare'
 type ManagerTab = 'me' | 'team' | 'company' | 'compare'
@@ -160,7 +160,7 @@ export default function CVFAssessmentPage() {
         <div className="w-full max-w-lg">
           {displayResult ? (
             <div className="flex flex-col items-center gap-6">
-              <CVFRadarChart scores={displayResult.results} label="You" />
+              <CVFRadarChart scores={displayResult.results} label="You" mainColor={CVF_COLORS.self} />
               <CVFResultCard results={displayResult.results} />
               <p className="text-xs text-gray-400 text-center">
                 CVF assessment is completed once and reflects your culture profile.
@@ -186,17 +186,8 @@ export default function CVFAssessmentPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-6">
-                <CVFRadarChart
-                  scores={cvf}
-                  label="Team avg"
-                  {...(orgCVF ? { companyScores: orgCVF } : {})}
-                />
+                <CVFRadarChart scores={cvf} label="Team avg" mainColor={CVF_COLORS.team} />
                 <CVFResultCard results={cvf} />
-                {orgCVF && (
-                  <p className="text-xs text-gray-400 text-center">
-                    Dashed line shows the organisation average.
-                  </p>
-                )}
                 <p className="text-xs text-gray-400 text-center">
                   Based on {withCVF} of {total} team member{total !== 1 ? 's' : ''} with a CVF assessment.
                 </p>
@@ -216,7 +207,7 @@ export default function CVFAssessmentPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-6">
-              <CVFRadarChart scores={orgCVF} label="Org avg" />
+              <CVFRadarChart scores={orgCVF} label="Org avg" mainColor={CVF_COLORS.org} />
               <CVFResultCard results={orgCVF} />
               <p className="text-xs text-gray-400 text-center">
                 Average of {membersWithCVF.length} individual{membersWithCVF.length !== 1 ? 's' : ''} who completed the CVF assessment.
@@ -265,16 +256,21 @@ export default function CVFAssessmentPage() {
                   <CVFRadarChart
                     scores={teamEntityA.scores}
                     label={teamEntityA.label}
-                    {...(teamEntityB ? { compareScores: teamEntityB.scores, compareLabel: teamEntityB.label } : {})}
+                    mainColor={teamCompareA === 'org' ? CVF_COLORS.org : CVF_COLORS.team}
+                    {...(teamEntityB ? {
+                      compareScores: teamEntityB.scores,
+                      compareLabel: teamEntityB.label,
+                      compareColor: teamCompareB === 'org' ? CVF_COLORS.org : CVF_COLORS.team,
+                    } : {})}
                   />
                   {teamEntityB && (
                     <div className="w-full grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold text-purple-600 uppercase tracking-wide">{teamEntityA.label}</p>
+                        <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: teamCompareA === 'org' ? CVF_COLORS.org : CVF_COLORS.team }}>{teamEntityA.label}</p>
                         <CVFResultCard results={teamEntityA.scores} />
                       </div>
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">{teamEntityB.label}</p>
+                        <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: teamCompareB === 'org' ? CVF_COLORS.org : CVF_COLORS.team }}>{teamEntityB.label}</p>
                         <CVFResultCard results={teamEntityB.scores} />
                       </div>
                     </div>
@@ -295,7 +291,12 @@ export default function CVFAssessmentPage() {
               <CVFRadarChart
                 scores={displayResult.results}
                 label="You"
-                {...(compareEntity ? { compareScores: compareEntity.scores, compareLabel: compareEntity.label } : {})}
+                mainColor={CVF_COLORS.self}
+                {...(compareEntity ? {
+                  compareScores: compareEntity.scores,
+                  compareLabel: compareEntity.label,
+                  compareColor: compareWith === 'team' ? CVF_COLORS.team : compareWith === 'org' ? CVF_COLORS.org : CVF_COLORS.person,
+                } : {})}
               />
 
               <div className="w-full space-y-2">
@@ -360,11 +361,11 @@ export default function CVFAssessmentPage() {
               {compareEntity && (
                 <div className="w-full grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <p className="text-xs font-semibold text-purple-600 uppercase tracking-wide">You</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: CVF_COLORS.self }}>You</p>
                     <CVFResultCard results={displayResult.results} />
                   </div>
                   <div className="space-y-2">
-                    <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">{compareEntity.label}</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: compareWith === 'team' ? CVF_COLORS.team : compareWith === 'org' ? CVF_COLORS.org : CVF_COLORS.person }}>{compareEntity.label}</p>
                     <CVFResultCard results={compareEntity.scores} />
                   </div>
                 </div>

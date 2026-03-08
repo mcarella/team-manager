@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { computeKiviatData } from '@team-manager/core'
 import type { CVFScores } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
-import CVFRadarChart from '../components/CVFRadarChart.js'
+import CVFRadarChart, { CVF_COLORS } from '../components/CVFRadarChart.js'
 import CVFResultCard from '../components/CVFResultCard.js'
 
 type EntityId = string // 'org' | 'team:<id>' | 'manager:<id>'
@@ -49,6 +49,12 @@ export default function CompanyProfilePage() {
 
   const a = entityA ? resolveScores(entityA) : null
   const b = entityB ? resolveScores(entityB) : null
+
+  function entityColor(id: EntityId): string {
+    if (id === 'org') return CVF_COLORS.org
+    if (id.startsWith('team:')) return CVF_COLORS.team
+    return CVF_COLORS.person  // manager
+  }
 
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
@@ -116,16 +122,17 @@ export default function CompanyProfilePage() {
           <CVFRadarChart
             scores={a.scores}
             label={a.label}
-            {...(b ? { compareScores: b.scores, compareLabel: b.label } : {})}
+            mainColor={entityColor(entityA)}
+            {...(b ? { compareScores: b.scores, compareLabel: b.label, compareColor: entityColor(entityB) } : {})}
           />
           <div className={`w-full grid gap-4 ${b ? 'grid-cols-2' : 'grid-cols-1'}`}>
             <div className="space-y-2">
-              {b && <p className="text-xs font-semibold text-purple-600 uppercase tracking-wide">{a.label}</p>}
+              {b && <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: entityColor(entityA) }}>{a.label}</p>}
               <CVFResultCard results={a.scores} />
             </div>
             {b && (
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">{b.label}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: entityColor(entityB) }}>{b.label}</p>
                 <CVFResultCard results={b.scores} />
               </div>
             )}

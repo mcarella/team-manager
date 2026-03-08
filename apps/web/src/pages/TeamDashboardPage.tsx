@@ -4,7 +4,7 @@ import { computeKiviatData } from '@team-manager/core'
 // import { parseMemberFile } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import ArchetypeSpectrum from '../components/ArchetypeSpectrum.js'
-import CVFRadarChart from '../components/CVFRadarChart.js'
+import CVFRadarChart, { CVF_COLORS } from '../components/CVFRadarChart.js'
 import InlineCVFEditor from '../components/InlineCVFEditor.js'
 import MemberList from '../components/MemberList.js'
 import TeamCVFComparisonTable from '../components/TeamCVFComparisonTable.js'
@@ -175,7 +175,7 @@ export default function TeamDashboardPage() {
             <div className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2">
               <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Org Culture vs Team</h3>
               {orgCVF ? (
-                <CVFRadarChart scores={kiviat.cvfAverage} label="Team" companyScores={orgCVF} />
+                <CVFRadarChart scores={kiviat.cvfAverage} label="Team" mainColor={CVF_COLORS.team} companyScores={orgCVF} />
               ) : (
                 <div className="flex items-center justify-center h-64 text-sm text-gray-400">
                   No CVF data across the organisation yet.
@@ -206,7 +206,7 @@ export default function TeamDashboardPage() {
                   onCancel={() => setEditingDesiredCVF(false)}
                 />
               ) : teamDesiredCVF[id!] ? (
-                <CVFRadarChart scores={kiviat.cvfAverage} label="Team" desiredScores={teamDesiredCVF[id!]!} />
+                <CVFRadarChart scores={kiviat.cvfAverage} label="Team" mainColor={CVF_COLORS.team} desiredScores={teamDesiredCVF[id!]!} />
               ) : (
                 <div className="flex items-center justify-center h-64 text-sm text-gray-400">
                   Define what culture you want for this team.

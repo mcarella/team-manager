@@ -4,7 +4,7 @@ import { computeProfileReliability } from '@team-manager/core'
 import type { PeerLeadershipSummary, LeadershipAssessment } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import ArchetypeCard from '../components/ArchetypeCard.js'
-import CVFRadarChart from '../components/CVFRadarChart.js'
+import CVFRadarChart, { CVF_COLORS as CVF_CHART_COLORS } from '../components/CVFRadarChart.js'
 import ReliabilityCoverage from '../components/ReliabilityCoverage.js'
 
 const API = 'http://localhost:3001'
@@ -134,7 +134,7 @@ export default function MemberDetailPage() {
         {section === 'cvf' && (
           cvf ? (
             <div className="space-y-4">
-              <CVFRadarChart scores={cvf.results} />
+              <CVFRadarChart scores={cvf.results} mainColor={CVF_CHART_COLORS.self} />
               <div className="grid grid-cols-2 gap-3">
                 {(['clan', 'adhocracy', 'market', 'hierarchy'] as const).map(q => (
                   <div key={q} className={`rounded-xl px-4 py-3 text-center ${CVF_COLORS[q]}`}>
