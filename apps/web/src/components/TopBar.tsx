@@ -18,7 +18,7 @@ const MANAGER_NAV: NavItem[] = [
   { label: 'Dashboard',  to: '/manager', end: true },
   { label: 'Leadership', to: '/assessment/leadership' },
   { label: 'Skills',     to: '/assessment/skills' },
-  { label: 'Culture',    to: '/company-profile' },
+  { label: 'Culture',    to: '/assessment/cvf' },
   { label: 'Roles',      to: '/roles' },
   { label: 'Reteaming',  to: '/reteaming' },
 ]
