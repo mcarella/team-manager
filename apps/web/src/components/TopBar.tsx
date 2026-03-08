@@ -23,9 +23,10 @@ const MANAGER_NAV: NavItem[] = [
 
 const COMPANY_NAV: NavItem[] = [
   { label: 'Dashboard',   to: '/company', end: true },
-  { label: 'Reteaming',  to: '/reteaming' },
-  { label: 'Culture',    to: '/company-profile' },
-  { label: 'Roles',      to: '/roles' },
+  { label: 'Culture',     to: '/company-profile' },
+  { label: 'People',      to: '/people' },
+  { label: 'Roles',       to: '/roles' },
+  { label: 'Reteaming',   to: '/reteaming' },
 ]
 
 const HIDDEN_PATHS = new Set(['/', '/seed'])

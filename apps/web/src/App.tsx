@@ -16,6 +16,7 @@ import SeedPage from './pages/SeedPage.js'
 import ReteamingPage from './pages/ReteamingPage.js'
 import PeerSkillAssessmentPage from './pages/PeerSkillAssessmentPage.js'
 import MemberDetailPage from './pages/MemberDetailPage.js'
+import PeoplePage from './pages/PeoplePage.js'
 
 const NO_TOPBAR = new Set(['/', '/seed'])
 
@@ -48,6 +49,7 @@ export default function App() {
       <Route path="/teams" element={<TeamsPage />} />
       <Route path="/teams/:id" element={<TeamDashboardPage />} />
       <Route path="/members/:userId" element={<MemberDetailPage />} />
+      <Route path="/people" element={<PeoplePage />} />
     </Routes>
       </div>
     </>
