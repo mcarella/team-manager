@@ -205,21 +205,28 @@ export default function SkillsAssessmentPage() {
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-700">Your role</label>
                 <div className="grid grid-cols-2 gap-2">
-                  {roles.filter(r => r.id !== 'common').map(role => (
-                    <button
-                      key={role.id}
-                      type="button"
-                      onClick={() => setSelectedRoleId(role.id)}
-                      className={`px-3 py-2.5 rounded-xl border text-sm font-medium transition-colors text-left ${
-                        selectedRoleId === role.id
-                          ? 'bg-green-600 text-white border-green-600'
-                          : 'bg-white text-gray-700 border-gray-200 hover:border-green-300 hover:bg-green-50'
-                      }`}
-                    >
-                      {role.name}
-                      <span className="block text-xs mt-0.5 opacity-70">{role.skills.length} skills</span>
-                    </button>
-                  ))}
+                  {roles.filter(r => r.id !== 'common').map(role => {
+                    const isEvaluated = role.skills.some(s => existingSkills.some(es => es.skillId === s.id))
+                    const isSelected = selectedRoleId === role.id
+                    return (
+                      <button
+                        key={role.id}
+                        type="button"
+                        onClick={() => setSelectedRoleId(role.id)}
+                        className={`px-3 py-2.5 rounded-xl border text-sm font-medium transition-colors text-left ${
+                          isSelected
+                            ? 'bg-green-600 text-white border-green-600'
+                            : 'bg-white text-gray-700 border-gray-200 hover:border-green-300 hover:bg-green-50'
+                        }`}
+                      >
+                        <span className="flex items-center justify-between gap-1">
+                          <span>{role.name}</span>
+                          {isEvaluated && <span className={`text-xs font-bold ${isSelected ? 'text-green-200' : 'text-green-600'}`}>✓</span>}
+                        </span>
+                        <span className="block text-xs mt-0.5 opacity-70">{role.skills.length} skills</span>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
