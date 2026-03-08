@@ -88,11 +88,14 @@ export default function MemberDetailPage() {
             {user.name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl font-bold text-gray-900">{user.name}</h1>
               {user.role === 'manager' && (
                 <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-orange-100 text-orange-700">Manager</span>
               )}
+              {memberTeams.map(t => (
+                <span key={t.id} className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-600">{t.name}</span>
+              ))}
             </div>
             <p className="text-xs text-gray-400">{user.id}</p>
           </div>
