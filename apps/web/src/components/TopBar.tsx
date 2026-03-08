@@ -12,7 +12,6 @@ const MEMBER_NAV: NavItem[] = [
   { label: 'Leadership',   to: '/assessment/leadership' },
   { label: 'CVF',          to: '/assessment/cvf' },
   { label: 'Skills',       to: '/assessment/skills' },
-  { label: '360°',         to: '/assessment/peer-skills' },
 ]
 
 const MANAGER_NAV: NavItem[] = [
@@ -20,7 +19,6 @@ const MANAGER_NAV: NavItem[] = [
   { label: 'Reteaming',   to: '/reteaming' },
   { label: 'Culture',     to: '/company-profile' },
   { label: 'Roles',       to: '/roles' },
-  { label: '360°',        to: '/assessment/peer-skills' },
 ]
 
 const COMPANY_NAV: NavItem[] = [

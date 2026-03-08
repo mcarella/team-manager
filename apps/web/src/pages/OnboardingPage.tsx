@@ -18,9 +18,9 @@ export default function OnboardingPage() {
   const completedCount = [hasLeadership, hasCVF, hasSkills].filter(Boolean).length
 
   const STEPS = [
-    { key: 'leadership', label: 'Leadership Assessment', path: '/assessment/leadership', color: 'bg-blue-600', desc: '12 questions to find your archetype', done: hasLeadership },
-    { key: 'cvf',        label: 'CVF Assessment',        path: '/assessment/cvf',        color: 'bg-purple-600', desc: 'Define your culture profile',       done: hasCVF },
-    { key: 'skills',     label: 'Skills Assessment',     path: '/assessment/skills',     color: 'bg-green-600', desc: 'Rate your proficiency by role',      done: hasSkills },
+    { key: 'leadership', label: 'Leadership', path: '/assessment/leadership', color: 'bg-blue-600', desc: 'Archetype · rate others · 360° feedback', done: hasLeadership },
+    { key: 'cvf',        label: 'Culture (CVF)', path: '/assessment/cvf',    color: 'bg-purple-600', desc: 'Your culture profile · org culture',       done: hasCVF },
+    { key: 'skills',     label: 'Skills',     path: '/assessment/skills',    color: 'bg-green-600', desc: 'Rate skills · rate others · 360° feedback', done: hasSkills },
   ]
 
   const handleExport = () => {
@@ -86,23 +86,6 @@ export default function OnboardingPage() {
             <span className="text-gray-400 text-sm">{step.done ? 'Redo' : 'Start'} →</span>
           </Link>
         ))}
-      </div>
-
-      {/* 360° peer evaluation */}
-      <div className="w-full max-w-md">
-        <Link
-          to="/assessment/peer-skills"
-          className="flex items-center gap-4 px-5 py-4 rounded-xl border border-indigo-300 bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all"
-        >
-          <span className="w-10 h-10 rounded-full flex items-center justify-center text-indigo-600 bg-white text-sm font-bold shrink-0">
-            360°
-          </span>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-white">Rate your teammates</p>
-            <p className="text-xs text-indigo-200">And see how others are rating you</p>
-          </div>
-          <span className="text-indigo-200 text-sm">Go →</span>
-        </Link>
       </div>
 
       {/* Export — only if member has skills in the local store */}
