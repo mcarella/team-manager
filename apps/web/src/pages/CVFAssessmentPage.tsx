@@ -9,8 +9,7 @@ import CVFRadarChart, { CVF_COLORS } from '../components/CVFRadarChart.js'
 
 type MemberTab  = 'mine' | 'team' | 'org' | 'compare'
 type ManagerTab = 'me' | 'team' | 'company' | 'compare'
-type CompareWith = 'none' | 'manager' | 'teammate' | 'team' | 'org'
-type TeamEntityId = string  // 'org' | team id
+type EntityId = string  // 'me' | 'team' | 'org' | userId
 
 export default function CVFAssessmentPage() {
   const {
@@ -22,12 +21,12 @@ export default function CVFAssessmentPage() {
   const [memberTab,  setMemberTab]  = useState<MemberTab>('mine')
   const [managerTab, setManagerTab] = useState<ManagerTab>('me')
   const [result, setResult] = useState<CVFAssessment | null>(null)
-  const [compareWith, setCompareWith] = useState<CompareWith>('none')
-  const [compareTeammateId, setCompareTeammateId] = useState<string>('')
-  const [teammateSearch, setTeammateSearch] = useState<string>('')
-  // Manager team comparison
-  const [teamCompareA, setTeamCompareA] = useState<TeamEntityId>('')
-  const [teamCompareB, setTeamCompareB] = useState<TeamEntityId>('')
+  // Manager compare dropdowns
+  const [teamCompareA, setTeamCompareA] = useState<EntityId>('')
+  const [teamCompareB, setTeamCompareB] = useState<EntityId>('')
+  // Member compare dropdowns
+  const [memberCompareA, setMemberCompareA] = useState<EntityId>('')
+  const [memberCompareB, setMemberCompareB] = useState<EntityId>('')
 
   const userId = currentUserId ?? ''
   if (!userId) { navigate('/', { replace: true }); return null }
@@ -72,39 +71,35 @@ export default function CVFAssessmentPage() {
   // Teammates (same team, excluding self)
   const teammates = memberTeam?.members.filter(m => m.user.id !== userId) ?? []
 
-  // Resolve comparison scores
-  const compareEntity: { scores: CVFScores; label: string } | null = (() => {
-    if (compareWith === 'none') return null
-    if (compareWith === 'manager') {
-      const s = myManagerProfile?.cvf?.results
-      return s ? { scores: s, label: myManagerProfile!.user.name } : null
-    }
-    if (compareWith === 'teammate') {
-      const s = members.find(m => m.user.id === compareTeammateId)?.cvf?.results
-      const name = teammates.find(m => m.user.id === compareTeammateId)?.user.name ?? 'Teammate'
-      return s ? { scores: s, label: name } : null
-    }
-    if (compareWith === 'team') {
-      const cvf = isManager ? teamCVF : memberTeamCVF
-      return cvf ? { scores: cvf, label: 'My Team' } : null
-    }
-    if (compareWith === 'org') return orgCVF ? { scores: orgCVF, label: 'Org avg' } : null
-    return null
-  })()
-
-  // Manager: resolve team entity scores for team comparison
+  // Manager: resolve entity scores for comparison (me | teamId | org)
   const allManagedTeams = teams.filter(t => myTeamIds.includes(t.id))
-  function resolveTeamEntity(id: TeamEntityId): { scores: CVFScores; label: string } | null {
+  function resolveEntity(id: EntityId, context: 'manager' | 'member'): { scores: CVFScores; label: string; color: string } | null {
     if (!id) return null
-    if (id === 'org') return orgCVF ? { scores: orgCVF, label: 'Org avg' } : null
-    const t = allManagedTeams.find(t => t.id === id)
-    if (!t) return null
-    const withCVF = t.members.filter(m => m.cvf)
-    if (withCVF.length === 0) return null
-    return { scores: computeKiviatData(withCVF).cvfAverage, label: t.name }
+    if (id === 'me') {
+      const s = displayResult?.results
+      return s ? { scores: s, label: 'Me', color: CVF_COLORS.self } : null
+    }
+    if (id === 'org') return orgCVF ? { scores: orgCVF, label: 'Org avg', color: CVF_COLORS.org } : null
+    if (id === 'team') {
+      const cvf = context === 'manager' ? teamCVF : memberTeamCVF
+      return cvf ? { scores: cvf, label: 'My Team', color: CVF_COLORS.team } : null
+    }
+    if (context === 'manager') {
+      const t = allManagedTeams.find(t => t.id === id)
+      if (!t) return null
+      const withCVF = t.members.filter(m => m.cvf)
+      if (withCVF.length === 0) return null
+      return { scores: computeKiviatData(withCVF).cvfAverage, label: t.name, color: CVF_COLORS.team }
+    }
+    // member context: id is a person's userId (manager or teammate)
+    const s = members.find(m => m.user.id === id)?.cvf?.results
+    const name = members.find(m => m.user.id === id)?.user.name ?? id
+    return s ? { scores: s, label: name, color: CVF_COLORS.person } : null
   }
-  const teamEntityA = resolveTeamEntity(teamCompareA)
-  const teamEntityB = resolveTeamEntity(teamCompareB)
+  const teamEntityA = resolveEntity(teamCompareA, 'manager')
+  const teamEntityB = resolveEntity(teamCompareB, 'manager')
+  const memberEntityA = resolveEntity(memberCompareA, 'member')
+  const memberEntityB = resolveEntity(memberCompareB, 'member')
 
   const MEMBER_TABS:  { key: MemberTab;  label: string }[] = [
     { key: 'mine',    label: 'My CVF' },
@@ -221,156 +216,120 @@ export default function CVFAssessmentPage() {
       {showCompare && (
         <div className="w-full max-w-lg flex flex-col items-center gap-6">
 
-          {/* Manager: team vs team section */}
-          {isManager && (
-            <div className="w-full space-y-3">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Compare teams</p>
+          {/* Manager: 2-dropdown compare */}
+          {isManager ? (
+            <div className="w-full space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs text-gray-400">Team A</label>
+                  <label className="text-xs text-gray-400">Entity A</label>
                   <select
                     value={teamCompareA}
                     onChange={e => setTeamCompareA(e.target.value)}
                     className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
                   >
-                    <option value="">Pick a team…</option>
+                    <option value="">Pick…</option>
+                    <option value="me">Me</option>
                     {allManagedTeams.map(t => <option key={t.id} value={t.id}>{t.name} (your team)</option>)}
                     <option value="org">Org avg</option>
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-gray-400">Team B</label>
+                  <label className="text-xs text-gray-400">Entity B</label>
                   <select
                     value={teamCompareB}
                     onChange={e => setTeamCompareB(e.target.value)}
                     className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
                   >
                     <option value="">None</option>
+                    <option value="me">Me</option>
                     {allManagedTeams.map(t => <option key={t.id} value={t.id}>{t.name} (your team)</option>)}
                     <option value="org">Org avg</option>
                   </select>
                 </div>
               </div>
-              {teamEntityA && (
+
+              {teamEntityA ? (
                 <>
                   <CVFRadarChart
                     scores={teamEntityA.scores}
                     label={teamEntityA.label}
-                    mainColor={teamCompareA === 'org' ? CVF_COLORS.org : CVF_COLORS.team}
+                    mainColor={teamEntityA.color}
                     {...(teamEntityB ? {
                       compareScores: teamEntityB.scores,
                       compareLabel: teamEntityB.label,
-                      compareColor: teamCompareB === 'org' ? CVF_COLORS.org : CVF_COLORS.team,
+                      compareColor: teamEntityB.color,
                     } : {})}
                   />
                   {teamEntityB && (
                     <div className="w-full grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: teamCompareA === 'org' ? CVF_COLORS.org : CVF_COLORS.team }}>{teamEntityA.label}</p>
-                        <CVFResultCard results={teamEntityA.scores} />
-                      </div>
-                      <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: teamCompareB === 'org' ? CVF_COLORS.org : CVF_COLORS.team }}>{teamEntityB.label}</p>
-                        <CVFResultCard results={teamEntityB.scores} />
-                      </div>
+                      <CVFResultCard results={teamEntityA.scores} label={teamEntityA.label} color={teamEntityA.color} />
+                      <CVFResultCard results={teamEntityB.scores} label={teamEntityB.label} color={teamEntityB.color} />
                     </div>
                   )}
                 </>
+              ) : (
+                <div className="text-center py-12 text-sm text-gray-400">Select an entity to compare.</div>
               )}
-              <hr className="border-gray-100" />
-            </div>
-          )}
-
-          {!displayResult ? (
-            <div className="text-center py-16 text-gray-400 space-y-2">
-              <p className="text-lg">Complete your CVF assessment first.</p>
-              <p className="text-sm">Go to the {isManager ? 'Me' : 'My CVF'} tab to fill it in.</p>
             </div>
           ) : (
-            <>
-              <CVFRadarChart
-                scores={displayResult.results}
-                label="You"
-                mainColor={CVF_COLORS.self}
-                {...(compareEntity ? {
-                  compareScores: compareEntity.scores,
-                  compareLabel: compareEntity.label,
-                  compareColor: compareWith === 'team' ? CVF_COLORS.team : compareWith === 'org' ? CVF_COLORS.org : CVF_COLORS.person,
-                } : {})}
-              />
-
-              <div className="w-full space-y-2">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Compare with</p>
-                <div className="flex flex-wrap gap-2">
-                  {([
-                    { key: 'none',     label: 'None' },
-                    ...(!isManager && myManagerProfile ? [{ key: 'manager', label: myManagerProfile.user.name }] : []),
-                    { key: 'teammate', label: 'A Teammate' },
-                    { key: 'team',     label: 'My Team' },
-                    { key: 'org',      label: 'Org avg' },
-                  ] as { key: CompareWith; label: string }[]).map(opt => (
-                    <button
-                      key={opt.key}
-                      onClick={() => { setCompareWith(opt.key); if (opt.key !== 'teammate') { setCompareTeammateId(''); setTeammateSearch('') } }}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                        compareWith === opt.key
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+            /* Member: dropdown compare (same pattern as manager, scoped to visible entities) */
+            <div className="w-full space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs text-gray-400">Entity A</label>
+                  <select
+                    value={memberCompareA}
+                    onChange={e => setMemberCompareA(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                  >
+                    <option value="">Pick…</option>
+                    <option value="me">Me</option>
+                    {memberTeam && <option value="team">My Team</option>}
+                    {myManagerProfile && <option value={myManagerProfile.user.id}>{myManagerProfile.user.name} (manager)</option>}
+                    {teammates.map(m => <option key={m.user.id} value={m.user.id}>{m.user.name}</option>)}
+                    <option value="org">Org avg</option>
+                  </select>
                 </div>
-
-                {compareWith === 'teammate' && (
-                  <div className="mt-1 space-y-1">
-                    <input
-                      type="text"
-                      placeholder="Search teammates…"
-                      value={teammateSearch}
-                      onChange={e => setTeammateSearch(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm"
-                    />
-                    <div className="max-h-48 overflow-y-auto rounded-xl border border-gray-100 divide-y divide-gray-50">
-                      {teammates
-                        .filter(m => m.user.name.toLowerCase().includes(teammateSearch.toLowerCase()))
-                        .map(m => (
-                          <button
-                            key={m.user.id}
-                            onClick={() => setCompareTeammateId(m.user.id)}
-                            className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
-                              compareTeammateId === m.user.id
-                                ? 'bg-blue-50 text-blue-700 font-medium'
-                                : 'hover:bg-gray-50 text-gray-700'
-                            }`}
-                          >
-                            <span>{m.user.name}</span>
-                            {!m.cvf && <span className="text-xs text-gray-400">no CVF</span>}
-                          </button>
-                        ))}
-                    </div>
-                  </div>
-                )}
-
-                {compareWith !== 'none' && !compareEntity && (
-                  <p className="text-xs text-amber-600">No CVF data available for this comparison.</p>
-                )}
+                <div className="space-y-1">
+                  <label className="text-xs text-gray-400">Entity B</label>
+                  <select
+                    value={memberCompareB}
+                    onChange={e => setMemberCompareB(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                  >
+                    <option value="">None</option>
+                    <option value="me">Me</option>
+                    {memberTeam && <option value="team">My Team</option>}
+                    {myManagerProfile && <option value={myManagerProfile.user.id}>{myManagerProfile.user.name} (manager)</option>}
+                    {teammates.map(m => <option key={m.user.id} value={m.user.id}>{m.user.name}</option>)}
+                    <option value="org">Org avg</option>
+                  </select>
+                </div>
               </div>
 
-              {compareEntity && (
-                <div className="w-full grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: CVF_COLORS.self }}>You</p>
-                    <CVFResultCard results={displayResult.results} />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: compareWith === 'team' ? CVF_COLORS.team : compareWith === 'org' ? CVF_COLORS.org : CVF_COLORS.person }}>{compareEntity.label}</p>
-                    <CVFResultCard results={compareEntity.scores} />
-                  </div>
-                </div>
+              {memberEntityA ? (
+                <>
+                  <CVFRadarChart
+                    scores={memberEntityA.scores}
+                    label={memberEntityA.label}
+                    mainColor={memberEntityA.color}
+                    {...(memberEntityB ? {
+                      compareScores: memberEntityB.scores,
+                      compareLabel: memberEntityB.label,
+                      compareColor: memberEntityB.color,
+                    } : {})}
+                  />
+                  {memberEntityB && (
+                    <div className="w-full grid grid-cols-2 gap-4">
+                      <CVFResultCard results={memberEntityA.scores} label={memberEntityA.label} color={memberEntityA.color} />
+                      <CVFResultCard results={memberEntityB.scores} label={memberEntityB.label} color={memberEntityB.color} />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-12 text-sm text-gray-400">Select an entity to compare.</div>
               )}
-            </>
+            </div>
           )}
         </div>
       )}

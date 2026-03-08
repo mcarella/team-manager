@@ -126,16 +126,8 @@ export default function CompanyProfilePage() {
             {...(b ? { compareScores: b.scores, compareLabel: b.label, compareColor: entityColor(entityB) } : {})}
           />
           <div className={`w-full grid gap-4 ${b ? 'grid-cols-2' : 'grid-cols-1'}`}>
-            <div className="space-y-2">
-              {b && <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: entityColor(entityA) }}>{a.label}</p>}
-              <CVFResultCard results={a.scores} />
-            </div>
-            {b && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: entityColor(entityB) }}>{b.label}</p>
-                <CVFResultCard results={b.scores} />
-              </div>
-            )}
+            <CVFResultCard results={a.scores} label={a.label} color={entityColor(entityA)} />
+            {b && <CVFResultCard results={b.scores} label={b.label} color={entityColor(entityB)} />}
           </div>
         </div>
       ) : (

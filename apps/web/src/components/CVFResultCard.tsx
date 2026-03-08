@@ -9,27 +9,33 @@ const QUADRANT_META: Record<keyof CVFScores, { label: string; color: string; des
 
 interface Props {
   results: CVFScores
+  label?: string
+  color?: string
 }
 
-export default function CVFResultCard({ results }: Props) {
+export default function CVFResultCard({ results, label, color }: Props) {
   const max = 600
 
   return (
     <div className="w-full max-w-lg space-y-4">
-      <h2 className="text-xl font-bold text-center">Your CVF Profile</h2>
+      {label && (
+        <p className="text-xs font-semibold uppercase tracking-wide text-center" style={color ? { color } : undefined}>
+          {label}
+        </p>
+      )}
       {(Object.keys(QUADRANT_META) as (keyof CVFScores)[]).map(q => {
-        const { label, color, description } = QUADRANT_META[q]
+        const { label: qLabel, color: qColor, description } = QUADRANT_META[q]
         const score = results[q]
         const pct = Math.round((score / max) * 100)
         return (
           <div key={q} className="space-y-1">
             <div className="flex justify-between items-baseline">
-              <span className="font-semibold text-sm">{label}</span>
+              <span className="font-semibold text-sm">{qLabel}</span>
               <span className="text-xs text-gray-500">{score} / {max}</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-4 overflow-hidden">
               <div
-                className={`${color} h-4 rounded-full transition-all duration-500`}
+                className={`${qColor} h-4 rounded-full transition-all duration-500`}
                 style={{ width: `${pct}%` }}
               />
             </div>

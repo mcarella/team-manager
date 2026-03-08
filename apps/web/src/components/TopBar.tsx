@@ -19,7 +19,7 @@ const MANAGER_NAV: NavItem[] = [
   { label: 'Leadership', to: '/assessment/leadership' },
   { label: 'Skills',     to: '/assessment/skills' },
   { label: 'Culture',    to: '/assessment/cvf' },
-  { label: 'Roles',      to: '/roles' },
+  // { label: 'Roles',      to: '/roles' },
   { label: 'Reteaming',  to: '/reteaming' },
 ]
 

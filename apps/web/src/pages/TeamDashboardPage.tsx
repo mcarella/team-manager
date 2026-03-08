@@ -1,13 +1,10 @@
-import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { computeKiviatData } from '@team-manager/core'
 // import { parseMemberFile } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import ArchetypeSpectrum from '../components/ArchetypeSpectrum.js'
 import CVFRadarChart, { CVF_COLORS } from '../components/CVFRadarChart.js'
-import InlineCVFEditor from '../components/InlineCVFEditor.js'
 import MemberList from '../components/MemberList.js'
-import TeamCVFComparisonTable from '../components/TeamCVFComparisonTable.js'
 import TeamSkillsMatrix from '../components/TeamSkillsMatrix.js'
 import TeamMemberComparisonTable from '../components/TeamMemberComparisonTable.js'
 import TeamCoverageTable from '../components/TeamCoverageTable.js'
@@ -20,7 +17,7 @@ import TeamCoverageTable from '../components/TeamCoverageTable.js'
 
 export default function TeamDashboardPage() {
   const { id } = useParams<{ id: string }>()
-  const { teams, roles, teamDesiredCVF, managerTeamIds, saveTeamDesiredCVF, currentRole } = useStore()
+  const { teams, roles, members: allMembers, managerTeamIds, currentUserId, currentRole } = useStore()
 
   // Org CVF average — computed from all unique members with a CVF assessment
   const allOrgMembers = [...new Map(
@@ -29,10 +26,8 @@ export default function TeamDashboardPage() {
   const orgMembersWithCVF = allOrgMembers.filter(m => m.cvf)
   const orgCVF = orgMembersWithCVF.length > 0 ? computeKiviatData(orgMembersWithCVF).cvfAverage : null
   const backPath = currentRole === 'company' ? '/company' : currentRole === 'manager' ? '/manager' : '/teams'
-  // const fileInputRef = useRef<HTMLInputElement>(null)
-  // const [importing, setImporting] = useState(false)
-  // const [importResults, setImportResults] = useState<ImportResult[]>([])
-  const [editingDesiredCVF, setEditingDesiredCVF] = useState(false)
+  // Manager's own CVF for "Team vs Me" chart
+  const managerCVF = allMembers.find(m => m.user.id === currentUserId)?.cvf?.results ?? null
 
   const team = teams.find(t => t.id === id)
   const members = team?.members ?? []
@@ -165,6 +160,12 @@ export default function TeamDashboardPage() {
         </div>
       ) : (
         <div className="w-full max-w-5xl space-y-6">
+          {/* 360° Coverage */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">360° Coverage</h3>
+            <TeamCoverageTable members={members} />
+          </div>
+
           {/* Archetype spectrum — full width */}
           <div className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
             <ArchetypeSpectrum distribution={kiviat.archetypeDistribution} />
@@ -184,60 +185,35 @@ export default function TeamDashboardPage() {
               )}
             </div>
 
-            {/* Manager desired CVF vs team average */}
+            {/* Team vs Me (manager's CVF) */}
             <div className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Desired Culture vs Team</h3>
-                {!editingDesiredCVF && (
-                  <button
-                    onClick={() => setEditingDesiredCVF(true)}
-                    className="text-xs text-purple-600 hover:underline"
-                  >
-                    {teamDesiredCVF[id!] ? 'Edit' : 'Define desired profile'}
-                  </button>
-                )}
-              </div>
-              {editingDesiredCVF ? (
-                <InlineCVFEditor
-                  {...(teamDesiredCVF[id!] ? { initial: teamDesiredCVF[id!] } : {})}
-                  onSave={(scores) => {
-                    saveTeamDesiredCVF(id!, scores)
-                    setEditingDesiredCVF(false)
-                  }}
-                  onCancel={() => setEditingDesiredCVF(false)}
+              <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Team vs Me</h3>
+              {managerCVF ? (
+                <CVFRadarChart
+                  scores={kiviat.cvfAverage}
+                  label="Team"
+                  mainColor={CVF_COLORS.team}
+                  compareScores={managerCVF}
+                  compareLabel="Me"
+                  compareColor={CVF_COLORS.self}
                 />
-              ) : teamDesiredCVF[id!] ? (
-                <CVFRadarChart scores={kiviat.cvfAverage} label="Team" mainColor={CVF_COLORS.team} desiredScores={teamDesiredCVF[id!]!} />
               ) : (
                 <div className="flex items-center justify-center h-64 text-sm text-gray-400">
-                  Define what culture you want for this team.
+                  Complete your CVF assessment to see this chart.
                 </div>
               )}
             </div>
           </div>
 
-          {/* CVF vs Org comparison table */}
-          {orgCVF && (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-              <TeamCVFComparisonTable members={members} companyProfile={orgCVF} teamId={id!} />
-            </div>
-          )}
-
-          {/* Skills distribution matrix — full width */}
+{/* Skills distribution matrix — full width */}
           <div className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
             <TeamSkillsMatrix members={members} roles={roles} />
           </div>
 
           {/* Member comparison table */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Member Comparison</h3>
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Members' Profiles</h3>
             <TeamMemberComparisonTable members={members} roles={roles} />
-          </div>
-
-          {/* 360° Coverage */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">360° Coverage</h3>
-            <TeamCoverageTable members={members} />
           </div>
 
           {/* Members */}
