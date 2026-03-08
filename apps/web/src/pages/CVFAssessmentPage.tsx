@@ -14,7 +14,7 @@ type EntityId = string  // 'me' | 'team' | 'org' | userId
 export default function CVFAssessmentPage() {
   const {
     currentUserId, currentRole, saveCVFAssessment,
-    members, teams, managerTeamIds,
+    members, teams, managerTeamIds, memberTeamId,
   } = useStore()
   const navigate = useNavigate()
 
@@ -53,9 +53,10 @@ export default function CVFAssessmentPage() {
   const teamMembersWithCVF = myTeamMembers.filter(m => m.cvf)
   const teamCVF = teamMembersWithCVF.length > 0 ? computeKiviatData(teamMembersWithCVF).cvfAverage : null
 
-  // Member: My Team CVF average (the team they belong to)
-  const memberTeam = teams.find(t => t.members.some(m => m.user.id === userId))
-  const memberTeamMembersWithCVF = memberTeam?.members.filter(m => m.cvf) ?? []
+  // Member: My Team CVF average — use memberTeamId map + flat members array
+  const myTeamId = memberTeamId[userId]
+  const memberTeam = teams.find(t => t.id === myTeamId) ?? null
+  const memberTeamMembersWithCVF = members.filter(m => memberTeamId[m.user.id] === myTeamId && m.cvf)
   const memberTeamCVF = memberTeamMembersWithCVF.length > 0
     ? computeKiviatData(memberTeamMembersWithCVF).cvfAverage
     : null
@@ -63,13 +64,13 @@ export default function CVFAssessmentPage() {
   const isManager = currentRole === 'manager'
 
   // Comparison: find the current user's manager
-  const myManagerId = Object.entries(managerTeamIds).find(
-    ([, tIds]) => memberTeam && tIds.includes(memberTeam.id)
-  )?.[0] ?? null
+  const myManagerId = myTeamId
+    ? Object.entries(managerTeamIds).find(([, tIds]) => tIds.includes(myTeamId))?.[0] ?? null
+    : null
   const myManagerProfile = myManagerId ? members.find(m => m.user.id === myManagerId) : null
 
-  // Teammates (same team, excluding self)
-  const teammates = memberTeam?.members.filter(m => m.user.id !== userId) ?? []
+  // Teammates (same team, excluding self) — use flat members array
+  const teammates = members.filter(m => memberTeamId[m.user.id] === myTeamId && m.user.id !== userId)
 
   // Manager: resolve entity scores for comparison (me | teamId | org)
   const allManagedTeams = teams.filter(t => myTeamIds.includes(t.id))
@@ -169,7 +170,7 @@ export default function CVFAssessmentPage() {
       {showTeam && (() => {
         const cvf     = isManager ? teamCVF       : memberTeamCVF
         const withCVF = isManager ? teamMembersWithCVF.length : memberTeamMembersWithCVF.length
-        const total   = isManager ? myTeamMembers.length      : (memberTeam?.members.length ?? 0)
+        const total   = isManager ? myTeamMembers.length      : members.filter(m => memberTeamId[m.user.id] === myTeamId).length
         return (
           <div className="w-full max-w-lg">
             {!cvf ? (
