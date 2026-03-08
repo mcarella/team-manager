@@ -295,9 +295,7 @@ export default function SkillsAssessmentPage() {
 
               {saved && (
                 <div className="flex gap-4 pt-2">
-                  <Link to="/onboarding" className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
-                    Back to profile
-                  </Link>
+                  <Link to="/onboarding" className="text-sm text-blue-600 hover:underline">← Back</Link>
                 </div>
               )}
             </form>
@@ -434,7 +432,7 @@ function SkillSummaryView({
   if (summary.totalEvaluators === 0) {
     return (
       <div className="text-center py-12 text-gray-400 text-sm border border-dashed rounded-xl">
-        No peer evaluations yet. Ask your teammates to rate you in their Skills tab.
+        No peer evaluations yet. Ask your teammates to evaluate you in their Skills tab.
       </div>
     )
   }

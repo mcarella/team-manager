@@ -113,19 +113,19 @@ export default function TeamCoverageTable({ members }: Props) {
     <div className="space-y-4">
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+        <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
           <p className={`text-xl font-bold ${avgSkill >= 0.8 ? 'text-green-600' : avgSkill >= 0.5 ? 'text-yellow-500' : avgSkill > 0.1 ? 'text-orange-500' : 'text-red-500'}`}>
             {Math.round(avgSkill * 100)}%
           </p>
           <p className="text-xs text-gray-400 mt-0.5">Avg skill coverage</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+        <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
           <p className={`text-xl font-bold ${avgLeadership >= 0.8 ? 'text-green-600' : avgLeadership >= 0.5 ? 'text-yellow-500' : avgLeadership > 0.1 ? 'text-orange-500' : 'text-red-500'}`}>
             {Math.round(avgLeadership * 100)}%
           </p>
           <p className="text-xs text-gray-400 mt-0.5">Avg leadership coverage</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+        <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
           <p className={`text-xl font-bold ${avgCulture >= 0.8 ? 'text-green-600' : avgCulture >= 0.5 ? 'text-yellow-500' : avgCulture > 0.1 ? 'text-orange-500' : 'text-red-500'}`}>
             {Math.round(avgCulture * 100)}%
           </p>

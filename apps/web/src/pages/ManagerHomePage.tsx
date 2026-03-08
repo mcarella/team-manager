@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { computeKiviatData } from '@team-manager/core'
 import { useStore } from '../store/index.js'
 import type { PeerLeadershipSummary } from '@team-manager/shared'
 
@@ -240,21 +241,36 @@ export default function ManagerHomePage() {
             <p className="text-sm mt-1">Create your first team above.</p>
           </div>
         ) : (
-          myTeams.map(team => (
-            <Link
-              key={team.id}
-              to={`/teams/${team.id}`}
-              className="flex items-center justify-between px-5 py-4 bg-white rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-sm transition-all"
-            >
-              <div>
-                <p className="font-semibold text-gray-800">{team.name}</p>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {team.members.length} member{team.members.length !== 1 ? 's' : ''}
-                </p>
-              </div>
-              <span className="text-gray-400 text-sm">→</span>
-            </Link>
-          ))
+          myTeams.map(team => {
+            const kiviat = computeKiviatData(team.members)
+            const archetypes = Object.entries(kiviat.archetypeDistribution)
+              .filter(([, v]) => v > 0)
+              .sort(([, a], [, b]) => b - a)
+            return (
+              <Link
+                key={team.id}
+                to={`/teams/${team.id}`}
+                className="flex items-center justify-between px-5 py-4 bg-white rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-sm transition-all"
+              >
+                <div className="space-y-1">
+                  <p className="font-semibold text-gray-800">{team.name}</p>
+                  <p className="text-xs text-gray-400">
+                    {team.members.length} member{team.members.length !== 1 ? 's' : ''}
+                  </p>
+                  {archetypes.length > 0 && (
+                    <div className="flex gap-1 flex-wrap">
+                      {archetypes.map(([arch, count]) => (
+                        <span key={arch} className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-600 capitalize">
+                          {arch} ({count})
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <span className="text-gray-400 text-sm">→</span>
+              </Link>
+            )
+          })
         )}
       </div>
     </main>

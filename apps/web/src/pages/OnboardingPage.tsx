@@ -30,7 +30,7 @@ export default function OnboardingPage() {
 
   const STEPS = [
     { key: 'leadership', label: 'Leadership', path: '/assessment/leadership', color: 'bg-blue-600', desc: 'Archetype · rate others · 360° feedback', done: hasLeadership },
-    { key: 'cvf',        label: 'Culture (CVF)', path: '/assessment/cvf',    color: 'bg-purple-600', desc: 'Your culture profile · org culture',       done: hasCVF },
+    { key: 'cvf',        label: 'Culture', path: '/assessment/cvf',    color: 'bg-purple-600', desc: 'Your culture profile · org culture',       done: hasCVF },
     { key: 'skills',     label: 'Skills',     path: '/assessment/skills',    color: 'bg-green-600', desc: 'Rate skills · rate others · 360° feedback', done: hasSkills },
   ]
 

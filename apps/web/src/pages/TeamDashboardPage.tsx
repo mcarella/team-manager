@@ -180,7 +180,7 @@ export default function TeamDashboardPage() {
                 <CVFRadarChart scores={kiviat.cvfAverage} label="Team" mainColor={CVF_COLORS.team} companyScores={orgCVF} />
               ) : (
                 <div className="flex items-center justify-center h-64 text-sm text-gray-400">
-                  No CVF data across the organisation yet.
+                  No CVF data yet across the organisation.
                 </div>
               )}
             </div>

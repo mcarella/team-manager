@@ -127,7 +127,7 @@ export default function CVFAssessmentPage() {
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold">Culture (CVF)</h1>
+        <h1 className="text-3xl font-bold">Culture</h1>
         <p className="text-gray-500 mt-2">
           {isManager
             ? 'Compare your culture profile with your team and the organisation.'
@@ -198,7 +198,7 @@ export default function CVFAssessmentPage() {
           {!orgCVF ? (
             <div className="text-center py-16 text-gray-400 space-y-2">
               <p className="text-lg">No CVF data yet.</p>
-              <p className="text-sm">People need to complete their CVF assessment first.</p>
+              <p className="text-sm">Organisation members need to complete their CVF assessment first.</p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-6">

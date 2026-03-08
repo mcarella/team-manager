@@ -23,7 +23,7 @@ const CVF_COLORS: Record<string, string> = {
 type Section = 'archetype' | 'cvf' | 'skills'
 const SECTIONS: { id: Section; label: string }[] = [
   { id: 'archetype', label: 'Archetype' },
-  { id: 'cvf',       label: 'Culture (CVF)' },
+  { id: 'cvf',       label: 'Culture' },
   { id: 'skills',    label: 'Skills & 360°' },
 ]
 

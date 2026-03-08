@@ -18,10 +18,10 @@ const ARCHETYPE_COLORS: Record<string, string> = {
 }
 
 const CVF_COLORS: Record<string, string> = {
-  clan:      'bg-green-50 text-green-700',
-  adhocracy: 'bg-blue-50 text-blue-700',
-  market:    'bg-orange-50 text-orange-700',
-  hierarchy: 'bg-gray-100 text-gray-700',
+  clan:      'bg-green-500 text-white',
+  adhocracy: 'bg-yellow-500 text-white',
+  market:    'bg-red-500 text-white',
+  hierarchy: 'bg-blue-500 text-white',
 }
 
 const LEVEL_LABELS: Record<number, string> = {
@@ -176,14 +176,14 @@ export default function MemberProfileModal({ member, roles, teamSize = 0, initia
               {cvf && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Culture (CVF)</p>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Culture</p>
                     <button onClick={() => { onClose(); navigate(`/members/${user.id}?section=cvf`) }} className="text-xs text-purple-500 hover:underline">full view →</button>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
                     {(['clan', 'adhocracy', 'market', 'hierarchy'] as const).map(q => (
                       <div key={q} className={`rounded-lg px-3 py-2 text-center ${CVF_COLORS[q]}`}>
-                        <p className="text-xs capitalize opacity-60">{q}</p>
-                        <p className="text-base font-bold">{cvf.results[q]}</p>
+                        <p className="text-xs capitalize opacity-80">{q}</p>
+                        <p className="text-base font-bold">{cvf.results[q]} / 600</p>
                       </div>
                     ))}
                   </div>
@@ -209,7 +209,7 @@ export default function MemberProfileModal({ member, roles, teamSize = 0, initia
                         <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                           <div className={`h-full rounded-full ${LEVEL_BAR[sa.level]}`} style={{ width: `${(sa.level / 4) * 100}%` }} />
                         </div>
-                        <span className="text-xs text-gray-400 w-6 shrink-0 text-right">{sa.level}</span>
+                        <span className="text-xs text-gray-400 w-24 shrink-0">{sa.level} — {LEVEL_LABELS[sa.level]}</span>
                       </div>
                     ))}
                   {skills.length > 5 && (

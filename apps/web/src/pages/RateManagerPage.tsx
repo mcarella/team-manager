@@ -163,14 +163,14 @@ export default function RateManagerPage() {
   const TABS: { key: Tab; label: string }[] = [
     { key: 'leadership', label: 'Leadership' },
     { key: 'skills',     label: 'Skills' },
-    { key: 'cvf',        label: 'Culture (CVF)' },
+    { key: 'cvf',        label: 'Culture' },
   ]
 
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
       {/* Header */}
       <div className="w-full max-w-2xl">
-        <p className="text-xs font-semibold text-orange-500 uppercase tracking-wide mb-1">Rate your manager</p>
+        <p className="text-xs font-semibold text-orange-500 uppercase tracking-wide mb-1">Rate my manager</p>
         <h1 className="text-3xl font-bold">{managerName}</h1>
         <p className="text-gray-500 mt-1">
           Your evaluation is <span className="font-medium text-gray-700">anonymous</span> — they only see aggregated results.
@@ -221,7 +221,7 @@ export default function RateManagerPage() {
             <div className="flex items-center gap-4 pt-4">
               <button type="submit" disabled={leadershipSaving}
                 className="px-6 py-2.5 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 disabled:opacity-50">
-                {leadershipSaving ? 'Saving…' : 'Submit'}
+                {leadershipSaving ? 'Saving…' : 'Submit evaluation'}
               </button>
               {leadershipSaved && <span className="text-sm text-green-700 font-medium">✓ Submitted anonymously</span>}
             </div>
@@ -254,7 +254,7 @@ export default function RateManagerPage() {
             <div className="flex items-center gap-4 pt-4">
               <button type="submit" disabled={skillsSaving}
                 className="px-6 py-2.5 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 disabled:opacity-50">
-                {skillsSaving ? 'Saving…' : 'Submit'}
+                {skillsSaving ? 'Saving…' : 'Submit evaluation'}
               </button>
               {skillsSaved && <span className="text-sm text-green-700 font-medium">✓ Submitted anonymously</span>}
             </div>
