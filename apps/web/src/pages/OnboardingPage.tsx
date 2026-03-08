@@ -58,6 +58,13 @@ export default function OnboardingPage() {
       <div className="text-center">
         <p className="text-sm text-gray-400">Logged in as</p>
         <h1 className="text-3xl font-bold">{currentUserId}</h1>
+        {myTeams.length > 0 && (
+          <div className="flex items-center justify-center gap-2 mt-2">
+            {myTeams.map(t => (
+              <span key={t.id} className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600">{t.name}</span>
+            ))}
+          </div>
+        )}
         <p className="text-gray-500 mt-1">{completedCount}/3 self-assessments completed</p>
       </div>
 
