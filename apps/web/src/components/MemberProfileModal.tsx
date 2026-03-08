@@ -155,7 +155,7 @@ export default function MemberProfileModal({ member, roles, teamSize = 0, initia
               {leadership && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Leadership</p>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Archetype</p>
                     <button onClick={() => { onClose(); navigate(`/members/${user.id}?section=archetype`) }} className="text-xs text-blue-500 hover:underline">full view →</button>
                   </div>
                   <div className="space-y-1.5">

@@ -74,7 +74,7 @@ export default function LeadershipForm({ userId, onComplete }: Props) {
 
       <button
         type="submit"
-        className="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors"
+        className="w-full py-3 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 transition-colors"
       >
         Compute my Archetype
       </button>

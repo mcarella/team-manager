@@ -26,8 +26,8 @@ export default function CompanyDashboardPage() {
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
       <div className="w-full max-w-4xl">
-        <p className="text-sm text-gray-400">Company view</p>
-        <h1 className="text-3xl font-bold">{currentUserId}</h1>
+        <p className="text-sm text-gray-400">{currentUserId}</p>
+        <h1 className="text-3xl font-bold">Company Dashboard</h1>
       </div>
 
       {/* Summary cards */}

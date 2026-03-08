@@ -75,7 +75,7 @@ export default function CVFForm({ userId, onComplete }: Props) {
       <button
         type="submit"
         disabled={!allValid}
-        className="w-full py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="w-full py-3 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         Compute my Culture Profile
       </button>

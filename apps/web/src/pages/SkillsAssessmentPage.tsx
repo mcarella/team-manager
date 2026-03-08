@@ -237,7 +237,7 @@ export default function SkillsAssessmentPage() {
               <button
                 onClick={handleStart}
                 disabled={!selectedRoleId}
-                className="py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="py-2.5 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Start
               </button>
@@ -286,7 +286,7 @@ export default function SkillsAssessmentPage() {
               <div className="flex items-center gap-4 pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700"
+                  className="px-6 py-2.5 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700"
                 >
                   Save skills
                 </button>
