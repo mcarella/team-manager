@@ -60,8 +60,23 @@ export default function SeedPage() {
               <p className="text-xs text-orange-500">Teams</p>
             </div>
             <div className="bg-indigo-50 rounded-xl px-4 py-3 text-center">
-              <p className="text-2xl font-bold text-indigo-600">{result.peerAssessments}</p>
+              <p className="text-2xl font-bold text-indigo-600">{result.peerSkills + result.peerLeadership + result.peerCVF}</p>
               <p className="text-xs text-indigo-500">Peer ratings</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 text-xs text-center">
+            <div className="bg-gray-50 rounded-lg px-2 py-2">
+              <p className="font-bold text-gray-700">{result.peerSkills}</p>
+              <p className="text-gray-400">Skill ratings</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg px-2 py-2">
+              <p className="font-bold text-gray-700">{result.peerLeadership}</p>
+              <p className="text-gray-400">Leadership ratings</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg px-2 py-2">
+              <p className="font-bold text-gray-700">{result.peerCVF}</p>
+              <p className="text-gray-400">CVF ratings</p>
             </div>
           </div>
 
@@ -74,14 +89,7 @@ export default function SeedPage() {
 
           <div className="space-y-1">
             <p className="text-xs font-semibold text-gray-500">Company (login as company):</p>
-            <p className="text-sm font-mono bg-gray-50 rounded px-3 py-1.5">{result.companyName}</p>
-            <div className="flex gap-2 text-xs mt-1">
-              {Object.entries(result.companyProfile).map(([k, v]) => (
-                <span key={k} className="px-2 py-1 bg-purple-50 text-purple-700 rounded capitalize">
-                  {k}: {v}
-                </span>
-              ))}
-            </div>
+            <p className="text-sm font-mono bg-gray-50 rounded px-3 py-1.5">acme (or any name)</p>
           </div>
 
           <div className="space-y-1">
