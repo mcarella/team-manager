@@ -4,7 +4,8 @@ import { useStore } from '../store/index.js'
 import MemberList from '../components/MemberList.js'
 
 export default function CompanyDashboardPage() {
-  const { currentUserId, currentRole, teams, members, roles, companyProfile, managerTeamIds } = useStore()
+  const { currentUserId, currentRole, teams, members, roles, managerTeamIds } = useStore()
+  const withCVF = members.filter(m => m.cvf).length
   const navigate = useNavigate()
 
   if (!currentUserId || currentRole !== 'company') {
@@ -40,8 +41,8 @@ export default function CompanyDashboardPage() {
           <p className="text-sm text-gray-500 mt-1">Individuals</p>
         </div>
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
-          <p className="text-3xl font-bold text-purple-600">{companyProfile ? 'Defined' : 'Missing'}</p>
-          <p className="text-sm text-gray-500 mt-1">Culture Profile</p>
+          <p className="text-3xl font-bold text-purple-600">{withCVF}</p>
+          <p className="text-sm text-gray-500 mt-1">With CVF assessment</p>
         </div>
       </div>
 

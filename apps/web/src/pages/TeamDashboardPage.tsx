@@ -19,7 +19,14 @@ import TeamMemberComparisonTable from '../components/TeamMemberComparisonTable.j
 
 export default function TeamDashboardPage() {
   const { id } = useParams<{ id: string }>()
-  const { teams, roles, companyProfile, teamDesiredCVF, managerTeamIds, saveTeamDesiredCVF, currentRole } = useStore()
+  const { teams, roles, teamDesiredCVF, managerTeamIds, saveTeamDesiredCVF, currentRole } = useStore()
+
+  // Org CVF average — computed from all unique members with a CVF assessment
+  const allOrgMembers = [...new Map(
+    teams.flatMap(t => t.members).map(m => [m.user.id, m])
+  ).values()]
+  const orgMembersWithCVF = allOrgMembers.filter(m => m.cvf)
+  const orgCVF = orgMembersWithCVF.length > 0 ? computeKiviatData(orgMembersWithCVF).cvfAverage : null
   const backPath = currentRole === 'company' ? '/company' : currentRole === 'manager' ? '/manager' : '/teams'
   // const fileInputRef = useRef<HTMLInputElement>(null)
   // const [importing, setImporting] = useState(false)
@@ -164,21 +171,14 @@ export default function TeamDashboardPage() {
 
           {/* CVF charts row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Company culture vs team average */}
+            {/* Org culture avg vs team average */}
             <div className="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Company Culture vs Team</h3>
-                {!companyProfile && (
-                  <Link to="/company-profile" className="text-xs text-amber-600 hover:underline">
-                    Define company profile
-                  </Link>
-                )}
-              </div>
-              {companyProfile ? (
-                <CVFRadarChart scores={kiviat.cvfAverage} label="Team" companyScores={companyProfile} />
+              <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Org Culture vs Team</h3>
+              {orgCVF ? (
+                <CVFRadarChart scores={kiviat.cvfAverage} label="Team" companyScores={orgCVF} />
               ) : (
                 <div className="flex items-center justify-center h-64 text-sm text-gray-400">
-                  No company culture profile defined yet.
+                  No CVF data across the organisation yet.
                 </div>
               )}
             </div>
@@ -215,10 +215,10 @@ export default function TeamDashboardPage() {
             </div>
           </div>
 
-          {/* CVF vs Company comparison table */}
-          {companyProfile && (
+          {/* CVF vs Org comparison table */}
+          {orgCVF && (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-              <TeamCVFComparisonTable members={members} companyProfile={companyProfile} teamId={id!} />
+              <TeamCVFComparisonTable members={members} companyProfile={orgCVF} teamId={id!} />
             </div>
           )}
 
