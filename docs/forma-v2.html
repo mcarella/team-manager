@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="custom">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forma — Brand Kit v2.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Theme: Dark ────────────────────────────────────────────────── */
+    [data-theme="dark"] {
+      --color-bg:           #000000;
+      --color-surface:      hsl(28, 6%, 8%);
+      --color-surface-2:    hsl(28, 5%, 11%);
+      --color-border:       rgba(255, 255, 255, 0.07);
+      --color-border-hover: rgba(255, 255, 255, 0.14);
+      --color-text:         hsl(36, 8%, 95%);
+      --color-muted:        hsl(30, 5%, 50%);
+      --color-accent:       #F26800;
+      --color-accent-dim:   hsla(26, 98%, 47%, 0.12);
+    }
+
+    /* ── Theme: Light ───────────────────────────────────────────────── */
+    [data-theme="light"] {
+      --color-bg:           #FAFAF8;
+      --color-surface:      #FFFFFF;
+      --color-surface-2:    #F2EFEB;
+      --color-border:       rgba(0, 0, 0, 0.08);
+      --color-border-hover: rgba(0, 0, 0, 0.16);
+      --color-text:         hsl(28, 14%, 12%);
+      --color-muted:        hsl(28, 8%, 50%);
+      --color-accent:       #D95A00;
+      --color-accent-dim:   hsla(26, 100%, 42%, 0.1);
+    }
+
+    /* ── Theme: Custom (supplied palette) ───────────────────────────── */
+    [data-theme="custom"] {
+      --color-bg:           #14140F;
+      --color-surface:      #053D38;
+      --color-surface-2:    #34675C;
+      --color-border:       rgba(163, 204, 171, 0.15);
+      --color-border-hover: rgba(163, 204, 171, 0.3);
+      --color-text:         #A3CCAB;
+      --color-muted:        #5B9080;
+      --color-accent:       #F26800;
+      --color-accent-dim:   hsla(26, 98%, 47%, 0.15);
+    }
+
+    /* ── Hero background per theme ──────────────────────────────────── */
+    [data-theme="dark"] .hero {
+      background:
+        radial-gradient(ellipse 80% 55% at 50% -5%, hsla(26, 98%, 47%, 0.08) 0%, transparent 70%),
+        #000000;
+    }
+    [data-theme="light"] .hero {
+      background:
+        radial-gradient(ellipse 80% 55% at 50% -5%, hsla(26, 100%, 42%, 0.09) 0%, transparent 70%),
+        #FAFAF8;
+    }
+    [data-theme="custom"] .hero {
+      background:
+        radial-gradient(ellipse 80% 55% at 50% -5%, hsla(26, 98%, 47%, 0.12) 0%, transparent 70%),
+        #14140F;
+    }
+
+    /* ── Hero grid overlay per theme ────────────────────────────────── */
+    [data-theme="dark"] .hero::before {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    }
+    [data-theme="light"] .hero::before {
+      background-image:
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+    }
+    [data-theme="custom"] .hero::before {
+      background-image:
+        linear-gradient(rgba(163,204,171,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(163,204,171,0.04) 1px, transparent 1px);
+    }
+
+    /* ── Hero version opacity per theme ─────────────────────────────── */
+    [data-theme="dark"]   .hero-version { color: rgba(255,255,255,0.18); }
+    [data-theme="light"]  .hero-version { color: rgba(0,0,0,0.25); }
+    [data-theme="custom"] .hero-version { color: rgba(163,204,171,0.3); }
+
+    /* ── SVG mark: light theme inverts nodes ────────────────────────── */
+    [data-theme="light"] .svg-mark .node-stroke  { stroke: hsl(28,14%,12%); }
+    [data-theme="light"] .svg-mark .node-fill    { fill:   hsl(28,14%,12%); }
+
+    /* ── Accent node uses CSS var so it responds to theme ───────────── */
+    .accent-node { fill: var(--color-accent); }
+
+    /* ── Type tokens ────────────────────────────────────────────────── */
+    :root {
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --text-hero:    clamp(3rem, 5.5vw, 4.5rem);
+      --text-h1:      clamp(2rem, 3.5vw, 3rem);
+      --text-h2:      clamp(1.5rem, 2.5vw, 2.25rem);
+      --text-h3:      1.25rem;
+      --text-body:    1.0625rem;
+      --text-small:   0.9375rem;
+      --text-caption: 0.6875rem;
+      --section-py:   100px;
+      --content-w:    1100px;
+      --radius-sm:    6px;
+      --radius-md:    10px;
+      --radius-lg:    16px;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --text-hero:  2.25rem;
+        --text-h1:    1.875rem;
+        --text-h2:    1.5rem;
+        --text-h3:    1.125rem;
+        --text-body:  1rem;
+        --text-small: 0.875rem;
+        --section-py: 64px;
+      }
+    }
+
+    /* ── Base ───────────────────────────────────────────────────────── */
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .container {
+      max-width: var(--content-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Theme tab bar ──────────────────────────────────────────────── */
+    .theme-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      gap: 4px;
+      padding: 12px 24px;
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .theme-tab {
+      padding: 6px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-muted);
+      font-family: var(--font-display);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .theme-tab:hover {
+      color: var(--color-text);
+      border-color: var(--color-border-hover);
+    }
+
+    .theme-tab.active {
+      background: var(--color-surface);
+      color: var(--color-text);
+      border-color: var(--color-border-hover);
+    }
+
+    /* ── Section anatomy ────────────────────────────────────────────── */
+    .section {
+      padding: var(--section-py) 0;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .section-label {
+      display: block;
+      font-family: var(--font-display);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 48px;
+      color: var(--color-text);
+    }
+
+    /* ── Hero ───────────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      max-width: 800px;
+    }
+
+    .hero-lockup {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .hero-wordmark {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--color-text);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .hero-tagline {
+      font-family: var(--font-display);
+      font-size: var(--text-h3);
+      font-weight: 400;
+      color: var(--color-muted);
+      letter-spacing: 0.01em;
+    }
+
+    .hero-claim {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--color-text);
+      max-width: 720px;
+    }
+
+    .hero-claim em {
+      font-style: normal;
+      color: var(--color-accent);
+    }
+
+    .hero-sub {
+      font-size: var(--text-body);
+      color: var(--color-muted);
+      max-width: 520px;
+      line-height: 1.65;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      padding: 14px 32px;
+      background: var(--color-accent);
+      color: #000;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: var(--text-small);
+      letter-spacing: 0.04em;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      width: fit-content;
+    }
+
+    .hero-version {
+      font-size: var(--text-caption);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 64px;
+    }
+
+    /* ── Naming ─────────────────────────────────────────────────────── */
+    .naming-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 768px) { .naming-grid { grid-template-columns: 1fr; } }
+
+    .name-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .name-card--chosen {
+      border-color: var(--color-accent);
+      background: var(--color-accent-dim);
+    }
+
+    .name-card-strategy {
+      font-size: var(--text-caption);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      font-family: var(--font-display);
+    }
+
+    .name-card-name {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+
+    .name-card--chosen .name-card-name { color: var(--color-accent); }
+
+    .name-card-rationale {
+      font-size: var(--text-small);
+      color: var(--color-muted);
+      line-height: 1.6;
+    }
+
+    .chosen-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      background: var(--color-accent);
+      color: #000;
+      font-family: var(--font-display);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-radius: 100px;
+      width: fit-content;
+    }
+
+    .positioning-block {
+      margin-top: 48px;
+      padding: 36px 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+    }
+
+    .positioning-label {
+      font-size: var(--text-caption);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      font-family: var(--font-display);
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .positioning-text {
+      font-family: var(--font-display);
+      font-size: var(--text-h3);
+      font-weight: 400;
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    /* ── Claims ─────────────────────────────────────────────────────── */
+    .claims-stack { display: flex; flex-direction: column; gap: 4px; }
+
+    .claim-block {
+      padding: 36px 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .claim-block--hero { background: var(--color-accent-dim); border-color: rgba(242,104,0,0.22); }
+
+    .claim-level {
+      font-size: var(--text-caption);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      font-family: var(--font-display);
+      font-weight: 500;
+    }
+
+    .claim-text--hero {
+      font-family: var(--font-display);
+      font-size: var(--text-h1);
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.1;
+    }
+
+    .claim-text--sub {
+      font-family: var(--font-display);
+      font-size: var(--text-h3);
+      font-weight: 500;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+
+    .value-trio {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      margin-top: 4px;
+    }
+    @media (max-width: 768px) { .value-trio { grid-template-columns: 1fr; } }
+
+    .trio-item {
+      padding: 24px 28px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font-family: var(--font-display);
+      font-size: var(--text-h3);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .cta-block {
+      padding: 28px 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .cta-label {
+      font-size: var(--text-caption);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      font-family: var(--font-display);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .cta-text {
+      font-family: var(--font-display);
+      font-size: var(--text-h3);
+      font-weight: 600;
+      color: var(--color-accent);
+    }
+
+    /* ── Archetypes ─────────────────────────────────────────────────── */
+    .archetype-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 48px;
+      padding-top: 48px;
+      border-top: 1px solid var(--color-border);
+    }
+    @media (max-width: 768px) { .archetype-strip { grid-template-columns: 1fr 1fr; } }
+
+    .archetype-card {
+      padding: 20px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      text-align: center;
+    }
+
+    .archetype-name {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: var(--text-small);
+      color: var(--color-text);
+      text-transform: capitalize;
+    }
+
+    .archetype-style { font-size: var(--text-caption); color: var(--color-muted); margin-top: 4px; letter-spacing: 0.04em; }
+
+    /* ── Color palette ──────────────────────────────────────────────── */
+    .palette-group-title {
+      font-family: var(--font-display);
+      font-size: var(--text-h3);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 20px;
+      margin-top: 52px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .palette-group-title:first-of-type { margin-top: 0; }
+
+    .palette-badge {
+      font-size: var(--text-caption);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: var(--font-display);
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 100px;
+      border: 1px solid var(--color-border);
+      color: var(--color-muted);
+    }
+
+    .palette-badge--active {
+      background: var(--color-accent-dim);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) { .swatch-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .swatch {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--color-surface);
+    }
+
+    .swatch-color { height: 96px; width: 100%; }
+
+    .swatch-info { padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+
+    .swatch-name {
+      font-family: var(--font-display);
+      font-size: var(--text-small);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .swatch-hex {
+      font-family: var(--font-display);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+    }
+
+    .swatch-hsl { font-size: var(--text-caption); color: var(--color-muted); letter-spacing: 0.04em; }
+    .swatch-usage { font-size: var(--text-caption); color: var(--color-muted); line-height: 1.5; margin-top: 4px; }
+
+    /* ── Typography ─────────────────────────────────────────────────── */
+    .type-specimen { display: flex; flex-direction: column; gap: 2px; }
+
+    .type-row {
+      padding: 28px 32px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      display: flex;
+      align-items: baseline;
+      gap: 32px;
+    }
+    @media (max-width: 768px) { .type-row { flex-direction: column; gap: 8px; } }
+
+    .type-meta {
+      font-size: var(--text-caption);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      font-family: var(--font-display);
+      min-width: 200px;
+      flex-shrink: 0;
+    }
+
+    .type-sample { color: var(--color-text); line-height: 1.2; }
+    .type-hero   { font-family: var(--font-display); font-size: var(--text-hero); font-weight: 700; }
+    .type-h1     { font-family: var(--font-display); font-size: var(--text-h1);   font-weight: 700; }
+    .type-h2     { font-family: var(--font-display); font-size: var(--text-h2);   font-weight: 700; }
+    .type-h3     { font-family: var(--font-display); font-size: var(--text-h3);   font-weight: 600; }
+    .type-body   { font-family: var(--font-body);    font-size: var(--text-body); font-weight: 400; line-height: 1.65; }
+    .type-small  { font-family: var(--font-body);    font-size: var(--text-small); font-weight: 400; }
+    .type-caption {
+      font-family: var(--font-display);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .font-info { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+    @media (max-width: 768px) { .font-info { grid-template-columns: 1fr; } }
+
+    .font-card {
+      padding: 32px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+    }
+
+    .font-role {
+      font-size: var(--text-caption);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      font-family: var(--font-display);
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .font-name { font-size: var(--text-h2); font-weight: 700; color: var(--color-text); margin-bottom: 8px; }
+    .font-name--display { font-family: var(--font-display); }
+    .font-name--body    { font-family: var(--font-body); }
+    .font-weights { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 20px; }
+    .font-weight-sample { font-size: var(--text-small); color: var(--color-muted); }
+
+    /* ── Logo ───────────────────────────────────────────────────────── */
+    .logo-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 600px) { .logo-preview-grid { grid-template-columns: 1fr; } }
+
+    .logo-preview {
+      border-radius: var(--radius-lg);
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      position: relative;
+    }
+
+    .logo-preview--dark  { background: #000000; border: 1px solid rgba(255,255,255,0.07); }
+    .logo-preview--light { background: #F5F2EE; }
+
+    .preview-label {
+      font-size: var(--text-caption);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      position: absolute;
+      top: 20px;
+      left: 24px;
+    }
+
+    .logo-preview--dark  .preview-label { color: rgba(255,255,255,0.3); }
+    .logo-preview--light .preview-label { color: rgba(0,0,0,0.3); }
+
+    .logo-lockup { display: flex; align-items: center; gap: 16px; }
+
+    .logo-wordmark {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .logo-preview--dark  .logo-wordmark { color: #F5F2EE; }
+    .logo-preview--light .logo-wordmark { color: #1A1612; }
+
+    .logo-lockup-sm { display: flex; align-items: center; gap: 10px; }
+
+    .logo-wordmark-sm {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .logo-preview--dark  .logo-wordmark-sm { color: #F5F2EE; }
+    .logo-preview--light .logo-wordmark-sm { color: #1A1612; }
+
+    .logo-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .logo-rules { grid-template-columns: 1fr; } }
+
+    .logo-rule-card {
+      padding: 28px 32px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+    }
+
+    .logo-rule-header {
+      font-size: var(--text-caption);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-family: var(--font-display);
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .logo-rule-card--do   .logo-rule-header { color: hsl(140, 60%, 55%); }
+    .logo-rule-card--dont .logo-rule-header { color: hsl(0, 70%, 55%); }
+
+    .logo-rule-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+    .logo-rule-list li {
+      font-size: var(--text-small);
+      color: var(--color-muted);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .logo-rule-card--do   .logo-rule-list li::before { content: '→'; position: absolute; left: 0; color: hsl(140, 60%, 55%); }
+    .logo-rule-card--dont .logo-rule-list li::before { content: '×'; position: absolute; left: 0; color: hsl(0, 70%, 55%); }
+
+    /* ── Tone of voice ──────────────────────────────────────────────── */
+    .voice-pairs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 48px; }
+    @media (max-width: 600px) { .voice-pairs { grid-template-columns: 1fr; } }
+
+    .voice-pair {
+      padding: 28px 32px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+    }
+
+    .voice-pair-is { font-family: var(--font-display); font-size: var(--text-h3); font-weight: 700; color: var(--color-text); }
+    .voice-pair-not { font-size: var(--text-small); color: var(--color-muted); margin-top: 4px; }
+    .voice-pair-not span { text-decoration: line-through; }
+
+    .do-dont-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .do-dont-grid { grid-template-columns: 1fr; } }
+
+    .do-dont-card {
+      padding: 32px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+    }
+
+    .do-dont-header {
+      font-size: var(--text-caption);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-family: var(--font-display);
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .do-dont-card--do   .do-dont-header { color: hsl(140, 60%, 55%); }
+    .do-dont-card--dont .do-dont-header { color: hsl(0, 70%, 55%); }
+
+    .do-dont-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+    .do-dont-list li {
+      font-size: var(--text-small);
+      color: var(--color-muted);
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.55;
+    }
+
+    .do-dont-card--do   .do-dont-list li::before { content: '✓'; position: absolute; left: 0; color: hsl(140, 60%, 55%); font-weight: 600; }
+    .do-dont-card--dont .do-dont-list li::before { content: '✗'; position: absolute; left: 0; color: hsl(0, 70%, 55%); font-weight: 600; }
+
+    /* ── Messaging ──────────────────────────────────────────────────── */
+    .tagline-variants { display: flex; flex-direction: column; gap: 4px; margin-bottom: 48px; }
+
+    .tagline-row {
+      padding: 20px 28px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .tagline-row--primary {
+      background: var(--color-accent-dim);
+      border-color: rgba(242,104,0,0.28);
+    }
+
+    .tagline-text { font-family: var(--font-display); font-size: var(--text-body); font-weight: 600; color: var(--color-text); }
+    .tagline-row--primary .tagline-text { font-size: var(--text-h3); color: var(--color-accent); }
+    .tagline-context { font-size: var(--text-caption); letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-muted); font-family: var(--font-display); text-align: right; min-width: 100px; }
+
+    .messaging-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 768px) { .messaging-grid { grid-template-columns: 1fr; } }
+
+    .msg-card { padding: 28px 32px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
+    .msg-card-label { font-size: var(--text-caption); letter-spacing: 0.14em; text-transform: uppercase; font-family: var(--font-display); font-weight: 500; color: var(--color-accent); margin-bottom: 12px; display: block; }
+    .msg-card-text { font-family: var(--font-display); font-size: var(--text-h3); font-weight: 600; color: var(--color-text); line-height: 1.35; }
+    .msg-card-sub { font-size: var(--text-small); color: var(--color-muted); margin-top: 8px; line-height: 1.55; }
+
+    /* ── Footer ─────────────────────────────────────────────────────── */
+    .footer { border-top: 1px solid var(--color-border); padding: 48px 0; }
+
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    @media (max-width: 600px) { .footer-inner { flex-direction: column; text-align: center; } }
+
+    .footer-brand { display: flex; align-items: center; gap: 12px; }
+    .footer-wordmark { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; font-size: 1rem; color: var(--color-text); }
+    .footer-meta { font-size: var(--text-caption); color: var(--color-muted); letter-spacing: 0.06em; text-align: right; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Tab bar ──────────────────────────────────────────────────── -->
+  <div class="theme-bar" role="tablist" aria-label="Color theme">
+    <button class="theme-tab" role="tab" data-theme="dark">Dark</button>
+    <button class="theme-tab" role="tab" data-theme="light">Light</button>
+    <button class="theme-tab active" role="tab" data-theme="custom">Custom</button>
+  </div>
+
+
+  <!-- ██████████████████████████████████████████████
+       01 / HERO
+  ██████████████████████████████████████████████ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+
+        <div class="hero-lockup">
+          <!-- Pentagon: 5 nodes = 5 archetypes. Shape = team formation. -->
+          <svg class="svg-mark" width="56" height="56" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Forma mark">
+            <line class="node-stroke" x1="24" y1="24" x2="24" y2="5"  stroke="white" stroke-width="0.75" opacity="0.2"/>
+            <line class="node-stroke" x1="24" y1="24" x2="42" y2="18" stroke="white" stroke-width="0.75" opacity="0.2"/>
+            <line class="node-stroke" x1="24" y1="24" x2="35" y2="39" stroke="white" stroke-width="0.75" opacity="0.2"/>
+            <line class="node-stroke" x1="24" y1="24" x2="13" y2="39" stroke="white" stroke-width="0.75" opacity="0.2"/>
+            <line class="node-stroke" x1="24" y1="24" x2="6"  y2="18" stroke="white" stroke-width="0.75" opacity="0.2"/>
+            <polygon class="node-stroke" points="24,5 42,18 35,39 13,39 6,18" stroke="white" stroke-width="1.5" fill="none" opacity="0.45"/>
+            <circle class="node-fill" cx="24" cy="5"  r="2.5" fill="white"/>
+            <circle class="node-fill" cx="42" cy="18" r="2.5" fill="white"/>
+            <circle class="node-fill" cx="35" cy="39" r="2.5" fill="white"/>
+            <circle class="node-fill" cx="13" cy="39" r="2.5" fill="white"/>
+            <circle class="node-fill" cx="6"  cy="18" r="2.5" fill="white"/>
+            <circle class="accent-node" cx="24" cy="24" r="2"/>
+          </svg>
+          <span class="hero-wordmark">Forma</span>
+        </div>
+
+        <p class="hero-tagline">See the shape. Build the team.</p>
+
+        <h1 class="hero-claim">
+          Every great team<br>has a <em>shape.</em><br>Find yours.
+        </h1>
+
+        <p class="hero-sub">
+          Forma maps leadership archetypes, cultural values, and technical skills into a single Kiviat picture — so managers can compose with precision, not instinct.
+        </p>
+
+        <a href="#" class="hero-cta">Map your team</a>
+
+        <p class="hero-version">Brand Kit v2.0 &nbsp;·&nbsp; March 2026</p>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ██████████████████████████████████████████████
+       02 / NAMING
+  ██████████████████████████████████████████████ -->
+  <section class="section" id="naming">
+    <div class="container">
+      <span class="section-label">02 / Naming</span>
+      <h2 class="section-title">Why Forma</h2>
+
+      <div class="naming-grid">
+
+        <div class="name-card name-card--chosen">
+          <span class="name-card-strategy">Abstract concept — chosen</span>
+          <span class="name-card-name">Forma</span>
+          <span class="chosen-badge">Primary</span>
+          <p class="name-card-rationale">
+            Latin and Italian for "form", "shape", and "formation". Directly references the core metaphor: team formation in football, Kiviat diagram shapes, and the Tuckman forming stage. Two syllables, pronounceable in any language, no negative connotations.
+          </p>
+        </div>
+
+        <div class="name-card">
+          <span class="name-card-strategy">Invented word — alternate</span>
+          <span class="name-card-name">Organa</span>
+          <p class="name-card-rationale">
+            Derived from ORGANIC agility — the methodology at the core of the platform. Warm, approachable, and domain-specific. Works well for a branded methodology context. Less immediately recognizable outside the ORGANIC community.
+          </p>
+        </div>
+
+        <div class="name-card">
+          <span class="name-card-strategy">Concrete noun — alternate</span>
+          <span class="name-card-name">Kiviat</span>
+          <p class="name-card-rationale">
+            The radar diagram that visualizes team health. Precise and technical — signals expertise to the target audience. Risk: too niche, too tied to a single feature rather than the full platform mission.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="positioning-block">
+        <span class="positioning-label">Positioning statement</span>
+        <p class="positioning-text">
+          Forma is a team composition platform for engineering managers and agile coaches that turns leadership archetypes, cultural values, and technical skills into balanced, high-performing team formations.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ██████████████████████████████████████████████
+       03 / CLAIMS
+  ██████████████████████████████████████████████ -->
+  <section class="section" id="claims">
+    <div class="container">
+      <span class="section-label">03 / Claims</span>
+      <h2 class="section-title">Messaging hierarchy</h2>
+
+      <div class="claims-stack">
+
+        <div class="claim-block claim-block--hero">
+          <span class="claim-level">H1 — Hero claim</span>
+          <p class="claim-text--hero">Every great team has a shape. Find yours.</p>
+        </div>
+
+        <div class="claim-block">
+          <span class="claim-level">H2 — Sub-claim</span>
+          <p class="claim-text--sub">Forma reads your team across three dimensions — leadership archetype, cultural fit, and technical depth — and renders their shape in a single Kiviat picture.</p>
+        </div>
+
+      </div>
+
+      <div class="value-trio" style="margin-top: 4px;">
+        <div class="trio-item">Read every archetype.</div>
+        <div class="trio-item">Balance cultural values.</div>
+        <div class="trio-item">Visualize team health.</div>
+      </div>
+
+      <div class="cta-block" style="margin-top: 4px;">
+        <span class="cta-label">Primary CTA</span>
+        <span class="cta-text">Map your team →</span>
+      </div>
+
+      <div class="archetype-strip">
+        <div class="archetype-card">
+          <div class="archetype-name">Expert</div>
+          <div class="archetype-style">Directing + Demanding</div>
+        </div>
+        <div class="archetype-card">
+          <div class="archetype-name">Coordinator</div>
+          <div class="archetype-style">Demanding + Conducting</div>
+        </div>
+        <div class="archetype-card">
+          <div class="archetype-name">Peer</div>
+          <div class="archetype-style">Conducting + Coaching</div>
+        </div>
+        <div class="archetype-card">
+          <div class="archetype-name">Coach</div>
+          <div class="archetype-style">Coaching + Catalyzing</div>
+        </div>
+        <div class="archetype-card">
+          <div class="archetype-name">Strategist</div>
+          <div class="archetype-style">Catalyzing + Coaching</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ██████████████████████████████████████████████
+       04 / COLOR PALETTE
+  ██████████████████████████████████████████████ -->
+  <section class="section" id="colors">
+    <div class="container">
+      <span class="section-label">04 / Color Palette</span>
+      <h2 class="section-title">Three theme systems</h2>
+
+      <!-- Custom palette – new addition, flagged -->
+      <h3 class="palette-group-title">
+        Custom — Teal &amp; Ember
+        <span class="palette-badge palette-badge--active">Supplied colors</span>
+      </h3>
+      <div class="swatch-grid" style="margin-bottom: 12px;">
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #14140F;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Background</span>
+            <span class="swatch-hex">#14140F</span>
+            <span class="swatch-hsl">hsl(60, 8%, 7%)</span>
+            <span class="swatch-usage">Primary canvas. Near-black with a warm olive undertone.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #053D38;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Surface</span>
+            <span class="swatch-hex">#053D38</span>
+            <span class="swatch-hsl">hsl(176, 79%, 13%)</span>
+            <span class="swatch-usage">Cards, panels, elevated containers. Deep teal — strong contrast against background.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: rgba(163,204,171,0.15); border: 1px solid rgba(163,204,171,0.3);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Border</span>
+            <span class="swatch-hex">rgba(163,204,171, 0.15)</span>
+            <span class="swatch-hsl">— translucent sage</span>
+            <span class="swatch-usage">Dividers and card outlines. Derived from text-primary at low opacity. Hover at 0.30.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #A3CCAB;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Text Primary</span>
+            <span class="swatch-hex">#A3CCAB</span>
+            <span class="swatch-hsl">hsl(130, 24%, 72%)</span>
+            <span class="swatch-usage">All headings and body copy. Sage green — 10.7:1 contrast on background. ✓ AAA</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #34675C;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Surface 2 / Mid-teal</span>
+            <span class="swatch-hex">#34675C</span>
+            <span class="swatch-hsl">hsl(166, 32%, 30%)</span>
+            <span class="swatch-usage">Mid-teal bridge between surface and text. Used for muted text and depth contexts.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #F26800;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent — Ember</span>
+            <span class="swatch-hex">#F26800</span>
+            <span class="swatch-hsl">hsl(26, 98%, 47%)</span>
+            <span class="swatch-usage">Brand color. CTAs, active states, highlights, and the pentagon center node.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dark palette -->
+      <h3 class="palette-group-title">
+        Dark — Void &amp; Ember
+        <span class="palette-badge">Original</span>
+      </h3>
+      <div class="swatch-grid" style="margin-bottom: 12px;">
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #000000;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Background</span>
+            <span class="swatch-hex">#000000</span>
+            <span class="swatch-hsl">hsl(0, 0%, 0%)</span>
+            <span class="swatch-usage">Primary canvas. Pure black for maximum depth and contrast.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: hsl(28,6%,8%);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Surface</span>
+            <span class="swatch-hex">#141210</span>
+            <span class="swatch-hsl">hsl(28, 6%, 8%)</span>
+            <span class="swatch-usage">Cards and elevated containers. Slightly warm to complement the Ember accent.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Border</span>
+            <span class="swatch-hex">rgba(255,255,255, 0.07)</span>
+            <span class="swatch-hsl">— translucent</span>
+            <span class="swatch-usage">All dividers and card outlines. Hover state at 0.14 opacity.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: hsl(36,8%,95%);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Text Primary</span>
+            <span class="swatch-hex">#F5F2EE</span>
+            <span class="swatch-hsl">hsl(36, 8%, 95%)</span>
+            <span class="swatch-usage">All body copy and headings. Warm off-white — softer than pure white.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: hsl(30,5%,50%);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Text Muted</span>
+            <span class="swatch-hex">#807774</span>
+            <span class="swatch-hsl">hsl(30, 5%, 50%)</span>
+            <span class="swatch-usage">Labels, captions, secondary text. Never for primary readability content.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #F26800;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent — Ember</span>
+            <span class="swatch-hex">#F26800</span>
+            <span class="swatch-hsl">hsl(26, 98%, 47%)</span>
+            <span class="swatch-usage">Brand color. Shared hue with Custom theme. CTAs, active states, highlights.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Light palette -->
+      <h3 class="palette-group-title">
+        Light — Parchment &amp; Ember
+        <span class="palette-badge">Original</span>
+      </h3>
+      <div class="swatch-grid">
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #FAFAF8; border: 1px solid rgba(0,0,0,0.06);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Background</span>
+            <span class="swatch-hex">#FAFAF8</span>
+            <span class="swatch-hsl">hsl(60, 11%, 98%)</span>
+            <span class="swatch-usage">Primary canvas. Warm near-white, not clinical pure white.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Surface</span>
+            <span class="swatch-hex">#FFFFFF</span>
+            <span class="swatch-hsl">hsl(0, 0%, 100%)</span>
+            <span class="swatch-usage">Cards and elevated containers. Slightly elevated from background.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.12);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Border</span>
+            <span class="swatch-hex">rgba(0,0,0, 0.08)</span>
+            <span class="swatch-hsl">— translucent</span>
+            <span class="swatch-usage">Dividers and card outlines. Hover state at 0.16 opacity.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: hsl(28,14%,12%);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Text Primary</span>
+            <span class="swatch-hex">#221E19</span>
+            <span class="swatch-hsl">hsl(28, 14%, 12%)</span>
+            <span class="swatch-usage">All body copy and headings. Warm near-black — matches amber tone.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: hsl(28,8%,50%);"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Text Muted</span>
+            <span class="swatch-hex">#8C8179</span>
+            <span class="swatch-hsl">hsl(28, 8%, 50%)</span>
+            <span class="swatch-usage">Labels, captions, secondary text.</span>
+          </div>
+        </div>
+
+        <div class="swatch">
+          <div class="swatch-color" style="background: #D95A00;"></div>
+          <div class="swatch-info">
+            <span class="swatch-name">Accent — Ember</span>
+            <span class="swatch-hex">#D95A00</span>
+            <span class="swatch-hsl">hsl(26, 100%, 42%)</span>
+            <span class="swatch-usage">Darkened for light bg contrast. Same hue as Custom and Dark themes.</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ██████████████████████████████████████████████
+       05 / TYPOGRAPHY
+  ██████████████████████████████████████████████ -->
+  <section class="section" id="typography">
+    <div class="container">
+      <span class="section-label">05 / Typography</span>
+      <h2 class="section-title">Type system</h2>
+
+      <div class="type-specimen">
+
+        <div class="type-row">
+          <span class="type-meta">Hero / clamp(3–4.5rem) / Space Grotesk 700</span>
+          <div class="type-sample type-hero">Shape the team.</div>
+        </div>
+
+        <div class="type-row">
+          <span class="type-meta">H1 / clamp(2–3rem) / Space Grotesk 700</span>
+          <div class="type-sample type-h1">Read every archetype.</div>
+        </div>
+
+        <div class="type-row">
+          <span class="type-meta">H2 / clamp(1.5–2.25rem) / Space Grotesk 700</span>
+          <div class="type-sample type-h2">Kiviat at a glance.</div>
+        </div>
+
+        <div class="type-row">
+          <span class="type-meta">H3 / 1.25rem / Space Grotesk 600</span>
+          <div class="type-sample type-h3">Five archetypes. One formation.</div>
+        </div>
+
+        <div class="type-row">
+          <span class="type-meta">Body / 1.0625rem / DM Sans 400</span>
+          <div class="type-sample type-body">Forma reads your team across three dimensions: leadership archetype, cultural values from the Competing Values Framework, and technical skill depth across five levels — from theory to mentorship.</div>
+        </div>
+
+        <div class="type-row">
+          <span class="type-meta">Small / 0.9375rem / DM Sans 400</span>
+          <div class="type-sample type-small">5 members · 3 archetypes · CVF: Clan-dominant</div>
+        </div>
+
+        <div class="type-row">
+          <span class="type-meta">Caption / 0.6875rem / Space Grotesk 500 CAPS</span>
+          <div class="type-sample type-caption">Leadership Assessment · CVF · Technical Skills</div>
+        </div>
+
+      </div>
+
+      <div class="font-info">
+
+        <div class="font-card">
+          <span class="font-role">Display — Headings</span>
+          <div class="font-name font-name--display">Space Grotesk</div>
+          <p style="font-size: var(--text-small); color: var(--color-muted); margin-top: 8px;">Technical, precise, and confidently modern. Geometric construction signals analytical rigour. Pairs naturally with data-driven UI patterns.</p>
+          <div class="font-weights">
+            <span class="font-weight-sample" style="font-family: var(--font-display); font-weight: 300;">Light 300</span>
+            <span class="font-weight-sample" style="font-family: var(--font-display); font-weight: 400;">Regular 400</span>
+            <span class="font-weight-sample" style="font-family: var(--font-display); font-weight: 600;">SemiBold 600</span>
+            <span class="font-weight-sample" style="font-family: var(--font-display); font-weight: 700; color: var(--color-text);">Bold 700 ←</span>
+          </div>
+        </div>
+
+        <div class="font-card">
+          <span class="font-role">Body — Reading text</span>
+          <div class="font-name font-name--body">DM Sans</div>
+          <p style="font-size: var(--text-small); color: var(--color-muted); margin-top: 8px;">Clean, neutral, and highly legible at small sizes. Slightly humanist terminals prevent the coldness of pure geometric fonts. Ideal for assessments, descriptions, and data labels.</p>
+          <div class="font-weights">
+            <span class="font-weight-sample" style="font-family: var(--font-body); font-weight: 300;">Light 300</span>
+            <span class="font-weight-sample" style="font-family: var(--font-body); font-weight: 400; color: var(--color-text);">Regular 400 ←</span>
+            <span class="font-weight-sample" style="font-family: var(--font-body); font-weight: 500;">Medium 500</span>
+            <span class="font-weight-sample" style="font-family: var(--font-body); font-weight: 600;">SemiBold 600</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ██████████████████████████████████████████████
+       06 / LOGO USAGE
+  ██████████████████████████████████████████████ -->
+  <section class="section" id="logo">
+    <div class="container">
+      <span class="section-label">06 / Logo Usage</span>
+      <h2 class="section-title">Mark + wordmark</h2>
+
+      <div class="logo-preview-grid">
+
+        <!-- Dark swatch — always fixed black -->
+        <div class="logo-preview logo-preview--dark">
+          <span class="preview-label">On Dark</span>
+          <div class="logo-lockup">
+            <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+              <line x1="24" y1="24" x2="24" y2="5"  stroke="white" stroke-width="0.75" opacity="0.2"/>
+              <line x1="24" y1="24" x2="42" y2="18" stroke="white" stroke-width="0.75" opacity="0.2"/>
+              <line x1="24" y1="24" x2="35" y2="39" stroke="white" stroke-width="0.75" opacity="0.2"/>
+              <line x1="24" y1="24" x2="13" y2="39" stroke="white" stroke-width="0.75" opacity="0.2"/>
+              <line x1="24" y1="24" x2="6"  y2="18" stroke="white" stroke-width="0.75" opacity="0.2"/>
+              <polygon points="24,5 42,18 35,39 13,39 6,18" stroke="white" stroke-width="1.5" fill="none" opacity="0.45"/>
+              <circle cx="24" cy="5"  r="2.5" fill="white"/>
+              <circle cx="42" cy="18" r="2.5" fill="white"/>
+              <circle cx="35" cy="39" r="2.5" fill="white"/>
+              <circle cx="13" cy="39" r="2.5" fill="white"/>
+              <circle cx="6"  cy="18" r="2.5" fill="white"/>
+              <circle cx="24" cy="24" r="2" fill="#F26800"/>
+            </svg>
+            <span class="logo-wordmark">Forma</span>
+          </div>
+          <div class="logo-lockup-sm" style="margin-top: 24px; opacity: 0.6;">
+            <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
+              <polygon points="24,5 42,18 35,39 13,39 6,18" stroke="white" stroke-width="1.5" fill="none" opacity="0.45"/>
+              <circle cx="24" cy="5"  r="2.5" fill="white"/>
+              <circle cx="42" cy="18" r="2.5" fill="white"/>
+              <circle cx="35" cy="39" r="2.5" fill="white"/>
+              <circle cx="13" cy="39" r="2.5" fill="white"/>
+              <circle cx="6"  cy="18" r="2.5" fill="white"/>
+              <circle cx="24" cy="24" r="2" fill="#F26800"/>
+            </svg>
+            <span class="logo-wordmark-sm">Forma</span>
+          </div>
+        </div>
+
+        <!-- Light swatch — always fixed parchment -->
+        <div class="logo-preview logo-preview--light">
+          <span class="preview-label">On Light</span>
+          <div class="logo-lockup">
+            <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+              <line x1="24" y1="24" x2="24" y2="5"  stroke="#1A1612" stroke-width="0.75" opacity="0.2"/>
+              <line x1="24" y1="24" x2="42" y2="18" stroke="#1A1612" stroke-width="0.75" opacity="0.2"/>
+              <line x1="24" y1="24" x2="35" y2="39" stroke="#1A1612" stroke-width="0.75" opacity="0.2"/>
+              <line x1="24" y1="24" x2="13" y2="39" stroke="#1A1612" stroke-width="0.75" opacity="0.2"/>
+              <line x1="24" y1="24" x2="6"  y2="18" stroke="#1A1612" stroke-width="0.75" opacity="0.2"/>
+              <polygon points="24,5 42,18 35,39 13,39 6,18" stroke="#1A1612" stroke-width="1.5" fill="none" opacity="0.45"/>
+              <circle cx="24" cy="5"  r="2.5" fill="#1A1612"/>
+              <circle cx="42" cy="18" r="2.5" fill="#1A1612"/>
+              <circle cx="35" cy="39" r="2.5" fill="#1A1612"/>
+              <circle cx="13" cy="39" r="2.5" fill="#1A1612"/>
+              <circle cx="6"  cy="18" r="2.5" fill="#1A1612"/>
+              <circle cx="24" cy="24" r="2" fill="#D95A00"/>
+            </svg>
+            <span class="logo-wordmark">Forma</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Mark meaning -->
+      <div style="padding: 28px 32px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); margin-bottom: 24px;">
+        <span style="font-size: var(--text-caption); letter-spacing: 0.14em; text-transform: uppercase; font-family: var(--font-display); font-weight: 500; color: var(--color-accent); display: block; margin-bottom: 12px;">Mark meaning</span>
+        <p style="font-size: var(--text-small); color: var(--color-muted); line-height: 1.65;">
+          The pentagon represents the five leadership archetypes — Expert, Coordinator, Peer, Coach, Strategist. Five nodes connected by thin lines echo the Kiviat radar diagram that visualizes team health. The Ember center node is the manager's vantage point. When the team is in balance, the shape is regular.
+        </p>
+      </div>
+
+      <div class="logo-rules">
+        <div class="logo-rule-card logo-rule-card--do">
+          <div class="logo-rule-header">Do</div>
+          <ul class="logo-rule-list">
+            <li>Use on pure black or the defined surface color</li>
+            <li>Use on light backgrounds with the dark-fill version</li>
+            <li>Maintain minimum clear space equal to the mark height on all sides</li>
+            <li>Use the mark alone at small sizes (≤ 24px)</li>
+            <li>Keep the Ember center node — it's a brand identifier</li>
+          </ul>
+        </div>
+        <div class="logo-rule-card logo-rule-card--dont">
+          <div class="logo-rule-header">Don't</div>
+          <ul class="logo-rule-list">
+            <li>Don't place on busy photographic backgrounds</li>
+            <li>Don't change the letter-spacing of the wordmark</li>
+            <li>Don't recolor the pentagon nodes (white on dark, dark on light)</li>
+            <li>Don't use the wordmark without the mark in app contexts</li>
+            <li>Don't stretch, rotate, or skew the mark</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ██████████████████████████████████████████████
+       07 / TONE OF VOICE
+  ██████████████████████████████████████████████ -->
+  <section class="section" id="tone">
+    <div class="container">
+      <span class="section-label">07 / Tone of Voice</span>
+      <h2 class="section-title">How Forma speaks</h2>
+
+      <div class="voice-pairs">
+
+        <div class="voice-pair">
+          <div class="voice-pair-is">Precise</div>
+          <div class="voice-pair-not">not <span>cold</span></div>
+          <p style="font-size: var(--text-small); color: var(--color-muted); margin-top: 8px; line-height: 1.55;">
+            Use exact terms: archetype, CVF quadrant, Kiviat score. But always ground data in human meaning.
+          </p>
+        </div>
+
+        <div class="voice-pair">
+          <div class="voice-pair-is">Analytical</div>
+          <div class="voice-pair-not">not <span>academic</span></div>
+          <p style="font-size: var(--text-small); color: var(--color-muted); margin-top: 8px; line-height: 1.55;">
+            Reference the methodology naturally. Managers are practitioners, not researchers — skip citations, surface insights.
+          </p>
+        </div>
+
+        <div class="voice-pair">
+          <div class="voice-pair-is">Confident</div>
+          <div class="voice-pair-not">not <span>prescriptive</span></div>
+          <p style="font-size: var(--text-small); color: var(--color-muted); margin-top: 8px; line-height: 1.55;">
+            Tell managers what the data shows. Let them decide what to do with it.
+          </p>
+        </div>
+
+        <div class="voice-pair">
+          <div class="voice-pair-is">Human</div>
+          <div class="voice-pair-not">not <span>sentimental</span></div>
+          <p style="font-size: var(--text-small); color: var(--color-muted); margin-top: 8px; line-height: 1.55;">
+            People aren't scores. Frame assessments as tools for growth, not judgment.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="do-dont-grid">
+
+        <div class="do-dont-card do-dont-card--do">
+          <div class="do-dont-header">Write like this</div>
+          <ul class="do-dont-list">
+            <li>Lead with the outcome: "See your team's shape in 3 minutes."</li>
+            <li>Use numbers: "3 archetypes. 1 missing. Here's the gap."</li>
+            <li>Address managers as peers: "Your Coaching score is strong."</li>
+            <li>Active voice, short sentences. One idea each.</li>
+            <li>Use the domain vocabulary naturally: archetype, Kiviat, CVF, Hackman level.</li>
+          </ul>
+        </div>
+
+        <div class="do-dont-card do-dont-card--dont">
+          <div class="do-dont-header">Avoid this</div>
+          <ul class="do-dont-list">
+            <li>No "empower" / "unlock" / "transform your team"</li>
+            <li>No vague org-speak: "culture change journey", "high-performance alignment"</li>
+            <li>No HR buzzwords: "engagement", "psychological safety" (unless quoting a source)</li>
+            <li>No questions as headlines: "Ready to build your best team?"</li>
+            <li>No passive voice, no corporate filler ("facilitate", "leverage", "synergy")</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ██████████████████████████████████████████████
+       08 / MESSAGING
+  ██████████████████████████████████████████████ -->
+  <section class="section" id="messaging">
+    <div class="container">
+      <span class="section-label">08 / Messaging</span>
+      <h2 class="section-title">Taglines &amp; variants</h2>
+
+      <div class="tagline-variants">
+
+        <div class="tagline-row tagline-row--primary">
+          <span class="tagline-text">See the shape. Build the team.</span>
+          <span class="tagline-context">Primary</span>
+        </div>
+
+        <div class="tagline-row">
+          <span class="tagline-text">Composition is strategy.</span>
+          <span class="tagline-context">Compact</span>
+        </div>
+
+        <div class="tagline-row">
+          <span class="tagline-text">Read the archetype. Shape the formation.</span>
+          <span class="tagline-context">Domain-specific</span>
+        </div>
+
+        <div class="tagline-row">
+          <span class="tagline-text">Know your team. Own the season.</span>
+          <span class="tagline-context">Football Manager voice</span>
+        </div>
+
+        <div class="tagline-row">
+          <span class="tagline-text">Five archetypes. One formation. Forma.</span>
+          <span class="tagline-context">Product-forward</span>
+        </div>
+
+      </div>
+
+      <div class="messaging-grid">
+
+        <div class="msg-card">
+          <span class="msg-card-label">For engineering managers</span>
+          <p class="msg-card-text">Stop guessing who belongs where. Forma shows you the gaps in your formation before they cost you a sprint.</p>
+          <p class="msg-card-sub">Audience: team leads, engineering managers, CTOs composing squads</p>
+        </div>
+
+        <div class="msg-card">
+          <span class="msg-card-label">For agile coaches</span>
+          <p class="msg-card-text">ORGANIC agility, made visual. Run leadership assessments, CVF surveys, and skill audits — and render the Kiviat in one click.</p>
+          <p class="msg-card-sub">Audience: ORGANIC agility practitioners, agile coaches, transformation leads</p>
+        </div>
+
+        <div class="msg-card">
+          <span class="msg-card-label">Product one-liner</span>
+          <p class="msg-card-text">Forma is a team composition platform that maps archetypes, culture, and skills into one Kiviat picture.</p>
+          <p class="msg-card-sub">Use in: app store descriptions, landing page meta, PR quotes</p>
+        </div>
+
+        <div class="msg-card">
+          <span class="msg-card-label">Elevator pitch</span>
+          <p class="msg-card-text">Think Football Manager, but for real teams. Forma scores each person's leadership archetype, cultural fit, and technical depth — then shows you the shape of your team as a Kiviat diagram.</p>
+          <p class="msg-card-sub">Use in: investor decks, conference intros, demo openers</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ██████████████████████████████████████████████
+       09 / FOOTER
+  ██████████████████████████████████████████████ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+
+        <div class="footer-brand">
+          <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+            <polygon points="24,5 42,18 35,39 13,39 6,18" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.45"/>
+            <circle cx="24" cy="5"  r="2.5" fill="currentColor"/>
+            <circle cx="42" cy="18" r="2.5" fill="currentColor"/>
+            <circle cx="35" cy="39" r="2.5" fill="currentColor"/>
+            <circle cx="13" cy="39" r="2.5" fill="currentColor"/>
+            <circle cx="6"  cy="18" r="2.5" fill="currentColor"/>
+            <circle class="accent-node" cx="24" cy="24" r="2"/>
+          </svg>
+          <span class="footer-wordmark">Forma</span>
+        </div>
+
+        <div class="footer-meta">
+          Brand Kit v2.0 &nbsp;·&nbsp; March 2026<br>
+          Football Manager for balanced teams.<br>
+          <span style="opacity: 0.4;">Based on ORGANIC agility · CVF · Hackman model</span>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.theme-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.theme-tab').forEach(function(t) {
+          t.classList.remove('active');
+        });
+        tab.classList.add('active');
+        document.documentElement.setAttribute('data-theme', tab.dataset.theme);
+        localStorage.setItem('forma-theme', tab.dataset.theme);
+      });
+    });
+
+    // Restore persisted preference
+    var saved = localStorage.getItem('forma-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.querySelectorAll('.theme-tab').forEach(function(t) {
+        t.classList.toggle('active', t.dataset.theme === saved);
+      });
+    }
+  </script>
+
+</body>
+</html>
