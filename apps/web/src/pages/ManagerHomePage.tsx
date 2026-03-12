@@ -1,50 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { computeKiviatData } from '@team-manager/core'
 import { useStore } from '../store/index.js'
-import type { PeerLeadershipSummary } from '@team-manager/shared'
-
-const API = 'http://localhost:3001'
-
-const LEVEL_LABELS: Record<number, string> = {
-  0: "Don't know", 1: 'Know theory', 2: 'Autonomous', 3: 'Master', 4: 'Can teach',
-}
-const LEVEL_BAR: Record<number, string> = {
-  0: 'bg-gray-400', 1: 'bg-blue-500', 2: 'bg-green-600', 3: 'bg-purple-600', 4: 'bg-amber-500',
-}
-
-const BEHAVIOR_LABELS: Record<string, string> = {
-  catalyzing: 'Catalyzing', envisioning: 'Envisioning', demanding: 'Demanding',
-  coaching: 'Coaching', conducting: 'Conducting', directing: 'Directing',
-}
-const BEHAVIOR_PAIRS = ['catalyzing', 'envisioning', 'demanding', 'coaching', 'conducting', 'directing'] as const
-const ARCHETYPE_COLORS: Record<string, string> = {
-  expert: 'bg-red-100 text-red-700', coordinator: 'bg-orange-100 text-orange-700',
-  peer: 'bg-blue-100 text-blue-700', coach: 'bg-green-100 text-green-700',
-  strategist: 'bg-purple-100 text-purple-700',
-}
-
-interface PeerSkillSummary {
-  subjectId: string
-  skills: Record<string, { average: number; count: number }>
-  totalEvaluators: number
-}
 
 export default function ManagerHomePage() {
-  const { currentUserId, currentRole, teams, members, roles, managerTeamIds, addTeam, assignTeamToManager } = useStore()
+  const { currentUserId, currentRole, teams, managerTeamIds, addTeam, assignTeamToManager } = useStore()
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [error, setError] = useState('')
-  const [peerSummary, setPeerSummary] = useState<PeerSkillSummary | null>(null)
-  const [peerLeadership, setPeerLeadership] = useState<PeerLeadershipSummary | null>(null)
-
-  useEffect(() => {
-    if (!currentUserId) return
-    fetch(`${API}/peer-assessments/skills/${currentUserId}/summary`)
-      .then(r => r.json()).then(setPeerSummary).catch(() => {})
-    fetch(`${API}/peer-assessments/leadership/${currentUserId}/summary`)
-      .then(r => r.json()).then(setPeerLeadership).catch(() => {})
-  }, [currentUserId])
 
   if (!currentUserId || currentRole !== 'manager') {
     navigate('/', { replace: true })
@@ -53,16 +16,6 @@ export default function ManagerHomePage() {
 
   const myTeamIds = managerTeamIds[currentUserId] ?? []
   const myTeams = teams.filter(t => myTeamIds.includes(t.id))
-
-  // Skill name lookup
-  const nameMap = new Map<string, string>()
-  for (const r of roles) {
-    for (const s of r.skills) if (!nameMap.has(s.id)) nameMap.set(s.id, s.name)
-  }
-
-  // Self-assessment for delta view
-  const myProfile = members.find(m => m.user.id === currentUserId)
-  const mySkills = myProfile?.skills ?? []
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,134 +56,6 @@ export default function ManagerHomePage() {
         </button>
       </form>
       {error && <p className="text-sm text-red-600 -mt-4 w-full max-w-lg">{error}</p>}
-
-      {/* How my team rates me */}
-      {/* <div className="w-full max-w-lg space-y-3">
-        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">How my team rates me</h2>
-        {!peerSummary ? (
-          <p className="text-sm text-gray-400">Loading…</p>
-        ) : peerSummary.totalEvaluators === 0 ? (
-          <p className="text-sm text-gray-400 py-4 text-center">No skill evaluations from your team yet.</p>
-        ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
-            <p className="text-xs text-gray-500">
-              <span className="font-semibold text-gray-800">{peerSummary.totalEvaluators}</span> team member{peerSummary.totalEvaluators !== 1 ? 's' : ''} evaluated your skills. Individual responses are anonymous.
-            </p>
-            <div className="space-y-4">
-              {Object.entries(peerSummary.skills)
-                .sort(([, a], [, b]) => b.average - a.average)
-                .map(([skillId, data]) => {
-                  const selfSkill = mySkills.find(s => s.skillId === skillId)
-                  const delta = selfSkill !== undefined ? data.average - selfSkill.level : null
-                  return (
-                    <div key={skillId} className="space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-800">{nameMap.get(skillId) ?? skillId}</span>
-                        <div className="flex items-center gap-2">
-                          {delta !== null && (
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                              Math.abs(delta) <= 0.5 ? 'bg-green-100 text-green-700' :
-                              delta < 0 ? 'bg-amber-100 text-amber-700' :
-                              'bg-blue-100 text-blue-700'
-                            }`}>
-                              {Math.abs(delta) <= 0.5 ? 'Aligned' : delta < 0 ? '⚠ Blind spot' : '✨ Hidden strength'}
-                            </span>
-                          )}
-                          <span className="text-xs text-gray-400">{data.count} eval{data.count !== 1 ? 's' : ''}</span>
-                        </div>
-                      </div>
-                      {selfSkill !== undefined && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-400 w-12 shrink-0 text-right">Me</span>
-                          <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                            <div className={`h-full rounded-full ${LEVEL_BAR[selfSkill.level]}`} style={{ width: `${(selfSkill.level / 4) * 100}%` }} />
-                          </div>
-                          <span className="text-xs text-gray-500 w-20 shrink-0">{selfSkill.level} — {LEVEL_LABELS[selfSkill.level]}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400 w-12 shrink-0 text-right">Team</span>
-                        <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div className={`h-full rounded-full opacity-60 ${LEVEL_BAR[Math.round(data.average)]}`} style={{ width: `${(data.average / 4) * 100}%` }} />
-                        </div>
-                        <span className="text-xs text-gray-500 w-20 shrink-0">{data.average.toFixed(1)} — {LEVEL_LABELS[Math.round(data.average)]}</span>
-                      </div>
-                    </div>
-                  )
-                })}
-            </div>
-          </div>
-        )}
-      </div> */}
-
-      {/* How my team sees my leadership */}
-      {/* <div className="w-full max-w-lg space-y-3">
-        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">How my team sees my leadership</h2>
-        {!peerLeadership ? (
-          <p className="text-sm text-gray-400">Loading…</p>
-        ) : peerLeadership.totalEvaluators === 0 ? (
-          <p className="text-sm text-gray-400 py-4 text-center">No leadership evaluations from your team yet.</p>
-        ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-gray-500">
-                <span className="font-semibold text-gray-800">{peerLeadership.totalEvaluators}</span> team member{peerLeadership.totalEvaluators !== 1 ? 's' : ''} evaluated your leadership. Individual responses are anonymous.
-              </p>
-              {peerLeadership.dominantArchetype && (
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize shrink-0 ${ARCHETYPE_COLORS[peerLeadership.dominantArchetype] ?? 'bg-gray-100 text-gray-600'}`}>
-                  {peerLeadership.dominantArchetype}
-                </span>
-              )}
-            </div>
-            {myProfile?.leadership && peerLeadership.dominantArchetype &&
-             myProfile.leadership.archetype !== peerLeadership.dominantArchetype && (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800">
-                <span className="font-semibold">Archetype mismatch</span> — you see yourself as <span className="font-semibold capitalize">{myProfile.leadership.archetype}</span>, your team sees you as <span className="font-semibold capitalize">{peerLeadership.dominantArchetype}</span>.
-              </div>
-            )}
-            <div className="space-y-3">
-              {BEHAVIOR_PAIRS.map(b => {
-                const peerData = peerLeadership.behaviors[b]
-                const selfScore = myProfile?.leadership?.scores[b] ?? null
-                const delta = selfScore !== null ? peerData.average - selfScore : null
-                return (
-                  <div key={b} className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-800">{BEHAVIOR_LABELS[b]}</span>
-                      <div className="flex items-center gap-2">
-                        {delta !== null && (
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                            Math.abs(delta) <= 2 ? 'bg-green-100 text-green-700' :
-                            delta < 0 ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
-                          }`}>
-                            {Math.abs(delta) <= 2 ? 'Aligned' : delta < 0 ? '⚠ Blind spot' : '✨ Hidden strength'}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    {selfScore !== null && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400 w-12 shrink-0 text-right">Me</span>
-                        <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(selfScore / 20) * 100}%` }} />
-                        </div>
-                        <span className="text-xs text-gray-500 w-6 shrink-0">{selfScore}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400 w-12 shrink-0 text-right">Team</span>
-                      <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-400 opacity-60 rounded-full" style={{ width: `${(peerData.average / 20) * 100}%` }} />
-                      </div>
-                      <span className="text-xs text-gray-500 w-6 shrink-0">{peerData.average.toFixed(1)}</span>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-      </div> */}
 
       {/* Team list */}
       <div className="w-full max-w-lg space-y-3">

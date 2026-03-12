@@ -5,44 +5,10 @@ import type { LeadershipAssessment, PeerLeadershipSummary } from '@team-manager/
 import { useStore } from '../store/index.js'
 import LeadershipForm from '../components/LeadershipForm.js'
 import ArchetypeCard from '../components/ArchetypeCard.js'
-
-const API = 'http://localhost:3001'
-
-// ── Constants ─────────────────────────────────────────────────────────────────
-
-const BEHAVIOR_LABELS: Record<string, string> = {
-  catalyzing: 'Catalyzing', envisioning: 'Envisioning', demanding: 'Demanding',
-  coaching: 'Coaching', conducting: 'Conducting', directing: 'Directing',
-}
-const GOLEMAN_MOTTOS: Record<string, string> = {
-  catalyzing: '"See the whole picture"', envisioning: '"Come with me"',
-  demanding: '"Do as I do, now"', coaching: '"Try this"',
-  conducting: '"What do you think?"', directing: '"Do what I tell you"',
-}
-const BEHAVIOR_PAIRS = ['catalyzing', 'envisioning', 'demanding', 'coaching', 'conducting', 'directing'] as const
-
-const ARCHETYPE_COLORS: Record<string, string> = {
-  expert: 'bg-red-100 text-red-700', coordinator: 'bg-orange-100 text-orange-700',
-  peer: 'bg-blue-100 text-blue-700', coach: 'bg-green-100 text-green-700',
-  strategist: 'bg-purple-100 text-purple-700',
-}
-
-function thirdPersonQuestions(name: string): string[] {
-  return [
-    `${name} is good at encouraging teams to challenge their assumptions and break through to new levels of performance`,
-    `${name} is good at getting people on board, motivating them towards compelling strategic goals`,
-    `${name} believes in modeling desired behaviors and expecting others to follow their lead`,
-    `${name} believes that their solution is never going to be as effective as one their people come up with by themselves`,
-    `${name} encourages people to work together while making sure they are meeting their targets`,
-    `${name} ensures high quality by being very clear about what they expect of people`,
-    `${name} makes sure that individuals can get access to the people and resources they need to do their jobs`,
-    `${name} makes sure the right work is always allocated to the right people`,
-    `${name} shares goals to reach for, rather than tasks to complete`,
-    `${name} prioritizes long-term individual and team growth over short-term results`,
-    `${name} takes a back seat from active team leadership and instead supports the team to govern themselves`,
-    `${name} delegates tasks but reserves the right to resume control if people are not performing adequately`,
-  ]
-}
+import { API_BASE } from '../lib/api.js'
+import { BEHAVIOR_LABELS, GOLEMAN_MOTTOS, BEHAVIOR_PAIRS, thirdPersonQuestions } from '../lib/leadership-constants.js'
+import { ARCHETYPE_COLORS } from '../lib/archetype-colors.js'
+import TabSwitcher from '../components/shared/TabSwitcher.js'
 
 type MainTab = 'mine' | 'rate' | 'others'
 
@@ -94,7 +60,7 @@ export default function LeadershipAssessmentPage() {
     if (mainTab !== 'rate') return
     Promise.all(
       teammates.map(m =>
-        fetch(`${API}/peer-assessments/leadership/${m.user.id}/my-assessment/${userId}`)
+        fetch(`${API_BASE}/peer-assessments/leadership/${m.user.id}/my-assessment/${userId}`)
           .then(r => r.json())
           .then((data: { answers: number[] } | null) => data ? m.user.id : null)
           .catch(() => null)
@@ -109,7 +75,7 @@ export default function LeadershipAssessmentPage() {
   useEffect(() => {
     if (!selectedSubjectId) return
     setAnswers(Array(12).fill(5))
-    fetch(`${API}/peer-assessments/leadership/${selectedSubjectId}/my-assessment/${userId}`)
+    fetch(`${API_BASE}/peer-assessments/leadership/${selectedSubjectId}/my-assessment/${userId}`)
       .then(r => r.json())
       .then((data: { answers: number[] } | null) => {
         if (data?.answers) setAnswers(data.answers)
@@ -122,7 +88,7 @@ export default function LeadershipAssessmentPage() {
     if (mainTab !== 'others') return
     if (summaryLoaded) return
     setPeerSummary(null)
-    fetch(`${API}/peer-assessments/leadership/${userId}/summary`)
+    fetch(`${API_BASE}/peer-assessments/leadership/${userId}/summary`)
       .then(r => r.json())
       .then((data: PeerLeadershipSummary) => { setPeerSummary(data); setSummaryLoaded(true) })
       .catch(() => {})
@@ -144,7 +110,7 @@ export default function LeadershipAssessmentPage() {
     if (!selectedSubjectId) return
     setSaving(true)
     try {
-      await fetch(`${API}/peer-assessments/leadership`, {
+      await fetch(`${API_BASE}/peer-assessments/leadership`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ assessorId: userId, subjectId: selectedSubjectId, answers }),
@@ -172,19 +138,7 @@ export default function LeadershipAssessmentPage() {
       </div>
 
       {/* Tab switcher */}
-      <div className="w-full max-w-2xl flex gap-1 bg-gray-100 p-1 rounded-xl">
-        {TABS.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setMainTab(t.key)}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              mainTab === t.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <TabSwitcher tabs={TABS} active={mainTab} onChange={setMainTab} />
 
       {/* ── My Leadership ─────────────────────────────────────────────────────── */}
       {mainTab === 'mine' && (

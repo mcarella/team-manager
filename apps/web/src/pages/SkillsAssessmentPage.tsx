@@ -1,31 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../store/index.js'
-
-const API = 'http://localhost:3001'
-
-// ── Constants ─────────────────────────────────────────────────────────────────
-
-const LEVEL_LABELS: Record<number, string> = {
-  0: "Don't know", 1: 'Know theory', 2: 'Autonomous', 3: 'Master', 4: 'Can teach',
-}
-const LEVEL_COLORS: Record<number, string> = {
-  0: 'bg-gray-100 text-gray-500 border-gray-200',
-  1: 'bg-blue-50 text-blue-600 border-blue-200',
-  2: 'bg-green-50 text-green-700 border-green-200',
-  3: 'bg-purple-50 text-purple-700 border-purple-200',
-  4: 'bg-amber-50 text-amber-700 border-amber-200',
-}
-const LEVEL_ACTIVE: Record<number, string> = {
-  0: 'bg-gray-400 text-white border-gray-400',
-  1: 'bg-blue-500 text-white border-blue-500',
-  2: 'bg-green-600 text-white border-green-600',
-  3: 'bg-purple-600 text-white border-purple-600',
-  4: 'bg-amber-500 text-white border-amber-500',
-}
-const LEVEL_BAR: Record<number, string> = {
-  0: 'bg-gray-400', 1: 'bg-blue-500', 2: 'bg-green-600', 3: 'bg-purple-600', 4: 'bg-amber-500',
-}
+import { API_BASE } from '../lib/api.js'
+import { LEVEL_LABELS, LEVEL_COLORS, LEVEL_ACTIVE, LEVEL_BAR } from '../lib/skill-levels.js'
+import TabSwitcher from '../components/shared/TabSwitcher.js'
+import DeltaBadge from '../components/shared/DeltaBadge.js'
 
 interface SkillSummary {
   subjectId: string
@@ -97,7 +76,7 @@ export default function SkillsAssessmentPage() {
     if (mainTab !== 'others') return
     if (summaryLoaded) return
     setSummary(null)
-    fetch(`${API}/peer-assessments/skills/${userId}/summary`)
+    fetch(`${API_BASE}/peer-assessments/skills/${userId}/summary`)
       .then(r => r.json())
       .then((data: SkillSummary) => { setSummary(data); setSummaryLoaded(true) })
       .catch(() => {})
@@ -144,7 +123,7 @@ export default function SkillsAssessmentPage() {
     try {
       await Promise.all(
         allUniqueSkills.map(skill =>
-          fetch(`${API}/peer-assessments/skills`, {
+          fetch(`${API_BASE}/peer-assessments/skills`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -183,19 +162,7 @@ export default function SkillsAssessmentPage() {
       </div>
 
       {/* Tab switcher */}
-      <div className="w-full max-w-2xl flex gap-1 bg-gray-100 p-1 rounded-xl">
-        {TABS.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setMainTab(t.key)}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              mainTab === t.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <TabSwitcher tabs={TABS} active={mainTab} onChange={setMainTab} />
 
       {/* ── My Skills ─────────────────────────────────────────────────────────── */}
       {mainTab === 'mine' && (
@@ -414,13 +381,6 @@ function SkillRow({ name, level, onSetLevel }: { name: string; level: number; on
   )
 }
 
-function DeltaBadge({ delta }: { delta: number }) {
-  if (Math.abs(delta) <= 0.5)
-    return <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">Aligned</span>
-  if (delta < -0.5)
-    return <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">⚠ Blind spot</span>
-  return <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">✨ Hidden strength</span>
-}
 
 function SkillSummaryView({
   summary, skills, selfAssessment = [],

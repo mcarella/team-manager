@@ -4,47 +4,10 @@ import { computeLeadershipScores, computeArchetype } from '@team-manager/core'
 import type { CVFAssessment } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import CVFForm from '../components/CVFForm.js'
-
-const API = 'http://localhost:3001'
-
-// ── Leadership constants ──────────────────────────────────────────────────────
-
-function thirdPersonQuestions(name: string): string[] {
-  return [
-    `${name} is good at encouraging teams to challenge their assumptions and break through to new levels of performance`,
-    `${name} is good at getting people on board, motivating them towards compelling strategic goals`,
-    `${name} believes in modeling desired behaviors and expecting others to follow their lead`,
-    `${name} believes that their solution is never going to be as effective as one their people come up with by themselves`,
-    `${name} encourages people to work together while making sure they are meeting their targets`,
-    `${name} ensures high quality by being very clear about what they expect of people`,
-    `${name} makes sure that individuals can get access to the people and resources they need to do their jobs`,
-    `${name} makes sure the right work is always allocated to the right people`,
-    `${name} shares goals to reach for, rather than tasks to complete`,
-    `${name} prioritizes long-term individual and team growth over short-term results`,
-    `${name} takes a back seat from active team leadership and instead supports the team to govern themselves`,
-    `${name} delegates tasks but reserves the right to resume control if people are not performing adequately`,
-  ]
-}
-
-// ── Skill constants ───────────────────────────────────────────────────────────
-
-const LEVEL_LABELS: Record<number, string> = {
-  0: "Don't know", 1: 'Know theory', 2: 'Autonomous', 3: 'Master', 4: 'Can teach',
-}
-const LEVEL_COLORS: Record<number, string> = {
-  0: 'bg-gray-100 text-gray-500 border-gray-200',
-  1: 'bg-blue-50 text-blue-600 border-blue-200',
-  2: 'bg-green-50 text-green-700 border-green-200',
-  3: 'bg-purple-50 text-purple-700 border-purple-200',
-  4: 'bg-amber-50 text-amber-700 border-amber-200',
-}
-const LEVEL_ACTIVE: Record<number, string> = {
-  0: 'bg-gray-400 text-white border-gray-400',
-  1: 'bg-blue-500 text-white border-blue-500',
-  2: 'bg-green-600 text-white border-green-600',
-  3: 'bg-purple-600 text-white border-purple-600',
-  4: 'bg-amber-500 text-white border-amber-500',
-}
+import { API_BASE } from '../lib/api.js'
+import { LEVEL_LABELS, LEVEL_COLORS, LEVEL_ACTIVE } from '../lib/skill-levels.js'
+import { thirdPersonQuestions } from '../lib/leadership-constants.js'
+import TabSwitcher from '../components/shared/TabSwitcher.js'
 
 type Tab = 'leadership' | 'skills' | 'cvf'
 
@@ -104,7 +67,7 @@ export default function RateManagerPage() {
 
   // Prefetch previous leadership answers
   useEffect(() => {
-    fetch(`${API}/peer-assessments/leadership/${managerId}/my-assessment/${userId}`)
+    fetch(`${API_BASE}/peer-assessments/leadership/${managerId}/my-assessment/${userId}`)
       .then(r => r.json())
       .then((data: { answers: number[] } | null) => {
         if (data?.answers) setLeadershipAnswers(data.answers)
@@ -121,7 +84,7 @@ export default function RateManagerPage() {
     e.preventDefault()
     setLeadershipSaving(true)
     try {
-      await fetch(`${API}/peer-assessments/leadership`, {
+      await fetch(`${API_BASE}/peer-assessments/leadership`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ assessorId: userId, subjectId: managerId, answers: leadershipAnswers }),
@@ -138,7 +101,7 @@ export default function RateManagerPage() {
     try {
       await Promise.all(
         allSkills.map(skill =>
-          fetch(`${API}/peer-assessments/skills`, {
+          fetch(`${API_BASE}/peer-assessments/skills`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ assessorId: userId, subjectId: managerId, skillId: skill.id, level: skillLevels[skill.id] ?? 0 }),
@@ -152,7 +115,7 @@ export default function RateManagerPage() {
   }
 
   const handleCVFSubmit = async (assessment: CVFAssessment) => {
-    await fetch(`${API}/peer-assessments/cvf`, {
+    await fetch(`${API_BASE}/peer-assessments/cvf`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ assessorId: userId, subjectId: managerId, categories: assessment.categories, results: assessment.results }),
@@ -178,19 +141,7 @@ export default function RateManagerPage() {
       </div>
 
       {/* Tab switcher */}
-      <div className="w-full max-w-2xl flex gap-1 bg-gray-100 p-1 rounded-xl">
-        {TABS.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === t.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <TabSwitcher tabs={TABS} active={tab} onChange={setTab} />
 
       {/* ── Leadership ──────────────────────────────────────────────────────── */}
       {tab === 'leadership' && (

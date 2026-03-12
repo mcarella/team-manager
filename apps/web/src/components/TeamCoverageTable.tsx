@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { computeProfileReliability } from '@team-manager/core'
 import type { TeamMemberProfile } from '@team-manager/shared'
-
-const API = 'http://localhost:3001'
+import { API_BASE } from '../lib/api.js'
 
 interface PeerSummary {
   totalEvaluators: number
@@ -60,7 +59,7 @@ export default function TeamCoverageTable({ members }: Props) {
     members.forEach(m => {
       const id = m.user.id
 
-      fetch(`${API}/peer-assessments/skills/${id}/summary`)
+      fetch(`${API_BASE}/peer-assessments/skills/${id}/summary`)
         .then(r => r.json())
         .then((data: PeerSummary) => setRows(prev => prev.map(row =>
           row.member.user.id === id ? { ...row, skillEvaluators: data.totalEvaluators } : row
@@ -69,7 +68,7 @@ export default function TeamCoverageTable({ members }: Props) {
           row.member.user.id === id ? { ...row, skillEvaluators: 0 } : row
         )))
 
-      fetch(`${API}/peer-assessments/leadership/${id}/summary`)
+      fetch(`${API_BASE}/peer-assessments/leadership/${id}/summary`)
         .then(r => r.json())
         .then((data: PeerSummary) => setRows(prev => prev.map(row =>
           row.member.user.id === id ? { ...row, leadershipEvaluators: data.totalEvaluators } : row
@@ -78,7 +77,7 @@ export default function TeamCoverageTable({ members }: Props) {
           row.member.user.id === id ? { ...row, leadershipEvaluators: 0 } : row
         )))
 
-      fetch(`${API}/peer-assessments/cvf/${id}/summary`)
+      fetch(`${API_BASE}/peer-assessments/cvf/${id}/summary`)
         .then(r => r.json())
         .then((data: PeerSummary) => setRows(prev => prev.map(row =>
           row.member.user.id === id ? { ...row, cvfEvaluators: data.totalEvaluators } : row

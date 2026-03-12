@@ -1,13 +1,7 @@
 import { useState } from 'react'
 import type { TeamMemberProfile, SkillRole } from '@team-manager/shared'
+import { ARCHETYPE_COLORS } from '../lib/archetype-colors.js'
 
-const ARCHETYPE_COLORS: Record<string, string> = {
-  expert:      'bg-red-100 text-red-700',
-  coordinator: 'bg-orange-100 text-orange-700',
-  peer:        'bg-blue-100 text-blue-700',
-  coach:       'bg-green-100 text-green-700',
-  strategist:  'bg-purple-100 text-purple-700',
-}
 const LEVEL_BAR: Record<number, string> = {
   0: 'bg-gray-300', 1: 'bg-blue-400', 2: 'bg-green-500', 3: 'bg-purple-500', 4: 'bg-amber-400',
 }

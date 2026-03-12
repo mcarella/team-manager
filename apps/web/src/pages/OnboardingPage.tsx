@@ -1,5 +1,4 @@
 import { Link, useNavigate } from 'react-router-dom'
-// import type { MemberFile } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 
 export default function OnboardingPage() {
@@ -34,25 +33,6 @@ export default function OnboardingPage() {
     { key: 'cvf',        label: 'Culture', path: '/assessment/cvf',    color: 'bg-purple-600', desc: 'Your culture profile · org culture',       done: hasCVF },
     { key: 'skills',     label: 'Skills',     path: '/assessment/skills',    color: 'bg-green-600', desc: 'Rate skills · rate others · 360° feedback', done: hasSkills },
   ]
-
-  // const handleExport = () => {
-  //   if (!member) return
-  //   const file: MemberFile = {
-  //     version: '1',
-  //     exportedAt: new Date().toISOString(),
-  //     user: member.user,
-  //     leadership: member.leadership ?? null,
-  //     cvf: member.cvf ?? null,
-  //     skills: member.skills,
-  //   }
-  //   const blob = new Blob([JSON.stringify(file, null, 2)], { type: 'application/json' })
-  //   const url = URL.createObjectURL(blob)
-  //   const a = document.createElement('a')
-  //   a.href = url
-  //   a.download = `${currentUserId}.member`
-  //   a.click()
-  //   URL.revokeObjectURL(url)
-  // }
 
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
@@ -127,21 +107,6 @@ export default function OnboardingPage() {
           </Link>
         </div>
       )}
-
-      {/* Export — only if member has skills in the local store */}
-      {/* {hasSkills && (
-        <div className="w-full max-w-md space-y-3">
-          <button
-            onClick={handleExport}
-            className="w-full py-3 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-900 transition-colors"
-          >
-            Export .member file
-          </button>
-          <p className="text-xs text-gray-400 text-center">
-            Share this file with your manager so they can import your profile into a team.
-          </p>
-        </div>
-      )} */}
 
     </main>
   )

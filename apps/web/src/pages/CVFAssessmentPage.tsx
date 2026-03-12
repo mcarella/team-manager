@@ -6,6 +6,7 @@ import { useStore } from '../store/index.js'
 import CVFForm from '../components/CVFForm.js'
 import CVFResultCard from '../components/CVFResultCard.js'
 import CVFRadarChart, { CVF_COLORS } from '../components/CVFRadarChart.js'
+import TabSwitcher from '../components/shared/TabSwitcher.js'
 
 type MemberTab  = 'mine' | 'team' | 'org' | 'compare'
 type ManagerTab = 'me' | 'team' | 'company' | 'compare'
@@ -135,19 +136,7 @@ export default function CVFAssessmentPage() {
       </div>
 
       {/* Tab switcher */}
-      <div className="w-full max-w-lg flex gap-1 bg-gray-100 p-1 rounded-xl">
-        {tabs.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setActive(t.key)}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              active === t.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <TabSwitcher tabs={tabs} active={active} onChange={setActive} />
 
       {/* ── Me / My CVF ───────────────────────────────────────────────────────── */}
       {showMyCVF && (

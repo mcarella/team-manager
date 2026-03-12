@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
 import { computeKiviatData } from '@team-manager/core'
-// import { parseMemberFile } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import ArchetypeSpectrum from '../components/ArchetypeSpectrum.js'
 import CVFRadarChart, { CVF_COLORS } from '../components/CVFRadarChart.js'
@@ -8,12 +7,6 @@ import MemberList from '../components/MemberList.js'
 import TeamSkillsMatrix from '../components/TeamSkillsMatrix.js'
 import TeamMemberComparisonTable from '../components/TeamMemberComparisonTable.js'
 import TeamCoverageTable from '../components/TeamCoverageTable.js'
-
-// interface ImportResult {
-//   name: string
-//   ok: boolean
-//   message: string
-// }
 
 export default function TeamDashboardPage() {
   const { id } = useParams<{ id: string }>()
@@ -33,35 +26,6 @@ export default function TeamDashboardPage() {
   const members = team?.members ?? []
   const kiviat = computeKiviatData(members)
   const hasData = members.length > 0
-
-  // const handleFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = Array.from(e.target.files ?? [])
-  //   if (!files.length) return
-  //   setImporting(true)
-  //   setImportResults([])
-  //   const results: ImportResult[] = []
-  //   for (const file of files) {
-  //     try {
-  //       const text = await file.text()
-  //       const parsed = JSON.parse(text)
-  //       const result = parseMemberFile(parsed)
-  //       if (!result.ok) { results.push({ name: file.name, ok: false, message: result.error }); continue }
-  //       const profile = {
-  //         user: result.data.user,
-  //         ...(result.data.leadership ? { leadership: result.data.leadership } : {}),
-  //         ...(result.data.cvf ? { cvf: result.data.cvf } : {}),
-  //         skills: result.data.skills,
-  //       }
-  //       importMemberToTeam(id!, profile)
-  //       results.push({ name: result.data.user.name, ok: true, message: 'Imported' })
-  //     } catch {
-  //       results.push({ name: file.name, ok: false, message: 'Invalid JSON or unreadable file' })
-  //     }
-  //   }
-  //   setImportResults(results)
-  //   setImporting(false)
-  //   if (fileInputRef.current) fileInputRef.current.value = ''
-  // }
 
   if (!team) {
     return (
@@ -93,70 +57,13 @@ export default function TeamDashboardPage() {
           <p className="text-gray-500 mt-1">{members.length} member{members.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex items-center gap-4">
-          {/* <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={importing}
-            className="px-4 py-2 bg-orange-600 text-white text-sm font-semibold rounded-lg hover:bg-orange-700 disabled:opacity-50"
-          >
-            {importing ? 'Importing…' : 'Import .member'}
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".member"
-            multiple
-            className="hidden"
-            onChange={handleFileImport}
-          /> */}
           <Link to={backPath} className="text-blue-600 hover:underline text-sm">← Back</Link>
         </div>
       </div>
 
-      {/* Import results summary */}
-      {/* {importResults.length > 0 && (
-        <div className="w-full max-w-5xl space-y-2">
-          <div className="flex items-center gap-3">
-            {successCount > 0 && (
-              <span className="text-sm text-green-700 font-medium">
-                ✓ {successCount} imported
-              </span>
-            )}
-            {failCount > 0 && (
-              <span className="text-sm text-red-600 font-medium">
-                ✗ {failCount} failed
-              </span>
-            )}
-            <button
-              onClick={() => setImportResults([])}
-              className="text-xs text-gray-400 hover:text-gray-600 ml-auto"
-            >
-              dismiss
-            </button>
-          </div>
-          {failCount > 0 && (
-            <div className="space-y-1">
-              {importResults.filter(r => !r.ok).map((r, i) => (
-                <p key={i} className="text-xs text-red-600 bg-red-50 rounded px-3 py-1.5">
-                  <span className="font-semibold">{r.name}</span>: {r.message}
-                </p>
-              ))}
-            </div>
-          )}
-        </div>
-      )} */}
-
       {!hasData ? (
         <div className="text-center space-y-4 py-16">
           <p className="text-gray-400 text-lg">No members yet.</p>
-          {/* <p className="text-gray-400 text-sm">
-            Import one or more <code>.member</code> files to populate this team.
-          </p>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="px-5 py-2.5 bg-orange-600 text-white text-sm font-semibold rounded-lg hover:bg-orange-700"
-          >
-            Import .member files
-          </button> */}
         </div>
       ) : (
         <div className="w-full max-w-5xl space-y-6">

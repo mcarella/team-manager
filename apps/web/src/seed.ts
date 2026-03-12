@@ -10,6 +10,7 @@
  */
 
 import { DEFAULT_ROLES } from './data/default-roles.js'
+import { API_BASE } from './lib/api.js'
 
 // ── RNG helpers ───────────────────────────────────────────────────────────────
 
@@ -145,8 +146,6 @@ function generateDesiredCVF() {
 
 // ── Peer assessment helpers ───────────────────────────────────────────────────
 
-const API = 'http://localhost:3001'
-
 type SeedProfile = {
   user: { id: string; role: string }
   skills: { skillId: string; level: number }[]
@@ -171,7 +170,7 @@ async function seedPeerSkillAssessments(
 
   function postSkill(assessorId: string, subjectId: string, skillId: string, baseLevel: number) {
     const level = Math.max(0, Math.min(4, baseLevel + randInt(-1, 1)))
-    posts.push(fetch(`${API}/peer-assessments/skills`, {
+    posts.push(fetch(`${API_BASE}/peer-assessments/skills`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ assessorId, subjectId, skillId, level }),
@@ -214,7 +213,7 @@ async function seedPeerLeadershipAssessments(
   function postLeadership(assessorId: string, subjectId: string, answers: number[]) {
     // Slightly vary answers for realism
     const varied = answers.map(a => Math.max(1, Math.min(10, a + randInt(-2, 2))))
-    posts.push(fetch(`${API}/peer-assessments/leadership`, {
+    posts.push(fetch(`${API_BASE}/peer-assessments/leadership`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ assessorId, subjectId, answers: varied }),
@@ -279,7 +278,7 @@ async function seedPeerCVFAssessments(
         results.market += cat.market
         results.hierarchy += cat.hierarchy
       }
-      posts.push(fetch(`${API}/peer-assessments/cvf`, {
+      posts.push(fetch(`${API_BASE}/peer-assessments/cvf`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ assessorId: evaluator.user.id, subjectId: manager.user.id, categories, results }),

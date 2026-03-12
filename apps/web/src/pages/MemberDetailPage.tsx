@@ -6,15 +6,13 @@ import { useStore } from '../store/index.js'
 import ArchetypeCard from '../components/ArchetypeCard.js'
 import CVFRadarChart, { CVF_COLORS as CVF_CHART_COLORS } from '../components/CVFRadarChart.js'
 import ReliabilityCoverage from '../components/ReliabilityCoverage.js'
+import { API_BASE } from '../lib/api.js'
+import { LEVEL_LABELS, LEVEL_BAR } from '../lib/skill-levels.js'
+import { BEHAVIOR_LABELS, GOLEMAN_MOTTOS, BEHAVIOR_PAIRS } from '../lib/leadership-constants.js'
+import { ARCHETYPE_COLORS } from '../lib/archetype-colors.js'
+import TabSwitcher from '../components/shared/TabSwitcher.js'
+import DeltaBadge from '../components/shared/DeltaBadge.js'
 
-const API = 'http://localhost:3001'
-
-const LEVEL_LABELS: Record<number, string> = {
-  0: "Don't know", 1: 'Know theory', 2: 'Autonomous', 3: 'Master', 4: 'Can teach',
-}
-const LEVEL_BAR: Record<number, string> = {
-  0: 'bg-gray-400', 1: 'bg-blue-500', 2: 'bg-green-600', 3: 'bg-purple-600', 4: 'bg-amber-500',
-}
 const CVF_COLORS: Record<string, string> = {
   clan: 'bg-green-50 text-green-700', adhocracy: 'bg-blue-50 text-blue-700',
   market: 'bg-orange-50 text-orange-700', hierarchy: 'bg-gray-100 text-gray-700',
@@ -47,9 +45,9 @@ export default function MemberDetailPage() {
 
   useEffect(() => {
     if (!userId) return
-    fetch(`${API}/peer-assessments/skills/${userId}/summary`)
+    fetch(`${API_BASE}/peer-assessments/skills/${userId}/summary`)
       .then(r => r.json()).then(setPeerSummary).catch(() => {})
-    fetch(`${API}/peer-assessments/leadership/${userId}/summary`)
+    fetch(`${API_BASE}/peer-assessments/leadership/${userId}/summary`)
       .then(r => r.json()).then(setPeerLeadership).catch(() => {})
   }, [userId])
 
@@ -103,21 +101,11 @@ export default function MemberDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="w-full max-w-2xl flex gap-1 bg-gray-100 p-1 rounded-xl">
-        {SECTIONS.map(s => (
-          <button
-            key={s.id}
-            onClick={() => setSearchParams({ section: s.id })}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              section === s.id
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
+      <TabSwitcher
+        tabs={SECTIONS.map(s => ({ key: s.id, label: s.label }))}
+        active={section}
+        onChange={key => setSearchParams({ section: key })}
+      />
 
       {/* Content */}
       <div className="w-full max-w-2xl">
@@ -175,15 +163,7 @@ export default function MemberDetailPage() {
                       <div key={sa.skillId} className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-semibold text-gray-800">{nameMap.get(sa.skillId) ?? sa.skillId}</span>
-                          {delta !== null && (
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                              Math.abs(delta) <= 0.5 ? 'bg-green-100 text-green-700' :
-                              delta < 0 ? 'bg-amber-100 text-amber-700' :
-                              'bg-blue-100 text-blue-700'
-                            }`}>
-                              {Math.abs(delta) <= 0.5 ? 'Aligned' : delta < 0 ? '⚠ Blind spot' : '✨ Hidden strength'}
-                            </span>
-                          )}
+                          {delta !== null && <DeltaBadge delta={delta} />}
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-400 w-12 shrink-0 text-right">Self</span>
@@ -216,22 +196,6 @@ export default function MemberDetailPage() {
 }
 
 // ── Peer Leadership Delta ─────────────────────────────────────────────────────
-
-const BEHAVIOR_PAIRS = ['catalyzing', 'envisioning', 'demanding', 'coaching', 'conducting', 'directing'] as const
-const BEHAVIOR_LABELS: Record<string, string> = {
-  catalyzing: 'Catalyzing', envisioning: 'Envisioning', demanding: 'Demanding',
-  coaching: 'Coaching', conducting: 'Conducting', directing: 'Directing',
-}
-const GOLEMAN_MOTTOS: Record<string, string> = {
-  catalyzing: '"See the whole picture"', envisioning: '"Come with me"',
-  demanding: '"Do as I do, now"', coaching: '"Try this"',
-  conducting: '"What do you think?"', directing: '"Do what I tell you"',
-}
-const ARCHETYPE_COLORS: Record<string, string> = {
-  expert: 'bg-red-100 text-red-700', coordinator: 'bg-orange-100 text-orange-700',
-  peer: 'bg-blue-100 text-blue-700', coach: 'bg-green-100 text-green-700',
-  strategist: 'bg-purple-100 text-purple-700',
-}
 
 function PeerLeadershipDelta({
   self,

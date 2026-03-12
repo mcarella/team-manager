@@ -3,33 +3,17 @@ import { useNavigate } from 'react-router-dom'
 import { computeProfileReliability } from '@team-manager/core'
 import type { TeamMemberProfile, SkillRole, PeerLeadershipSummary } from '@team-manager/shared'
 import ReliabilityCoverage from './ReliabilityCoverage.js'
-
+import { API_BASE } from '../lib/api.js'
+import { ARCHETYPE_COLORS } from '../lib/archetype-colors.js'
+import { LEVEL_LABELS, LEVEL_BAR } from '../lib/skill-levels.js'
 
 export type SectionType = 'archetype' | 'cvf' | 'skills'
-
-const API = 'http://localhost:3001'
-
-const ARCHETYPE_COLORS: Record<string, string> = {
-  expert:      'bg-red-100 text-red-700',
-  coordinator: 'bg-orange-100 text-orange-700',
-  peer:        'bg-blue-100 text-blue-700',
-  coach:       'bg-green-100 text-green-700',
-  strategist:  'bg-purple-100 text-purple-700',
-}
 
 const CVF_COLORS: Record<string, string> = {
   clan:      'bg-green-500 text-white',
   adhocracy: 'bg-yellow-500 text-white',
   market:    'bg-red-500 text-white',
   hierarchy: 'bg-blue-500 text-white',
-}
-
-const LEVEL_LABELS: Record<number, string> = {
-  0: "Don't know", 1: 'Know theory', 2: 'Autonomous', 3: 'Master', 4: 'Can teach',
-}
-
-const LEVEL_BAR: Record<number, string> = {
-  0: 'bg-gray-400', 1: 'bg-blue-500', 2: 'bg-green-600', 3: 'bg-purple-600', 4: 'bg-amber-500',
 }
 
 interface PeerSkillSummary {
@@ -61,9 +45,9 @@ export default function MemberProfileModal({ member, roles, teamSize = 0, initia
   }
 
   useEffect(() => {
-    fetch(`${API}/peer-assessments/skills/${user.id}/summary`)
+    fetch(`${API_BASE}/peer-assessments/skills/${user.id}/summary`)
       .then(r => r.json()).then(setPeerSummary).catch(() => {})
-    fetch(`${API}/peer-assessments/leadership/${user.id}/summary`)
+    fetch(`${API_BASE}/peer-assessments/leadership/${user.id}/summary`)
       .then(r => r.json()).then(setPeerLeadership).catch(() => {})
   }, [user.id])
 
