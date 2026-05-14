@@ -3,7 +3,7 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { computeProfileReliability } from '@team-manager/core'
 import type { PeerLeadershipSummary, LeadershipAssessment } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
-import ArchetypeCard from '../components/ArchetypeCard.js'
+import LeadershipRecap from '../components/LeadershipRecap.js'
 import CVFRadarChart, { CVF_COLORS as CVF_CHART_COLORS } from '../components/CVFRadarChart.js'
 import ReliabilityCoverage from '../components/ReliabilityCoverage.js'
 import { API_BASE } from '../lib/api.js'
@@ -35,7 +35,7 @@ export default function MemberDetailPage() {
   const { userId } = useParams<{ userId: string }>()
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { members, roles, teams } = useStore()
+  const { members, roles, teams, assessmentDepth } = useStore()
 
   const section = (searchParams.get('section') as Section) ?? 'archetype'
   const member = members.find(m => m.user.id === userId)
@@ -112,7 +112,11 @@ export default function MemberDetailPage() {
         {section === 'archetype' && (
           leadership ? (
             <div className="space-y-6">
-              <ArchetypeCard assessment={leadership} />
+              <LeadershipRecap
+                leadership={leadership}
+                behavioralCore={member.behavioralCore}
+                assessmentDepth={assessmentDepth}
+              />
               {peerLeadership && peerLeadership.totalEvaluators > 0 && (
                 <PeerLeadershipDelta self={leadership} peer={peerLeadership} />
               )}

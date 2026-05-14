@@ -5,7 +5,7 @@ import { computeLeadershipScores, computeArchetype } from '@team-manager/core'
 import type { LeadershipAssessment, PeerLeadershipSummary } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import LeadershipForm from '../components/LeadershipForm.js'
-import ArchetypeCard from '../components/ArchetypeCard.js'
+import LeadershipRecap from '../components/LeadershipRecap.js'
 import TimeBudgetChip from '../components/TimeBudgetChip.js'
 import { API_BASE } from '../lib/api.js'
 import { BEHAVIOR_LABELS, GOLEMAN_MOTTOS, BEHAVIOR_PAIRS, thirdPersonQuestions } from '../lib/leadership-constants.js'
@@ -148,8 +148,8 @@ export default function LeadershipAssessmentPage() {
         <div className="w-full max-w-3xl">
           {displayResult ? (
             <div className="flex flex-col items-center gap-6">
-              <ArchetypeCard
-                assessment={displayResult}
+              <LeadershipRecap
+                leadership={displayResult}
                 behavioralCore={member?.behavioralCore}
                 assessmentDepth={assessmentDepth}
               />
