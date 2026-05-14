@@ -9,8 +9,17 @@
  * - Members rating their manager: skills, leadership, CVF
  */
 
+import {
+  ADJECTIVES,
+  computeBehavioralCoreFactors,
+  synthesizeFactors,
+  computeGolemanRadar,
+  matchSubProfile,
+} from '@team-manager/core'
+import type { BehavioralCoreAssessment } from '@team-manager/shared'
 import { DEFAULT_ROLES } from './data/default-roles.js'
 import { API_BASE } from './lib/api.js'
+import { generateSyntheticPeerBehavioralCore, type DivergenceMode } from './data/synthetic-peer-data.js'
 
 // ── RNG helpers ───────────────────────────────────────────────────────────────
 
@@ -117,6 +126,41 @@ function generateCVF(userId: string) {
   }
 
   return { userId, categories, results, completedAt: new Date().toISOString() }
+}
+
+/**
+ * Generate a plausible self Behavioral Core (Layer 2) assessment for a seeded user.
+ *
+ * Strategy: pick ~18 adjectives per pass at random from the 86-item bank.
+ * Light bias — slightly skew the second pass to give a real signal beyond
+ * the centroid (otherwise `matchSubProfile` always lands on "camaleonte").
+ * The 17 sub-profiles get a decent spread across 20 seeded members.
+ */
+function generateBehavioralCore(userId: string): BehavioralCoreAssessment {
+  function pickRandomAdjectives(n: number): string[] {
+    const shuffled = [...ADJECTIVES].sort(() => Math.random() - 0.5)
+    return shuffled.slice(0, n).map(a => a.id)
+  }
+
+  const selfConcept = pickRandomAdjectives(randInt(16, 22))
+  const self = pickRandomAdjectives(randInt(18, 24))
+
+  const selfConceptFactors = computeBehavioralCoreFactors(selfConcept)
+  const selfFactors        = computeBehavioralCoreFactors(self)
+  const factors            = synthesizeFactors(selfConceptFactors, selfFactors)
+  const golemanRadar       = computeGolemanRadar(factors)
+  const subProfile         = matchSubProfile(factors)
+
+  return {
+    userId,
+    answers: { selfConcept, self },
+    selfConceptFactors,
+    selfFactors,
+    factors,
+    golemanRadar,
+    subProfile,
+    completedAt: new Date(),
+  }
 }
 
 function generateSkills(userId: string, roleId: string) {
@@ -325,6 +369,7 @@ export async function seed() {
       leadership: generateLeadership(id),
       cvf: generateCVF(id),
       skills: generateSkills(id, roleId),
+      behavioralCore: generateBehavioralCore(id),
     }
   })
 
@@ -353,6 +398,7 @@ export async function seed() {
       leadership: generateLeadership(id),
       cvf: generateCVF(id),
       skills: generateSkills(id, roleId),
+      behavioralCore: generateBehavioralCore(id),
     }
   })
 
@@ -388,10 +434,12 @@ export async function seed() {
   localStorage.setItem('team-manager-store', JSON.stringify(state))
 
   // Seed all peer assessments in parallel
-  const [peerSkills, peerLeadership, peerCVF] = await Promise.all([
+  const [peerSkills, peerLeadership, peerCVF, peerBehavioralCore, saboteur] = await Promise.all([
     seedPeerSkillAssessments(teams, managerProfiles, managerTeamIds),
     seedPeerLeadershipAssessments(teams, managerProfiles, managerTeamIds),
     seedPeerCVFAssessments(teams, managerProfiles, managerTeamIds),
+    seedPeerBehavioralCoreAssessments(teams, managerProfiles, managerTeamIds),
+    seedSaboteurAssessments([...members, ...managerProfiles]),
   ])
 
   // One representative member per team — so each hint shows a member with a team
@@ -405,5 +453,115 @@ export async function seed() {
     peerSkills,
     peerLeadership,
     peerCVF,
+    peerBehavioralCore,
+    saboteur,
   }
+}
+
+/**
+ * Seed deterministic saboteur self-assessments for every member + manager.
+ * Uses Mulberry32 PRNG seeded by userId so the output is stable across reseeds
+ * (same userId → same answers).
+ *
+ * Each subject gets a randomly-chosen "dominant saboteur" whose questions are
+ * biased toward 4-5, others toward 1-3. Plus a plausible PQ profile.
+ */
+async function seedSaboteurAssessments(profiles: SeedProfile[]): Promise<number> {
+  const SABOTEUR_LIST = [
+    'judge', 'stickler', 'pleaser', 'hyperAchiever', 'victim',
+    'hyperRational', 'hyperVigilant', 'restless', 'controller', 'avoider',
+  ] as const
+  // Question metadata pulled inline to avoid an extra import here — the IDs
+  // and saboteurIds match what the core package exports.
+  const SABOTEUR_QS = await import('@team-manager/core').then(m => m.SABOTEUR_QUESTIONS)
+
+  // Inline Mulberry32 — deterministic PRNG seeded per user.
+  const makeRng = (seed: number) => () => {
+    let t = (seed += 0x6d2b79f5)
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+
+  const posts: Promise<Response>[] = []
+  for (const p of profiles) {
+    const rng = makeRng(stringSeed(p.user.id))
+    const dominant = SABOTEUR_LIST[Math.floor(rng() * SABOTEUR_LIST.length)]!
+    // Bias: dominant saboteur questions answered 4-5, others 1-3
+    const saboteurAnswers = SABOTEUR_QS.map(q => {
+      const lo = q.saboteurId === dominant ? 4 : 1
+      const hi = q.saboteurId === dominant ? 5 : 3
+      return lo + Math.floor(rng() * (hi - lo + 1))
+    })
+    // PQ: plausible mid-range, leaning slightly positive
+    const pqAnswers = Array.from({ length: 24 }, () => ({
+      pos: 2 + Math.floor(rng() * 4),  // 2-5
+      neg: 1 + Math.floor(rng() * 4),  // 1-4
+    }))
+    posts.push(fetch(`${API_BASE}/assessments/saboteur`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: p.user.id, saboteurAnswers, pqAnswers }),
+    }))
+  }
+  await Promise.all(posts)
+  return posts.length
+}
+
+async function seedPeerBehavioralCoreAssessments(
+  teams: { id: string; members: SeedProfile[] }[],
+  managerProfiles: SeedProfile[],
+  managerTeamIds: Record<string, string[]>,
+): Promise<number> {
+  const posts: Promise<Response>[] = []
+  const DIVERGENCES: DivergenceMode[] = ['aligned', 'mixed', 'blindSpot']
+
+  function postBehavioralCore(assessorId: string, subjectId: string, picks: string[]) {
+    posts.push(fetch(`${API_BASE}/peer-assessments/behavioral-core`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assessorId, subjectId, picks }),
+    }))
+  }
+
+  // Within-team peer evaluations (2-4 peers per subject)
+  for (const team of teams) {
+    for (const subject of team.members) {
+      const candidates = team.members.filter(m => m.user.id !== subject.user.id)
+      const assessors = randomEvaluators(candidates, [2, 4])
+      const peerIds = assessors.map(a => a.user.id)
+      const divergence = DIVERGENCES[randInt(0, 2)]!
+      const synthetic = generateSyntheticPeerBehavioralCore(
+        { id: subject.user.id }, // synthetic members don't have self-L2; generator falls back to centroid mode
+        peerIds,
+        { divergence, seed: stringSeed(subject.user.id) },
+      )
+      for (const sp of synthetic) postBehavioralCore(sp.assessorId, sp.subjectId, sp.picks)
+    }
+  }
+
+  // Members rating their manager (3-5 peers)
+  for (const manager of managerProfiles) {
+    const managedTeamIds = managerTeamIds[manager.user.id] ?? []
+    const teamMembers = teams
+      .filter(t => managedTeamIds.includes(t.id))
+      .flatMap(t => t.members)
+    const evaluators = randomEvaluators(teamMembers, [3, 5])
+    const peerIds = evaluators.map(e => e.user.id)
+    const synthetic = generateSyntheticPeerBehavioralCore(
+      { id: manager.user.id },
+      peerIds,
+      { divergence: 'aligned', seed: stringSeed(manager.user.id) },
+    )
+    for (const sp of synthetic) postBehavioralCore(sp.assessorId, sp.subjectId, sp.picks)
+  }
+
+  await Promise.all(posts)
+  return posts.length
+}
+
+function stringSeed(s: string): number {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0
+  return h
 }

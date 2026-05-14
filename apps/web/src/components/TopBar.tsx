@@ -13,6 +13,8 @@ const MEMBER_NAV: NavItem[] = [
   { label: 'Leadership', to: '/assessment/leadership' },
   { label: 'Skills',     to: '/assessment/skills' },
   { label: 'Culture',    to: '/assessment/cvf' },
+  { label: 'Attitude',   to: '/attitude' },
+  { label: 'Growth',     to: '/growth' },
 ]
 
 const MANAGER_NAV: NavItem[] = [
@@ -20,6 +22,8 @@ const MANAGER_NAV: NavItem[] = [
   { label: 'Leadership', to: '/assessment/leadership' },
   { label: 'Skills',     to: '/assessment/skills' },
   { label: 'Culture',    to: '/assessment/cvf' },
+  { label: 'Attitude',   to: '/attitude' },
+  { label: 'Growth',     to: '/growth' },
   // { label: 'Roles',      to: '/roles' },
   { label: 'Reteaming',  to: '/reteaming' },
 ]

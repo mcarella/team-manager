@@ -1,0 +1,203 @@
+{
+  "hub": {
+    "title": "Attitude",
+    "subtitle": "Diagnose what's holding you back so you can lead from your strengths.",
+    "saboteurCard": {
+      "eyebrow": "Layer 3 — Saboteur Radar",
+      "heading": "Mental Fitness Assessment",
+      "body": "10 minutes — 50 statements + 24 emotion pairs. Reveal your top saboteurs, your PQ score, and the Sage Powers that counter them.",
+      "ctaStart": "Start (10 min) →",
+      "ctaContinue": "Continue →",
+      "ctaRetake": "Retake assessment",
+      "comingSoon": "Coming soon"
+    },
+    "statusCard": {
+      "eyebrow": "Your Saboteur Profile",
+      "topSaboteurLabel": "Top saboteur",
+      "pqScoreLabel": "PQ score",
+      "viewFullResult": "See full result →",
+      "lastTaken": "Last taken: {{when}}"
+    }
+  },
+
+  "assessment": {
+    "title": "Saboteur Assessment",
+    "intro": {
+      "eyebrow": "10 minutes · 74 questions",
+      "heading": "One sharper view of yourself.",
+      "body": "You'll rate 50 short statements (how often each is true for you) and then choose between 24 pairs of feelings. There are no right answers — go with your first instinct.",
+      "begin": "Begin assessment"
+    },
+    "saboteurStep": {
+      "title": "Saboteur statements",
+      "instructions": "Rate how often each statement is true for you right now.",
+      "pageHeading": "Part {{current}} of {{total}}"
+    },
+    "pqStep": {
+      "title": "Emotion pairs",
+      "instructions": "For each pair, rate how strongly you feel each side right now.",
+      "pageHeading": "Part {{current}} of {{total}}",
+      "positiveLabel": "Sage feeling",
+      "negativeLabel": "Saboteur feeling"
+    },
+    "scale": {
+      "1": "Almost never",
+      "2": "Rarely",
+      "3": "Sometimes",
+      "4": "Often",
+      "5": "Almost always",
+      "endLow": "Almost never",
+      "endHigh": "Almost always"
+    },
+    "navigation": {
+      "back": "← Back",
+      "next": "Next →",
+      "submit": "Submit",
+      "submitting": "Submitting…",
+      "progress": "{{current}} of {{total}}",
+      "completeRequired": "Answer all questions on this page to continue."
+    }
+  },
+
+  "result": {
+    "title": "Your Saboteur Profile",
+    "pqHeading": "Positive Intelligence (PQ) Score",
+    "pqHint": "PQ measures the ratio between your Sage (constructive) and Saboteur (sabotaging) mental responses. PQ ≥ 75 is the tipping point for sustained performance and wellbeing.",
+    "radarHeading": "Saboteur distribution",
+    "radarHint": "How much each of the 10 saboteurs shows up in your responses (0-10).",
+    "topThreeHeading": "Your top 3 saboteurs",
+    "sagePowersHeading": "Sage Powers — your antidotes",
+    "retake": "Retake assessment",
+    "backToGrowth": "← Back to Attitude",
+    "exploreOthersHeading": "Explore the other saboteurs",
+    "exploreOthersHint": "Click any saboteur to read about it. Self-knowledge of the patterns you don't lead with is what keeps them from sneaking in later.",
+    "showMore": "Show more",
+    "showLess": "Show less"
+  },
+
+  "pq": {
+    "levels": {
+      "critical":  { "label": "Saboteurs dominate",      "description": "Your saboteurs control most of your responses right now. This isn't a judgment — it's a starting point. The good news: improvement is fastest when the gap is widest." },
+      "mixed":     { "label": "Mixed zone",              "description": "Sage and saboteurs split control roughly evenly. Under stress, saboteurs take over. Big room to grow." },
+      "good":      { "label": "Near the tipping point",  "description": "Your Sage is showing up, but saboteurs still hijack important moments. With consistent practice you can cross 75 in a few weeks." },
+      "excellent": { "label": "Above the tipping point", "description": "You've crossed PQ 75. Sage runs most of the show. Saboteurs exist but no longer dominate. You're reaping the benefits of mental fitness." },
+      "mastery":   { "label": "Excellent mental fitness","description": "Your Sage is firmly in command. You meet challenges with calm, clarity, and constructive energy. Keep the practice up." }
+    }
+  },
+
+  "saboteurs": {
+    "judge":         { "name": "The Judge",          "motto": "Find what's wrong",         "tagline": "Universal saboteur — runs background commentary against yourself, others, and circumstances.", "origin": "Formed early as a survival mechanism — vigilance against threat. The voice grew up with you and never stopped narrating.", "hijackedStrength": "Discernment and standards.", "sageAntidote": "Empathize with yourself first, then with what's actually happening." },
+    "stickler":      { "name": "The Stickler",       "motto": "Perfect or nothing",        "tagline": "Demands perfection from self and others. Misses the 80% that's already good enough.",            "origin": "Praise for being 'the responsible one'. Mistakes were costly. Order felt like safety.",                                  "hijackedStrength": "Quality and care.",      "sageAntidote": "Navigate by what truly matters, not what merely needs to be perfect." },
+    "pleaser":       { "name": "The Pleaser",        "motto": "Help to be loved",          "tagline": "Wins approval by serving others — until resentment leaks through the smile.",                       "origin": "Love felt conditional. You learned that being useful kept people close.",                                                "hijackedStrength": "Care and connection.",   "sageAntidote": "Empathize with your own needs, then activate from a real choice." },
+    "hyperAchiever": { "name": "The Hyper-Achiever", "motto": "I am what I achieve",       "tagline": "Identity fused to results. The next win never quite lasts.",                                         "origin": "Approval came with achievement. Stillness felt unsafe.",                                                                 "hijackedStrength": "Drive and impact.",      "sageAntidote": "Navigate from values, not scoreboards. Empathize with the part that just wants to be enough." },
+    "victim":        { "name": "The Victim",         "motto": "Why does this happen to me?","tagline": "Pulls sympathy through suffering. Stays stuck because being stuck is familiar.",                  "origin": "Care came mostly when you were unwell or distressed.",                                                                   "hijackedStrength": "Sensitivity and depth.", "sageAntidote": "Activate the smallest possible action. Empathize without merging with the pain." },
+    "hyperRational": { "name": "The Hyper-Rational", "motto": "Just analyze it",           "tagline": "Treats feelings as inefficient. Comes across cold; misses what's really going on.",                "origin": "Emotions were dismissed or punished. Logic kept you safe.",                                                              "hijackedStrength": "Clarity and analysis.",  "sageAntidote": "Empathize first. Then explore what the data of feeling reveals." },
+    "hyperVigilant": { "name": "The Hyper-Vigilant", "motto": "What could go wrong?",      "tagline": "Scans for threats even when things are fine. Cynicism as armor.",                                "origin": "Reality was unpredictable. Hyper-alertness reduced harm.",                                                               "hijackedStrength": "Foresight and prudence.","sageAntidote": "Navigate toward what matters, not away from what scares you." },
+    "restless":      { "name": "The Restless",       "motto": "What's next?",              "tagline": "Boredom is unbearable, presence is hard. Always chasing the next stimulus.",                       "origin": "Stillness felt like emptiness or danger. Stimulation became identity.",                                                  "hijackedStrength": "Curiosity and energy.",  "sageAntidote": "Explore deeply where you are before chasing the next thing." },
+    "controller":    { "name": "The Controller",     "motto": "I'll handle it",            "tagline": "Loss of control = anxiety. Pushes others; pushes self twice as hard.",                            "origin": "Chaos felt unsafe. Taking charge protected you and others.",                                                              "hijackedStrength": "Initiative and impact.", "sageAntidote": "Empathize with your need for control, then navigate by trust." },
+    "avoider":       { "name": "The Avoider",        "motto": "It'll work itself out",     "tagline": "Side-steps conflict, hard conversations, and unpleasant truths. Calls it 'staying positive.'",   "origin": "Conflict was punished or dangerous. Avoidance kept the peace.",                                                          "hijackedStrength": "Calm and warmth.",       "sageAntidote": "Activate the smallest courageous step. Empathize with what you'd rather not see." }
+  },
+
+  "sagePowers": {
+    "empathize": { "name": "Empathize", "tagline": "Compassion for self, then others.", "description": "Approach yourself, others, and the situation with curiosity and care rather than judgment. Empathy disarms most saboteurs at the root." },
+    "explore":   { "name": "Explore",   "tagline": "Fascinated curiosity.",             "description": "Open up to what's true without rushing to conclude or react. Useful before any decision or hard conversation." },
+    "innovate":  { "name": "Innovate",  "tagline": "Create new possibilities.",         "description": "Generate non-obvious options. Break the binary 'either/or' that saboteurs love." },
+    "navigate":  { "name": "Navigate",  "tagline": "Steer by deeper values.",           "description": "Pause and ask what truly matters here, then choose accordingly. Cuts through perfectionism and reactivity." },
+    "activate":  { "name": "Activate",  "tagline": "Decisive action.",                  "description": "Commit and move — laser-focused on the most useful next step. Counters paralysis, pleasing, and avoidance." }
+  },
+
+  "questions": {
+    "sab_j01": "I criticize myself harshly for my mistakes, even small ones.",
+    "sab_j02": "I'm rarely satisfied with my own results, even when others appreciate them.",
+    "sab_j03": "I blame myself for things that happened a long time ago.",
+    "sab_j04": "I tend to focus on what's wrong with people rather than their strengths.",
+    "sab_j05": "I often judge other people's choices as inferior to mine.",
+    "sab_j06": "When something goes wrong, my first reaction is to look for who's at fault.",
+    "sab_j07": "I often wake up at night worrying about things that might go wrong.",
+    "sab_j08": "When something isn't working, I struggle to see anything positive or opportunity in it.",
+
+    "sab_s01": "I get deeply frustrated when things aren't done the 'right' way.",
+    "sab_s02": "I spend more time than necessary perfecting details others wouldn't notice.",
+    "sab_s03": "I get irritated when others don't hold my standards of quality.",
+    "sab_s04": "I'd rather redo something myself than accept imperfect work from a colleague.",
+    "sab_s05": "The idea of 'good enough' makes me uncomfortable — things should be done well or not done.",
+
+    "sab_p01": "It's very hard for me to say 'no' to others' requests, even when I'm overloaded.",
+    "sab_p02": "I tend to put others' needs before my own, almost automatically.",
+    "sab_p03": "I feel hurt or resentful when others don't recognize how much I do for them.",
+    "sab_p04": "I try to earn people's affection through constant helpfulness and availability.",
+    "sab_p05": "I feel guilty when I spend time only on myself.",
+
+    "sab_ha01": "My self-worth depends heavily on my professional results.",
+    "sab_ha02": "After a success, I quickly move to the next goal without letting myself celebrate.",
+    "sab_ha03": "I feel uncomfortable or guilty when I'm not doing something 'productive'.",
+    "sab_ha04": "I tend to evaluate people's worth (including my own) by their achievements.",
+    "sab_ha05": "I worry that without constant, visible success, people would respect me less.",
+
+    "sab_v01": "I often feel bad things happen to me more than to others.",
+    "sab_v02": "Sometimes I dwell on my problems so others show me sympathy and understanding.",
+    "sab_v03": "I feel powerless against the circumstances in my life, as if I can't change them.",
+    "sab_v04": "I tend to complain about how things aren't fair to me.",
+
+    "sab_hr01": "I tend to process everything through logic and analysis, including personal relationships.",
+    "sab_hr02": "I get impatient when people are led by emotions instead of facts.",
+    "sab_hr03": "I prefer to analyze a problem rather than talk about how it makes me feel.",
+    "sab_hr04": "Others have told me I sometimes seem cold or emotionally detached.",
+
+    "sab_hv01": "I worry constantly about what could go wrong, even when things are going well.",
+    "sab_hv02": "I struggle to trust other people's real intentions.",
+    "sab_hv03": "I find reassurance in rules, procedures, and authority figures.",
+    "sab_hv04": "When things go well, part of me waits for something bad to happen.",
+    "sab_hv05": "I'm often cynical or skeptical about people's motives.",
+
+    "sab_r01": "I get bored easily and constantly seek new stimuli or activities.",
+    "sab_r02": "I have a hard time sitting still and enjoying the present moment.",
+    "sab_r03": "I'm easily distracted and tend to jump between activities without finishing them.",
+    "sab_r04": "I'm afraid of missing out on experiences or opportunities (FOMO).",
+
+    "sab_c01": "I feel a strong need to be in control of situations and the people around me.",
+    "sab_c02": "I feel intense anxiety when I can't influence or determine the outcome of something.",
+    "sab_c03": "I tend to tell others what to do and how, even when not asked.",
+    "sab_c04": "I find it very hard to delegate because I think I'd do it better.",
+    "sab_c05": "When I'm not in charge or don't have a say, I feel restless and anxious.",
+
+    "sab_a01": "I tend to postpone hard or uncomfortable conversations, hoping they'll resolve themselves.",
+    "sab_a02": "I prefer to focus on the positives of a situation rather than face the real issues.",
+    "sab_a03": "I have a hard time facing conflict directly — I'd rather avoid it.",
+    "sab_a04": "When stressed, I retreat into comforting routines or pleasant activities instead of addressing the cause.",
+    "sab_a05": "I often say 'everything's fine' even when it's not at all."
+  },
+
+  "pqPairs": {
+    "pq01": { "positive": "Calm, serenity",                   "negative": "Anxiety, worry" },
+    "pq02": { "positive": "Joy, enthusiasm",                  "negative": "Sadness, low mood" },
+    "pq03": { "positive": "Curiosity, openness",              "negative": "Cynicism, closed-mindedness" },
+    "pq04": { "positive": "Compassion, empathy",              "negative": "Harsh judgment, criticism" },
+    "pq05": { "positive": "Gratitude, appreciation",          "negative": "Resentment, envy" },
+    "pq06": { "positive": "Trust, optimism",                  "negative": "Fear, pessimism" },
+    "pq07": { "positive": "Sense of purpose, meaning",        "negative": "Emptiness, lack of meaning" },
+    "pq08": { "positive": "Creativity, inspiration",          "negative": "Mental block, stagnation" },
+    "pq09": { "positive": "Energy, vitality",                 "negative": "Exhaustion, chronic fatigue" },
+    "pq10": { "positive": "Connection, belonging",            "negative": "Isolation, loneliness" },
+    "pq11": { "positive": "Acceptance, inner peace",          "negative": "Frustration, irritation" },
+    "pq12": { "positive": "Resolve, clarity",                 "negative": "Confusion, indecision" },
+    "pq13": { "positive": "Playfulness, lightness",           "negative": "Heaviness, excess seriousness" },
+    "pq14": { "positive": "Courage, self-trust",              "negative": "Insecurity, self-doubt" },
+    "pq15": { "positive": "Generosity, openness to others",   "negative": "Closure, defensiveness" },
+    "pq16": { "positive": "Wonder, awe",                      "negative": "Boredom, apathy" },
+    "pq17": { "positive": "Patience, tolerance",              "negative": "Impatience, agitation" },
+    "pq18": { "positive": "Presence, mindfulness",            "negative": "Distraction, rumination" },
+    "pq19": { "positive": "Authenticity, free expression",    "negative": "Constraint, wearing a mask" },
+    "pq20": { "positive": "Satisfaction, contentment",        "negative": "Chronic dissatisfaction" },
+    "pq21": { "positive": "Forgiveness, letting go",          "negative": "Grudge, guilt" },
+    "pq22": { "positive": "Balance, inner harmony",           "negative": "Chaos, overwhelm" },
+    "pq23": { "positive": "Hope, possibility",                "negative": "Despair, powerlessness" },
+    "pq24": { "positive": "Love, tenderness",                 "negative": "Anger, hostility" }
+  },
+
+  "timeBudget": {
+    "elapsed": "{{minutes}}m {{seconds}}s",
+    "over": "over budget",
+    "target": "{{minutes}}m target"
+  }
+}

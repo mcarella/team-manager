@@ -60,23 +60,31 @@ export default function SeedPage() {
               <p className="text-xs text-orange-500">Teams</p>
             </div>
             <div className="bg-indigo-50 rounded-xl px-4 py-3 text-center">
-              <p className="text-2xl font-bold text-indigo-600">{result.peerSkills + result.peerLeadership + result.peerCVF}</p>
+              <p className="text-2xl font-bold text-indigo-600">{result.peerSkills + result.peerLeadership + result.peerCVF + result.peerBehavioralCore}</p>
               <p className="text-xs text-indigo-500">Peer ratings</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 text-xs text-center">
+          <div className="grid grid-cols-5 gap-2 text-xs text-center">
             <div className="bg-gray-50 rounded-lg px-2 py-2">
               <p className="font-bold text-gray-700">{result.peerSkills}</p>
-              <p className="text-gray-400">Skill ratings</p>
+              <p className="text-gray-400">Skills</p>
             </div>
             <div className="bg-gray-50 rounded-lg px-2 py-2">
               <p className="font-bold text-gray-700">{result.peerLeadership}</p>
-              <p className="text-gray-400">Leadership ratings</p>
+              <p className="text-gray-400">Leadership</p>
             </div>
             <div className="bg-gray-50 rounded-lg px-2 py-2">
               <p className="font-bold text-gray-700">{result.peerCVF}</p>
-              <p className="text-gray-400">CVF ratings</p>
+              <p className="text-gray-400">CVF</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg px-2 py-2">
+              <p className="font-bold text-gray-700">{result.peerBehavioralCore}</p>
+              <p className="text-gray-400">Behavioral L2</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg px-2 py-2">
+              <p className="font-bold text-gray-700">{result.saboteur}</p>
+              <p className="text-gray-400">Saboteur</p>
             </div>
           </div>
 
