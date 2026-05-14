@@ -220,6 +220,58 @@ Per `ui`/`config`: usa `[skip-tests]`, documenta motivo nel PR.
 
 ---
 
+## Component Reuse & UX Coherence
+
+This app has an established visual + interaction language. New features must inherit it, not invent next to it.
+
+**Before writing any new component**, check whether an existing one (or a small variant via props) already covers the use case:
+
+| Need | Use |
+|---|---|
+| Archetype/profile card (header, motto, color theme, expandable details) | `OAArchetypeCard` (L1), `Layer2ArchetypeCard` (L2) — both support `size: 'compact' \| 'rich'`, `themeOverride`, `isCurrent` |
+| Radar/Kiviat (any score distribution) | `KiviatChart` — supports `overlay` for dual series (self vs peer), `secondaryLabel`, `highlightLabels` |
+| Goleman radar (6-axis Goleman distribution) | `GolemanRadarChart` |
+| Top-nav tabs within a page | `shared/TabSwitcher` |
+| Top-bar entry | add to `MEMBER_NAV` / `MANAGER_NAV` / `COMPANY_NAV` in `TopBar.tsx` |
+| Adjective grid (86-adjective L2 selection) | `AdjectiveSelectionGrid` |
+| Treemap (categorical frequency) | `AdjectiveTreemap` |
+| Time-budget indicator on assessment pages | `TimeBudgetChip` |
+| Likert 1-10 sliders for assessments | `LeadershipForm` is the canonical pattern — copy its layout for new Likert flows |
+| Empty/placeholder state | dashed `rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50` card with a heading + body + optional CTA — see `Layer3HubPage` placeholder or `LeadershipSummaryView` empty branch |
+
+**Coherence rules** (applies to every new page/component):
+
+1. **Card chrome**: result and chart cards use `rounded-2xl border-2 border-gray-200 bg-white p-5` with an uppercase tracking-widest section heading on top (`text-xs font-semibold uppercase tracking-widest`). Apply archetype/accent color to the heading text *only*, never to the card background.
+2. **Color tokens**: derive from `ARCHETYPE_ACCENTS` + `ARCHETYPE_CARD_COLORS` (Layer 1) or per-domain group palettes (Layer 2 sub-profile groups). Never hardcode tailwind colors for archetype-tied UI.
+3. **Card sizes**: domain cards (archetype / sub-profile / saboteur / sage power) MUST expose a `size: 'compact' | 'rich'` prop so the same component renders in libraries (compact) and recap pages (rich).
+4. **Triad labeling**: archetype names always come from `t('layer1:result.triads.<id>')` so the (archetype, behavior, goleman style) triad stays consistent.
+5. **i18n**: zero hardcoded user-facing strings — even placeholder/coming-soon copy goes into the appropriate `locales/en/<namespace>.json`.
+6. **Reuse over re-implement**: if you're tempted to copy-paste a card or chart and tweak it, extract a prop on the original instead. Three near-duplicates means an `isCurrent`/`themeOverride`/`size` prop is missing.
+7. **Layout grid**: assessment pages = single-column `max-w-3xl` centered. Result pages = `space-y-4` stack of white cards. Multi-panel comparisons (self vs peer) use `grid grid-cols-1 md:grid-cols-2 gap-4`.
+8. **Forms**: 10-point Likert sliders, time-budget chip at top, progress bar, submit at bottom, prefetch existing answers on mount (see `RateManagerPage` for the canonical shape).
+
+**Workflow rule**: when starting a new page, list which existing components you'll reuse BEFORE writing JSX. If you can't name at least 2–3 reused components, you're probably reinventing — go look harder.
+
+## Feature Resonance — connect ALL the surfaces
+
+When a feature, concept, or data shape lives in more than one place in the app (assessments, peer views, summaries, seeds, types, API, locales), changes to it MUST land in every resonating surface in the same pass. Never ship a half-wired feature where one path has it and a symmetric path doesn't.
+
+**Always check these symmetric surfaces before declaring done**:
+
+1. **Self ↔ Peer**: a self-assessment usually has a peer counterpart (and vice-versa). Adding/changing one without the other is a bug.
+   - Example: Layer 2 self-form ⇄ Layer 2 peer-form in `LeadershipAssessmentPage` "Feedback to Others" ⇄ Layer 2 peer-form in `RateManagerPage`.
+2. **Member-rates-X ↔ X-rates-Member**: teammates are rated in `LeadershipAssessmentPage > rate`; managers are rated in `RateManagerPage`. Both paths must move together — `teammates` filter explicitly excludes managers, so `RateManagerPage` is the ONLY path for member→manager evaluation.
+3. **Self-view ↔ How-others-see-me view**: any new self output should also surface in the aggregated peer view (heatmap, kiviat, sub-profile, delta).
+4. **Domain types ↔ API ↔ Web ↔ Seed ↔ Locales**: a new assessment slice touches all five layers — `packages/shared/src/types.ts`, an API route + zod schema, web pages/components, the synthetic `seed.ts`/`synthetic-*.ts`, and `locales/en/*.json`.
+5. **Library page ↔ Result/Recap card**: visual components used in `/library/*` are the same ones rendered in user-facing recap cards. Style/copy changes must stay consistent across both.
+6. **Seed coverage**: any new persisted entity must be generated by `seed.ts` so `SeedPage` counters and downstream views are usable without manual data entry.
+7. **i18n parity**: every user-facing string lands in `locales/en/*.json` (multilingual-ready — EN-only content but structurally namespaced). No hardcoded strings in components.
+8. **Sidebar / progress badges**: when a surface has a "submitted / partially submitted" indicator (e.g. ✓ for L1, ✓✓ for L1+L2), every sibling path that shares that concept must render the same indicator.
+
+**Practical rule**: before reporting a feature complete, grep the codebase for every page/component that already handles the symmetric concept (e.g. `grep -r "peer-assessments/leadership"`) and confirm the new behavior is present in each. If you only edited one of N matches, you're not done.
+
+**When in doubt, ask**: "Where else in the app does this concept already appear, and does my change need to land there too?" — list those locations explicitly before finishing.
+
 ## Branching & Commits
 - Branch: `feat/`, `fix/`, `chore/`, `docs/`, `test/`, `refactor/`
 - Commits: `type(scope): description`
