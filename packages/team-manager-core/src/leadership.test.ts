@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { computeLeadershipScores, computeArchetype, computeGolemansStyles } from './leadership.js'
+import { computeLeadershipScores, computeArchetype, computeGolemansStyles, getArchetypeProgression } from './leadership.js'
 
 // Pair mapping (1-indexed questions → 0-indexed answers):
 // q1+q11 → catalyzing  (idx 0+10)
@@ -116,5 +116,43 @@ describe('computeGolemansStyles', () => {
 
   it('maps strategist → visionary + coaching', () => {
     expect(computeGolemansStyles('strategist')).toEqual(['visionary', 'coaching'])
+  })
+})
+
+describe('getArchetypeProgression', () => {
+  it('expert → coordinator (dampen directing, amplify demanding)', () => {
+    expect(getArchetypeProgression('expert')).toEqual({
+      next: 'coordinator',
+      dampen: 'directing',
+      amplify: 'demanding',
+    })
+  })
+
+  it('coordinator → peer (dampen demanding, amplify conducting)', () => {
+    expect(getArchetypeProgression('coordinator')).toEqual({
+      next: 'peer',
+      dampen: 'demanding',
+      amplify: 'conducting',
+    })
+  })
+
+  it('peer → coach (dampen conducting, amplify coaching)', () => {
+    expect(getArchetypeProgression('peer')).toEqual({
+      next: 'coach',
+      dampen: 'conducting',
+      amplify: 'coaching',
+    })
+  })
+
+  it('coach → strategist (dampen coaching, amplify catalyzing)', () => {
+    expect(getArchetypeProgression('coach')).toEqual({
+      next: 'strategist',
+      dampen: 'coaching',
+      amplify: 'catalyzing',
+    })
+  })
+
+  it('returns null for strategist (peak)', () => {
+    expect(getArchetypeProgression('strategist')).toBeNull()
   })
 })

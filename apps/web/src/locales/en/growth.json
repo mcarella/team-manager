@@ -1,0 +1,77 @@
+{
+  "page": {
+    "title": "Growth",
+    "subtitle": "Your action plan: where you stand, where to go next, and which patterns to lean into or step away from."
+  },
+
+  "whereYouStand": {
+    "heading": "Where you stand",
+    "selfLabel": "Leadership archetype",
+    "subProfileLabel": "Behavioral sub-profile",
+    "leadershipMissing": "Take the Leadership self-assessment to see your archetype.",
+    "leadershipMissingCTA": "Take Leadership →",
+    "behavioralMissing": "Take the Behavioral Core to see your sub-profile.",
+    "behavioralMissingCTA": "Take Behavioral Core →"
+  },
+
+  "pathForward": {
+    "heading": "Path forward",
+    "hint": "The natural progression dampens your current primary behavior and amplifies the next one in the ORGANIC Agility sequence.",
+    "currentLabel": "You are",
+    "nextLabel": "Next archetype",
+    "dampenLabel": "Dampen",
+    "amplifyLabel": "Amplify",
+    "guidance": "To grow into {{next}}, do less of {{dampen}} and more of {{amplify}}.",
+    "peakHeading": "You're at the apex.",
+    "peakBody": "Strategist is the natural endpoint of the ORGANIC Agility sequence. Lateral growth from here is about Layer 2 (behavioral) and Layer 3 (saboteur) work — not another archetype shift.",
+    "missing": "Take the Leadership self-assessment to see your growth path."
+  },
+
+  "saboteurAntidotes": {
+    "heading": "Your top 3 saboteur antidotes",
+    "hint": "These are the patterns most likely to hijack you under stress, and the Sage Powers that counter them.",
+    "antidoteCaption": "Antidote to {{saboteur}}",
+    "missing": "Take the Attitude assessment (10 min) to see your saboteurs and their antidotes.",
+    "missingCTA": "Take Attitude →"
+  },
+
+  "hiddenBlind": {
+    "heading": "Hidden strengths & blind spots",
+    "hint": "Where your peers' view differs from your own self-assessment.",
+    "hiddenColumnHeading": "Hidden strengths",
+    "hiddenColumnHint": "Peers see this in you more than you see it in yourself.",
+    "blindColumnHeading": "Blind spots",
+    "blindColumnHint": "You rate yourself higher here than your peers do.",
+    "noneHidden": "No hidden strengths surfaced — peer view tracks your own.",
+    "noneBlind": "No blind spots surfaced — peer view tracks your own.",
+    "deltaLabel": "self {{self}} · peer {{peer}}",
+    "missing": "Ask peers to rate you on Leadership to unlock this view."
+  },
+
+  "skillsToImprove": {
+    "heading": "Top 3 skills to improve",
+    "hint": "Your lowest self-rated skills — natural candidates for focused practice.",
+    "currentLevelLabel": "Current",
+    "nextLevelLabel": "Next",
+    "atCapBody": "All your skills are at the top level (4). Time to focus on what's beyond the skills inventory.",
+    "missing": "Complete the Skills self-assessment to see your growth priorities.",
+    "missingCTA": "Take Skills →"
+  },
+
+  "behaviors": {
+    "catalyzing":  "Catalyzing",
+    "envisioning": "Envisioning",
+    "demanding":   "Demanding",
+    "coaching":    "Coaching",
+    "conducting":  "Conducting",
+    "directing":   "Directing"
+  },
+
+  "skillLevels": {
+    "0": "Don't know",
+    "1": "Know theory",
+    "2": "Autonomous",
+    "3": "Master",
+    "4": "Can teach"
+  }
+}

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { aggregatePeerLeadershipAssessments } from './peer-leadership.js'
+import { aggregatePeerLeadershipAssessments, computeBehaviorDeltas } from './peer-leadership.js'
 import { computeLeadershipScores, computeArchetype } from './leadership.js'
-import type { PeerLeadershipAssessment } from '@team-manager/shared'
+import type { LeadershipScores, PeerLeadershipAssessment, PeerLeadershipSummary } from '@team-manager/shared'
 
 function makeAssessment(
   assessorId: string,
@@ -73,5 +73,57 @@ describe('aggregatePeerLeadershipAssessments', () => {
   it('returns null dominantArchetype with no assessments', () => {
     const s = aggregatePeerLeadershipAssessments('x', [])
     expect(s.dominantArchetype).toBeNull()
+  })
+})
+
+describe('computeBehaviorDeltas', () => {
+  function makeSelf(overrides: Partial<LeadershipScores> = {}): LeadershipScores {
+    return { catalyzing: 10, envisioning: 10, demanding: 10, coaching: 10, conducting: 10, directing: 10, ...overrides }
+  }
+  function makePeer(overrides: Partial<Record<keyof LeadershipScores, number>> = {}, evaluators = 3): PeerLeadershipSummary {
+    const avgs = { catalyzing: 10, envisioning: 10, demanding: 10, coaching: 10, conducting: 10, directing: 10, ...overrides }
+    return {
+      subjectId: 'x',
+      behaviors: {
+        catalyzing:  { average: avgs.catalyzing,  count: evaluators },
+        envisioning: { average: avgs.envisioning, count: evaluators },
+        demanding:   { average: avgs.demanding,   count: evaluators },
+        coaching:    { average: avgs.coaching,    count: evaluators },
+        conducting:  { average: avgs.conducting,  count: evaluators },
+        directing:   { average: avgs.directing,   count: evaluators },
+      },
+      archetypeCounts: {},
+      dominantArchetype: null,
+      totalEvaluators: evaluators,
+    }
+  }
+
+  it('returns empty array when no peers evaluated', () => {
+    expect(computeBehaviorDeltas(makeSelf(), makePeer({}, 0))).toEqual([])
+  })
+
+  it('classifies near-equal scores as aligned (|delta| ≤ 2)', () => {
+    const deltas = computeBehaviorDeltas(makeSelf(), makePeer({ catalyzing: 11 }))
+    const cat = deltas.find(d => d.behavior === 'catalyzing')!
+    expect(cat.classification).toBe('aligned')
+    expect(cat.delta).toBe(1)
+  })
+
+  it('classifies delta > 2 as hidden (peer sees more)', () => {
+    const deltas = computeBehaviorDeltas(makeSelf({ catalyzing: 8 }), makePeer({ catalyzing: 14 }))
+    const cat = deltas.find(d => d.behavior === 'catalyzing')!
+    expect(cat.classification).toBe('hidden')
+    expect(cat.delta).toBe(6)
+  })
+
+  it('classifies delta < -2 as blind (peer sees less)', () => {
+    const deltas = computeBehaviorDeltas(makeSelf({ directing: 18 }), makePeer({ directing: 10 }))
+    const dir = deltas.find(d => d.behavior === 'directing')!
+    expect(dir.classification).toBe('blind')
+    expect(dir.delta).toBe(-8)
+  })
+
+  it('returns one entry per behavior (6 total)', () => {
+    expect(computeBehaviorDeltas(makeSelf(), makePeer()).length).toBe(6)
   })
 })

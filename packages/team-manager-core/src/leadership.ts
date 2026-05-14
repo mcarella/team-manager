@@ -65,3 +65,31 @@ export function computeGolemansStyles(archetype: Archetype): GolemansStyle[] {
   const [primary, secondary] = ARCHETYPE_BEHAVIORS[archetype]
   return [BEHAVIOR_TO_GOLEMAN[primary], BEHAVIOR_TO_GOLEMAN[secondary]]
 }
+
+// Behavior aliases for the progression API. Keep aligned with LeadershipScores keys.
+export type Behavior = keyof LeadershipScores
+
+export interface ArchetypeProgression {
+  next: Archetype
+  /** Behavior to dampen — currently primary, to be reduced. */
+  dampen: Behavior
+  /** Behavior to amplify — currently secondary or absent, to be increased. */
+  amplify: Behavior
+}
+
+/**
+ * Natural archetype progression sequence: expert → coordinator → peer → coach → strategist.
+ * For each step, returns which behavior to dampen and which to amplify in order
+ * to shift the primary into the next archetype's signature pair.
+ *
+ * Returns `null` for `strategist` (peak of the natural sequence — no further step).
+ */
+export function getArchetypeProgression(current: Archetype): ArchetypeProgression | null {
+  switch (current) {
+    case 'expert':      return { next: 'coordinator', dampen: 'directing',  amplify: 'demanding'   }
+    case 'coordinator': return { next: 'peer',        dampen: 'demanding',  amplify: 'conducting'  }
+    case 'peer':        return { next: 'coach',       dampen: 'conducting', amplify: 'coaching'    }
+    case 'coach':       return { next: 'strategist',  dampen: 'coaching',   amplify: 'catalyzing'  }
+    case 'strategist':  return null
+  }
+}

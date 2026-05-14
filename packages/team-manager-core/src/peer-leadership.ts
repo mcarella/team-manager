@@ -54,3 +54,41 @@ export function aggregatePeerLeadershipAssessments(
     totalEvaluators,
   }
 }
+
+export type BehaviorDeltaClassification = 'aligned' | 'hidden' | 'blind'
+
+export interface BehaviorDelta {
+  behavior: BehaviorKey
+  self: number
+  peer: number
+  /** peer - self. Positive = peers see more than you, negative = peers see less. */
+  delta: number
+  classification: BehaviorDeltaClassification
+}
+
+const DELTA_THRESHOLD = 2
+
+/**
+ * Compare a user's self leadership scores against their peer-summary averages.
+ * Returns one entry per behavior with delta + classification:
+ *  - `aligned`  when |delta| ≤ 2 (peers and self roughly agree)
+ *  - `hidden`   when delta > 2  (peers see MORE than self — a hidden strength)
+ *  - `blind`    when delta < -2 (peers see LESS than self — a blind spot)
+ *
+ * Returns `[]` when no peers have evaluated the subject yet.
+ */
+export function computeBehaviorDeltas(
+  self: LeadershipScores,
+  peer: PeerLeadershipSummary,
+): BehaviorDelta[] {
+  if (peer.totalEvaluators === 0) return []
+  return BEHAVIORS.map(b => {
+    const selfScore = self[b]
+    const peerScore = peer.behaviors[b].average
+    const delta = peerScore - selfScore
+    const classification: BehaviorDeltaClassification =
+      Math.abs(delta) <= DELTA_THRESHOLD ? 'aligned' :
+      delta > 0 ? 'hidden' : 'blind'
+    return { behavior: b, self: selfScore, peer: peerScore, delta, classification }
+  })
+}
