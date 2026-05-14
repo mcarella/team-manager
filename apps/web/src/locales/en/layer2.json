@@ -1,0 +1,435 @@
+{
+  "page": {
+    "title": "Behavioral Core",
+    "subtitle": "Two passes, ~10 minutes. The first asks how others expect you to behave; the second asks who you really are. The gap between them tells the story.",
+    "intro": "You'll see the same 86 adjectives twice. Pick the ones that fit — don't overthink. Click again to unselect."
+  },
+  "phases": {
+    "selfConcept": {
+      "title": "Pass 1 of 2 — Self-Concept",
+      "instructions": "Pick adjectives describing how others (managers, colleagues) expect you to behave at work."
+    },
+    "self": {
+      "title": "Pass 2 of 2 — Self",
+      "instructions": "Now pick the adjectives describing how you really are at work. Be honest, even if it diverges from the first list."
+    }
+  },
+  "form": {
+    "selectionCount_one": "{{count}} adjective selected",
+    "selectionCount_other": "{{count}} adjectives selected",
+    "selectionProgress": "{{count}} of {{min}} minimum",
+    "minimumHint": "Pick at least {{min}} adjectives that describe you. Fewer than that and your profile will read as merely \"balanced\" — pick decisively.",
+    "minimumMet": "Enough signal — you can continue or keep picking.",
+    "next": "Continue to Pass 2 →",
+    "submit": "See your profile",
+    "back": "← Back",
+    "retake": "Retake assessment",
+    "home": "← Home"
+  },
+  "result": {
+    "eyebrow": "Beneath your leadership",
+    "subtitle": "Behavioral archetype",
+    "layer1Callout": "Your 3-min read: {{triad}}. {{profile}} is the behavioral substrate underneath — the stable drives that make this leadership feel natural to you.",
+    "layer1Missing": "Take the 3-minute Layer 1 first to see how your behavioral core shapes the leadership style you reach for.",
+    "takeLayer1": "Take Layer 1 (3 min) →",
+    "drivesHeading": "Behavioral Drives",
+    "drivesNote": "Numbers blend who you are (60%) with how others expect you to be (40%).",
+    "factors": {
+      "dominance": "Dominance",
+      "extraversion": "Extraversion",
+      "patience": "Patience",
+      "formality": "Formality"
+    },
+    "factorInfo": {
+      "dominance": "Drive to control outcomes and people. High = takes charge and decides fast; low = collaborative and consensus-seeking.",
+      "extraversion": "Drive for social interaction and influence. High = outgoing and persuasive; low = reserved and analytical.",
+      "patience": "Drive for stability and steady pace. High = calm and methodical; low = fast-paced and urgent.",
+      "formality": "Drive for structure and precision. High = process-oriented and detail-focused; low = flexible and improvising."
+    },
+    "strengthsHeading": "Leader's Strengths",
+    "cautionsHeading": "Areas for Growth",
+    "idealEnvironmentHeading": "Ideal Environment",
+    "communicationStyleHeading": "Communication Style",
+    "typicalRolesHeading": "Where they easily perform",
+    "distributionHeading": "Style Distribution",
+    "dominantHeading": "Your strongest club",
+    "dominantNote": "Great leaders don't pick a favorite club. The radar shows your full bag — but {{style}} is where you naturally reach.",
+    "deepDiveHeading": "Leadership Styles — Attitudes & Behaviors",
+    "golemanMottos": {
+      "coercive":      "\"Do what I tell you\"",
+      "authoritative": "\"Come with me\"",
+      "pacesetting":   "\"Do as I do, now\"",
+      "democratic":    "\"What do you think?\"",
+      "coaching":      "\"Try this\"",
+      "visionary":     "\"See the whole picture\""
+    },
+    "groupLabels": {
+      "analytical":  "Analytical",
+      "social":      "Social",
+      "stabilizing": "Stabilizing",
+      "persistent":  "Persistent"
+    },
+    "deepDive": {
+      "leaderAttitude":      "Leader Attitude",
+      "leaderStance":        "Leader Stance",
+      "workManagement":      "Work Management",
+      "definitionOfSuccess": "Definition of Success",
+      "motivationalStyle":   "Motivational Style",
+      "groupUnity":          "Group Unity"
+    },
+    "diff": {
+      "openButton": "Compare with Layer 1",
+      "closeButton": "Hide comparison",
+      "heading": "How Layer 1 and Layer 2 align",
+      "noLayer1": "Take Layer 1 first to enable the side-by-side comparison.",
+      "layer1Label": "Layer 1 — Leadership",
+      "layer2Label": "Layer 2 — Behavioral Core",
+      "layer1Eyebrow": "Right now you lead as",
+      "layer2Eyebrow": "Beneath your leadership",
+      "layer1PrimaryGoleman": "Primary Goleman",
+      "layer2DominantGoleman": "Dominant Goleman (from radar)",
+      "overlayHeading": "Goleman radar — both layers overlaid",
+      "verdict": {
+        "aligned": "✓ Aligned — both layers point to {{style}} as your strongest pull. Your visible leadership matches your behavioral substrate.",
+        "softMismatch": "↗ Close — Layer 1 says you lead {{layer1}} but Layer 2's strongest is {{layer2}}. They're related — your behavioral drives support both styles.",
+        "stretching": "⚠ Divergent — Layer 1 says you lead {{layer1}} but Layer 2's strongest is {{layer2}}. You may be stretching beyond your natural drives — sustainable for short bursts, tiring over time."
+      }
+    }
+  },
+  "adjectives": {
+    "a01": "Assertive", "a02": "Independent", "a03": "Determined", "a04": "Self-confident",
+    "a05": "Competitive", "a06": "Bold", "a07": "Forceful", "a08": "Authoritative",
+    "a09": "Decisive", "a10": "Demanding",
+    "a11": "Cooperative", "a12": "Agreeable", "a13": "Accommodating", "a14": "Supportive",
+    "a15": "Compliant", "a16": "Collaborative", "a17": "Humble", "a18": "Deferential",
+    "a19": "Yielding", "a20": "Diplomatic",
+    "b01": "Sociable", "b02": "Persuasive", "b03": "Outgoing", "b04": "Talkative",
+    "b05": "Enthusiastic", "b06": "Friendly", "b07": "Influential", "b08": "Expressive",
+    "b09": "Convincing", "b10": "Charming", "b11": "Empathetic",
+    "b12": "Reserved", "b13": "Introspective", "b14": "Analytical", "b15": "Task-oriented",
+    "b16": "Private", "b17": "Reflective", "b18": "Serious", "b19": "Quiet",
+    "b20": "Observant", "b21": "Selective", "b22": "Formal",
+    "c01": "Calm", "c02": "Patient", "c03": "Steady", "c04": "Relaxed",
+    "c05": "Consistent", "c06": "Methodical", "c07": "Easy-going", "c08": "Tolerant",
+    "c09": "Predictable", "c10": "Careful",
+    "c11": "Intense", "c12": "Urgent", "c13": "Fast-paced", "c14": "Restless",
+    "c15": "Impatient", "c16": "Driven", "c17": "Spontaneous", "c18": "Tense",
+    "c19": "Energetic",
+    "d01": "Precise", "d02": "Strict", "d03": "Organized", "d04": "Disciplined",
+    "d05": "Detail-oriented", "d06": "Cautious", "d07": "Meticulous", "d08": "Vigilant",
+    "d09": "Thorough", "d10": "Rule-following",
+    "d11": "Flexible", "d12": "Impulsive", "d13": "Uninhibited", "d14": "Informal",
+    "d15": "Casual", "d16": "Improvising", "d17": "Adaptable", "d18": "Unconventional",
+    "d19": "Risk-taking",
+    "e01": "Objective", "e02": "Logical", "e03": "Rational",
+    "e04": "Intuitive", "e05": "Emotional", "e06": "Sensitive"
+  },
+  "subProfiles": {
+    "ricercatore": {
+      "name": "The Researcher", "icon": "🔬",
+      "description": "Methodical and data-driven. Goes deep into every detail before deciding. Nothing is left to chance: gathers information, analyzes alternatives, then acts with surgical precision.",
+      "strengths": [
+        "In-depth analysis and critical thinking",
+        "High quality standards",
+        "Precision in data-driven decisions",
+        "Ability to spot errors and inconsistencies"
+      ],
+      "cautions": [
+        "May seem detached or cold in relationships",
+        "Risk of analysis paralysis when decisions are urgent",
+        "Tendency to slow the team with requests for more data"
+      ],
+      "idealEnvironment": "Roles requiring research, data analysis, QA, or compliance. Structured environments with time to go deep.",
+      "communicationStyle": "Prefers written, detailed communication. Appreciates facts and data, not generalizations. Respects those who come prepared.",
+      "typicalRoles": ["Data Analyst", "Researcher", "Auditor", "Quality Manager", "Process Engineer"]
+    },
+    "direttore": {
+      "name": "The Director", "icon": "🎯",
+      "description": "Results above all else. Works with relentless precision and determination. Never settles, maintains total control over processes to ensure everything runs to their standards.",
+      "strengths": [
+        "Absolute focus on results",
+        "Self-discipline and operational rigor",
+        "Efficiency in execution",
+        "Deep technical competence"
+      ],
+      "cautions": [
+        "May be perceived as rigid or authoritarian",
+        "Difficulty delegating important tasks",
+        "Risk of micromanagement"
+      ],
+      "idealEnvironment": "Technical leadership roles, project management, environments where precision is critical. Operational autonomy.",
+      "communicationStyle": "Direct and concise. Doesn't enjoy small talk. Wants to know the 'what' and the 'when', not the 'how you feel'.",
+      "typicalRoles": ["CTO", "Engineering Manager", "Financial Controller", "Operations Director"]
+    },
+    "esperto": {
+      "name": "The Specialist", "icon": "🔧",
+      "description": "Deep expertise and meticulous work in specific areas. Would rather be the foremost expert in their field than a generalist. Work quality is their personal signature.",
+      "strengths": [
+        "Top-tier technical expertise",
+        "Reliability and consistency at work",
+        "Maniacal attention to quality",
+        "Ability to work in depth on complex topics"
+      ],
+      "cautions": [
+        "Resistance to change and novelty",
+        "Prefers working in solitude",
+        "May struggle with roles requiring versatility"
+      ],
+      "idealEnvironment": "Highly specialized roles, research, environments that reward depth. Low role rotation.",
+      "communicationStyle": "Precise and technical. Responds best to specific questions. Doesn't enjoy generic meetings or vague brainstorming.",
+      "typicalRoles": ["Technical Specialist", "Domain Consultant", "Researcher", "Digital Craftsman"]
+    },
+    "visionario": {
+      "name": "The Strategist", "icon": "♟️",
+      "description": "Thinks big and plans long-term. Combines strategic vision with analytical rigor. Sees connections where others see chaos and turns complex ideas into structured action plans.",
+      "strengths": [
+        "Long-term strategic thinking",
+        "Intellectual leadership",
+        "Systematic innovation capability",
+        "Complex planning"
+      ],
+      "cautions": [
+        "May underestimate day-to-day execution",
+        "Impatient with operational details",
+        "Sometimes perceived as detached from reality"
+      ],
+      "idealEnvironment": "Strategy roles, executive consulting, R&D. Environments that value long-term thinking.",
+      "communicationStyle": "Selective communicator: speaks when they have something meaningful to say. Prefers intellectual debate to surface conversation.",
+      "typicalRoles": ["Chief Strategy Officer", "Strategic Consultant", "Product Visionary", "Head of R&D"]
+    },
+    "pioniere": {
+      "name": "The Venturer", "icon": "🚀",
+      "description": "Enterprising and oriented to immediate action. Challenges the status quo with courage and independence. Doesn't ask permission: acts, experiments, fails fast, restarts. Rules are suggestions.",
+      "strengths": [
+        "Initiative and entrepreneurial spirit",
+        "Courage to take calculated risks",
+        "Total independence at work",
+        "Exceptional decision speed"
+      ],
+      "cautions": [
+        "May be too direct and brusque",
+        "Disregards rules and procedures",
+        "Difficulty in structured team work"
+      ],
+      "idealEnvironment": "Startups, entrepreneurial roles, environments rewarding total autonomy. Low bureaucracy.",
+      "communicationStyle": "Ultra-direct. Few words, lots of facts. Doesn't tolerate long meetings or slow decision processes.",
+      "typicalRoles": ["Founder", "Entrepreneur", "Independent Business Developer", "Turnaround Manager"]
+    },
+    "armonizzatore": {
+      "name": "The Harmonizer", "icon": "🤝",
+      "description": "Builds team harmony naturally. Sociable, collaborative, and organized — the glue that holds the group together. Their mission: make everyone feel included, heard, and valued.",
+      "strengths": [
+        "Natural team building",
+        "Empathy and active listening",
+        "Inclusive communication",
+        "Ability to organize people and social processes"
+      ],
+      "cautions": [
+        "Avoids conflict even when necessary",
+        "May sacrifice own needs for the team",
+        "Difficulty making unpopular decisions"
+      ],
+      "idealEnvironment": "HR roles, community management, collaborative environments. Teams that need cohesion.",
+      "communicationStyle": "Warm and inclusive. Always asks how you are before talking work. Prefers face-to-face.",
+      "typicalRoles": ["HR Manager", "Team Facilitator", "Community Manager", "Customer Success"]
+    },
+    "capitano": {
+      "name": "The Captain", "icon": "⚡",
+      "description": "Charismatic leader who guides with energy, vision, and powerful communication. Enters a room and dominates it naturally. Motivates teams through personal charisma and the ability to paint a compelling vision.",
+      "strengths": [
+        "Natural, charismatic leadership",
+        "Ability to motivate and inspire",
+        "Change management",
+        "High-impact persuasive communication"
+      ],
+      "cautions": [
+        "May dominate conversations and not listen",
+        "Impatient with slow workers",
+        "Risk of rushed decisions"
+      ],
+      "idealEnvironment": "Executive leadership roles, dynamic and fast-changing environments. Crisis or transformation situations.",
+      "communicationStyle": "Energetic and direct. Prefers communicating the vision over the details. Uses stories and metaphors.",
+      "typicalRoles": ["CEO", "General Manager", "VP Sales", "Change Leader", "Head of Business Unit"]
+    },
+    "mediatore": {
+      "name": "The Mediator", "icon": "💚",
+      "description": "Patient, empathetic, and consensus-oriented. The emotional glue of the team: listens to everyone, mediates between different positions, and creates a safe space where people can express themselves without fear.",
+      "strengths": [
+        "Exceptional active listening",
+        "Patience in negotiations",
+        "Natural diplomacy",
+        "Constant emotional support to the team"
+      ],
+      "cautions": [
+        "Slow to decide under pressure",
+        "Avoids direct confrontation",
+        "May be perceived as indecisive"
+      ],
+      "idealEnvironment": "Mediation roles, team support, environments requiring consensus. Flat organizations.",
+      "communicationStyle": "Gentle and patient. Asks open questions. Prefers dialogue over monologue. Never raises their voice.",
+      "typicalRoles": ["Mediator", "Team Coach", "Relational Account Manager", "Facilitator"]
+    },
+    "ribelle": {
+      "name": "The Maverick", "icon": "🔥",
+      "description": "Bold, charismatic, and intolerant of conventions. Combines the Captain's social energy with total aversion to rules. Challenges the status quo loudly and drags others into their revolutionary vision.",
+      "strengths": [
+        "Radical, disruptive innovation",
+        "Explosive persuasion and charisma",
+        "Courage to defy authority",
+        "Contagious energy"
+      ],
+      "cautions": [
+        "Impatient with any form of authority",
+        "May create organizational chaos",
+        "Burns bridges quickly"
+      ],
+      "idealEnvironment": "Early-stage startups, creative roles, environments rewarding disruption. Zero bureaucracy.",
+      "communicationStyle": "Overwhelming. Talks fast, thinks fast, acts fast. Doesn't filter much of what they say.",
+      "typicalRoles": ["Creative Director", "Visionary Founder", "Growth Hacker", "Innovation Lead"]
+    },
+    "persuasore": {
+      "name": "The Persuader", "icon": "🎤",
+      "description": "Born communicator with an innate ability to motivate and convince. Reads people like an open book and knows exactly which lever to pull to get the desired result. Tireless negotiator.",
+      "strengths": [
+        "Top-tier negotiation",
+        "Ability to motivate individuals and teams",
+        "Strategic networking",
+        "Selling ideas and visions"
+      ],
+      "cautions": [
+        "May seem manipulative or too 'political'",
+        "Impatient with slow, bureaucratic processes",
+        "Risk of over-promising"
+      ],
+      "idealEnvironment": "Sales, business development, negotiation roles. Competitive, dynamic environments.",
+      "communicationStyle": "Adaptive: changes style depending on the interlocutor. Uses storytelling. Always 'on'.",
+      "typicalRoles": ["VP Sales", "Business Development Director", "Lobbyist", "Key Account Manager"]
+    },
+    "ambasciatore": {
+      "name": "The Promoter", "icon": "🌟",
+      "description": "Sociable, optimistic, and naturally connected to people. Builds wide relationships and promotes ideas with contagious enthusiasm. The ideal public face of any organization.",
+      "strengths": [
+        "Building wide and genuine relationships",
+        "Contagious enthusiasm and positivity",
+        "Engaging communication",
+        "Exceptional social adaptability"
+      ],
+      "cautions": [
+        "May lack follow-through on details",
+        "Avoids repetitive or analytical tasks",
+        "Sometimes superficial in analysis"
+      ],
+      "idealEnvironment": "Communication, PR, relational marketing roles. Social and creative environments.",
+      "communicationStyle": "Enthusiastic and informal. Prefers phone calls and in-person meetings. Emails short and positive.",
+      "typicalRoles": ["PR Manager", "Evangelist", "Community Lead", "Marketing Manager", "Brand Ambassador"]
+    },
+    "camaleonte": {
+      "name": "The Adapter", "icon": "🦎",
+      "description": "Versatile and perfectly balanced across all factors. Adapts to any situation and team easily. Like a chameleon, takes on the color of the surrounding environment without losing their own identity.",
+      "strengths": [
+        "Extreme versatility in any context",
+        "Balance between task and relationships",
+        "Adaptability to diverse teams and cultures",
+        "Ability to mediate between opposite styles"
+      ],
+      "cautions": [
+        "Less defined and predictable profile",
+        "May seem indecisive or lacking strong opinions",
+        "Risk of not standing out in any specific area"
+      ],
+      "idealEnvironment": "Roles requiring flexibility, changing environments, multidisciplinary teams.",
+      "communicationStyle": "Adapts to the interlocutor's style. Can be formal or informal depending on context.",
+      "typicalRoles": ["Project Manager", "Generalist Consultant", "Scale-up COO", "Versatile Operations"]
+    },
+    "artigiano": {
+      "name": "The Artisan", "icon": "✋",
+      "description": "Precise, reflective, and meticulous in execution. Like a craftsman, turns every task into a finished work with maniacal attention to detail. Observes more than they speak, and notices things others miss.",
+      "strengths": [
+        "Impeccable, error-free execution",
+        "Acute observation of details",
+        "Total reliability on deliverables",
+        "Silent innovation based on observation"
+      ],
+      "cautions": [
+        "Slow to adapt to change",
+        "Needs clear, structured direction",
+        "May find it hard to communicate their ideas"
+      ],
+      "idealEnvironment": "High-quality execution roles, stable environments with clear processes. Independent work.",
+      "communicationStyle": "Listens much, speaks little. When they speak, precise and pertinent. Prefers written instructions.",
+      "typicalRoles": ["Quality Specialist", "Specialized Technician", "Editor", "Detail Analyst", "Digital Craftsman"]
+    },
+    "guardiano": {
+      "name": "The Guardian", "icon": "🛡️",
+      "description": "The pillar of the organization. Stable, structured, and completely reliable. Maintains procedures, protects standards, and ensures everything functions as it should. Without them, chaos would take over.",
+      "strengths": [
+        "Absolute reliability — the rock of the team",
+        "Precision and strict respect for procedures",
+        "Stability even under pressure",
+        "Precious institutional memory"
+      ],
+      "cautions": [
+        "Strongly resistant to change",
+        "May seem excessively rigid or bureaucratic",
+        "Difficulty with ambiguity and improvisation"
+      ],
+      "idealEnvironment": "Compliance, operations, regulated environments. Roles where stability is fundamental.",
+      "communicationStyle": "Formal and structured. Prefers clear procedures. Appreciates advance notice and predictability.",
+      "typicalRoles": ["Compliance Officer", "Operations Manager", "Administrator", "Controller", "Office Manager"]
+    },
+    "operatore": {
+      "name": "The Operator", "icon": "⚙️",
+      "description": "Cooperative, patient, and deeply concrete. Works with calm and consistency without ever losing their cool. The perfect team player: doesn't seek the spotlight but is indispensable to daily functioning.",
+      "strengths": [
+        "Absolute calm under pressure",
+        "Natural cooperation with any colleague",
+        "Consistency and pragmatism in execution",
+        "Ability to maintain a productive routine"
+      ],
+      "cautions": [
+        "May avoid necessary conflicts for the team",
+        "Slow to act in urgent situations",
+        "Risk of not expressing their own opinions"
+      ],
+      "idealEnvironment": "Operational roles, support teams, environments requiring consistency. High-quality repetitive work.",
+      "communicationStyle": "Informal and relaxed. Never forces a conversation. Available and patient.",
+      "typicalRoles": ["Specialized Operator", "Reliable Team Member", "Operational Support", "Logistics"]
+    },
+    "individualista": {
+      "name": "The Individualist", "icon": "🏔️",
+      "description": "Independent, methodical, and determined. Works best in complete autonomy where they can apply their deep competence without interference. Combines the Director's determination with the Specialist's patience.",
+      "strengths": [
+        "Total autonomy at work",
+        "Deep competence in specific areas",
+        "Tenacity and persistence on objectives",
+        "Extremely high personal standards"
+      ],
+      "cautions": [
+        "Significant difficulty in teamwork",
+        "May seem distant or inaccessible",
+        "Reluctant to share knowledge"
+      ],
+      "idealEnvironment": "Independent work, research, individual consulting. Minimal social interaction required.",
+      "communicationStyle": "Minimal, functional communication. Prefers to work in silence. Responds to email, not chat.",
+      "typicalRoles": ["Independent Consultant", "Senior Researcher", "Software Architect", "Domain Expert"]
+    },
+    "studioso": {
+      "name": "The Scholar", "icon": "📚",
+      "description": "Expert and rigorous, pursues knowledge with determination. Less patient than the Individualist, the Scholar has a faster rhythm but the same hunger for competence. Excels at turning knowledge into results.",
+      "strengths": [
+        "Expertise and sharp critical thinking",
+        "Methodological rigor in research",
+        "Intellectual independence",
+        "Ability to synthesize complex topics"
+      ],
+      "cautions": [
+        "May isolate from the team",
+        "Difficulty communicating ideas accessibly",
+        "Impatient with those who lack the same depth"
+      ],
+      "idealEnvironment": "Advanced research, strategic analysis, roles requiring intellectual depth.",
+      "communicationStyle": "Precise and at times technical. Prefers substantial debates to casual conversation.",
+      "typicalRoles": ["Lead Researcher", "Senior Analyst", "Solutions Architect", "Lecturer", "Thought Leader"]
+    }
+  }
+}

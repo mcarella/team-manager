@@ -1,35 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useStore } from '../store/index.js'
 
-const ROLES = [
-  {
-    id: 'member' as const,
-    label: 'Team Member',
-    desc: 'Complete your assessments and export your profile.',
-    color: 'bg-blue-600 hover:bg-blue-700',
-    icon: 'M',
-  },
-  {
-    id: 'manager' as const,
-    label: 'Manager',
-    desc: 'Build and analyze your teams.',
-    color: 'bg-orange-600 hover:bg-orange-700',
-    icon: 'T',
-  },
-  {
-    id: 'company' as const,
-    label: 'Company',
-    desc: 'Overview all teams and individuals.',
-    color: 'bg-purple-600 hover:bg-purple-700',
-    icon: 'C',
-  },
+type RoleId = 'member' | 'manager' | 'company'
+
+interface RoleConfig {
+  id: RoleId
+  color: string
+  icon: string
+}
+
+const ROLES: RoleConfig[] = [
+  { id: 'member',  color: 'bg-blue-600 hover:bg-blue-700',     icon: 'M' },
+  { id: 'manager', color: 'bg-orange-600 hover:bg-orange-700', icon: 'T' },
+  { id: 'company', color: 'bg-purple-600 hover:bg-purple-700', icon: 'C' },
 ]
 
 export default function HomePage() {
+  const { t } = useTranslation(['common', 'home'])
   const { currentRole, currentUserId, login } = useStore()
   const navigate = useNavigate()
-  const [selectedRole, setSelectedRole] = useState<'member' | 'manager' | 'company' | null>(null)
+  const [selectedRole, setSelectedRole] = useState<RoleId | null>(null)
   const [name, setName] = useState('')
 
   // If already logged in, redirect
@@ -50,15 +42,15 @@ export default function HomePage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-8 p-8">
       <div className="text-center">
-        <h1 className="text-4xl font-bold">Team Manager</h1>
+        <h1 className="text-4xl font-bold">{t('home:heading')}</h1>
         <p className="text-lg text-gray-600 mt-2 max-w-md">
-          Build balanced teams using leadership archetypes and cultural profiles.
+          {t('home:subtitle')}
         </p>
       </div>
 
       {!selectedRole ? (
         <div className="w-full max-w-md space-y-3">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide text-center">Log in as</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide text-center">{t('home:loginPrompt')}</p>
           {ROLES.map(role => (
             <button
               key={role.id}
@@ -69,8 +61,8 @@ export default function HomePage() {
                 {role.icon}
               </span>
               <div className="text-left">
-                <p className="font-semibold">{role.label}</p>
-                <p className="text-sm opacity-80">{role.desc}</p>
+                <p className="font-semibold">{t(`common:roles.${role.id}.label`)}</p>
+                <p className="text-sm opacity-80">{t(`common:roles.${role.id}.description`)}</p>
               </div>
             </button>
           ))}
@@ -81,16 +73,16 @@ export default function HomePage() {
             <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold text-white ${
               selectedRole === 'member' ? 'bg-blue-600' : selectedRole === 'manager' ? 'bg-orange-600' : 'bg-purple-600'
             }`}>
-              {ROLES.find(r => r.id === selectedRole)?.label}
+              {t(`common:roles.${selectedRole}.label`)}
             </span>
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-gray-700">Your name or ID</label>
+            <label className="text-sm font-medium text-gray-700">{t('home:nameLabel')}</label>
             <input
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="e.g. mario.rossi"
+              placeholder={t('home:namePlaceholder')}
               autoFocus
               className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -102,14 +94,14 @@ export default function HomePage() {
               selectedRole === 'member' ? 'bg-blue-600 hover:bg-blue-700' : selectedRole === 'manager' ? 'bg-orange-600 hover:bg-orange-700' : 'bg-purple-600 hover:bg-purple-700'
             }`}
           >
-            Continue
+            {t('common:actions.continue')}
           </button>
           <button
             type="button"
             onClick={() => { setSelectedRole(null); setName('') }}
             className="w-full text-sm text-gray-500 hover:text-gray-700"
           >
-            Back
+            {t('common:actions.back')}
           </button>
         </form>
       )}

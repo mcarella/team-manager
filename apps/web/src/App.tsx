@@ -3,6 +3,8 @@ import TopBar from './components/TopBar.js'
 import HomePage from './pages/HomePage.js'
 import OnboardingPage from './pages/OnboardingPage.js'
 import LeadershipAssessmentPage from './pages/LeadershipAssessmentPage.js'
+import Layer2BehavioralCorePage from './pages/Layer2BehavioralCorePage.js'
+import LibraryArchetypesPage from './pages/LibraryArchetypesPage.js'
 import CVFAssessmentPage from './pages/CVFAssessmentPage.js'
 import SkillsAssessmentPage from './pages/SkillsAssessmentPage.js'
 import ManagerHomePage from './pages/ManagerHomePage.js'
@@ -33,6 +35,8 @@ export default function App() {
       {/* Member */}
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/assessment/leadership" element={<LeadershipAssessmentPage />} />
+      <Route path="/assessment/layer-2" element={<Layer2BehavioralCorePage />} />
+      <Route path="/library/archetypes" element={<LibraryArchetypesPage />} />
       <Route path="/assessment/cvf" element={<CVFAssessmentPage />} />
       <Route path="/assessment/skills" element={<SkillsAssessmentPage />} />
       <Route path="/assessment/peer-skills" element={<Navigate to="/assessment/skills" replace />} />

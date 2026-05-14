@@ -6,6 +6,7 @@ import type {
   SkillRole,
   TeamMemberProfile,
   LeadershipAssessment,
+  BehavioralCoreAssessment,
   CVFAssessment,
   CVFScores,
   SkillAssessment,
@@ -14,6 +15,7 @@ import type {
 import { DEFAULT_ROLES } from '../data/default-roles.js'
 
 type AppRole = 'member' | 'manager' | 'company'
+type AssessmentDepth = 'shallow' | 'deeper'
 
 interface StoreState {
   // Session
@@ -30,6 +32,9 @@ interface StoreState {
   companyProfile: CVFScores | null
   teamDesiredCVF: Record<string, CVFScores> // teamId → desired CVF
 
+  // Org-level config
+  assessmentDepth: AssessmentDepth // shallow = Layer 1 only; deeper = Layer 1 + Layer 2
+
   // Session actions
   login: (role: AppRole, userId: string) => void
   logout: () => void
@@ -38,6 +43,7 @@ interface StoreState {
   // Member actions
   addMember: (user: User) => void
   saveLeadershipAssessment: (assessment: LeadershipAssessment) => void
+  saveBehavioralCoreAssessment: (assessment: BehavioralCoreAssessment) => void
   saveCVFAssessment: (assessment: CVFAssessment) => void
   saveSkillAssessment: (assessment: SkillAssessment) => void
 
@@ -49,6 +55,9 @@ interface StoreState {
   // Company actions
   saveCompanyProfile: (profile: CVFScores) => void
   saveTeamDesiredCVF: (teamId: string, profile: CVFScores) => void
+
+  // Org-level config actions
+  setAssessmentDepth: (depth: AssessmentDepth) => void
 
   // Skill actions
   addSkill: (skill: Skill) => void
@@ -74,6 +83,9 @@ export const useStore = create<StoreState>()(
       roles: DEFAULT_ROLES,
       companyProfile: null,
       teamDesiredCVF: {},
+
+      assessmentDepth: 'deeper',
+      setAssessmentDepth: (depth) => set({ assessmentDepth: depth }),
 
       login: (role, userId) => {
         const trimmed = userId.trim()
@@ -116,6 +128,16 @@ export const useStore = create<StoreState>()(
           members: state.members.map(m =>
             m.user.id === assessment.userId
               ? { ...m, leadership: assessment }
+              : m
+          ),
+        }))
+      },
+
+      saveBehavioralCoreAssessment: (assessment) => {
+        set(state => ({
+          members: state.members.map(m =>
+            m.user.id === assessment.userId
+              ? { ...m, behavioralCore: assessment }
               : m
           ),
         }))

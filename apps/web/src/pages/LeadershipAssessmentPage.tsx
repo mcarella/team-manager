@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { computeLeadershipScores, computeArchetype } from '@team-manager/core'
 import type { LeadershipAssessment, PeerLeadershipSummary } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import LeadershipForm from '../components/LeadershipForm.js'
 import ArchetypeCard from '../components/ArchetypeCard.js'
+import TimeBudgetChip from '../components/TimeBudgetChip.js'
 import { API_BASE } from '../lib/api.js'
 import { BEHAVIOR_LABELS, GOLEMAN_MOTTOS, BEHAVIOR_PAIRS, thirdPersonQuestions } from '../lib/leadership-constants.js'
 import { ARCHETYPE_COLORS } from '../lib/archetype-colors.js'
@@ -15,7 +17,8 @@ type MainTab = 'mine' | 'rate' | 'others'
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function LeadershipAssessmentPage() {
-  const { currentUserId, saveLeadershipAssessment, members, teams, managerTeamIds } = useStore()
+  const { t } = useTranslation(['layer1'])
+  const { currentUserId, saveLeadershipAssessment, members, teams, managerTeamIds, assessmentDepth } = useStore()
   const navigate = useNavigate()
 
   const [mainTab, setMainTab] = useState<MainTab>('mine')
@@ -125,16 +128,16 @@ export default function LeadershipAssessmentPage() {
   const selectedSubject = members.find(m => m.user.id === selectedSubjectId)
 
   const TABS: { key: MainTab; label: string }[] = [
-    { key: 'mine',   label: 'My Leadership' },
-    { key: 'others', label: 'How Others See Me' },
-    { key: 'rate',   label: 'Feedback to Others' },
+    { key: 'mine',   label: t('layer1:tabs.mine') },
+    { key: 'others', label: t('layer1:tabs.others') },
+    { key: 'rate',   label: t('layer1:tabs.rate') },
   ]
 
   return (
     <main className="min-h-screen flex flex-col items-center py-12 px-6 gap-8">
       <div className="text-center">
-        <h1 className="text-3xl font-bold">Leadership</h1>
-        <p className="text-gray-500 mt-2">Self-assessment and 360° peer feedback.</p>
+        <h1 className="text-3xl font-bold">{t('layer1:page.title')}</h1>
+        <p className="text-gray-500 mt-2">{t('layer1:page.subtitle')}</p>
       </div>
 
       {/* Tab switcher */}
@@ -142,22 +145,29 @@ export default function LeadershipAssessmentPage() {
 
       {/* ── My Leadership ─────────────────────────────────────────────────────── */}
       {mainTab === 'mine' && (
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-3xl">
           {displayResult ? (
             <div className="flex flex-col items-center gap-6">
-              <ArchetypeCard assessment={displayResult} />
+              <ArchetypeCard
+                assessment={displayResult}
+                behavioralCore={member?.behavioralCore}
+                assessmentDepth={assessmentDepth}
+              />
               <div className="flex gap-4">
                 <button
                   onClick={() => { setResult(null); setRetaking(true) }}
                   className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
                 >
-                  Retake assessment
+                  {t('layer1:result.retake')}
                 </button>
-                <Link to="/onboarding" className="text-sm text-blue-600 hover:underline">← Back</Link>
+                <Link to="/onboarding" className="text-sm text-blue-600 hover:underline">{t('layer1:result.back')}</Link>
               </div>
             </div>
           ) : (
-            <LeadershipForm userId={userId} onComplete={handleComplete} />
+            <div className="flex flex-col items-center gap-4">
+              <TimeBudgetChip budgetMinutes={3} />
+              <LeadershipForm userId={userId} onComplete={handleComplete} />
+            </div>
           )}
         </div>
       )}
@@ -244,7 +254,7 @@ export default function LeadershipAssessmentPage() {
 
       {/* ── How Others See Me ─────────────────────────────────────────────────── */}
       {mainTab === 'others' && (
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-3xl">
           {!peerSummary ? (
             <p className="text-sm text-gray-400">Loading…</p>
           ) : (
@@ -265,6 +275,7 @@ function LeadershipSummaryView({
   summary: PeerLeadershipSummary
   selfLeadership: LeadershipAssessment | null
 }) {
+  const { t } = useTranslation(['layer1'])
   if (summary.totalEvaluators === 0) {
     return (
       <div className="text-center py-12 text-gray-400 text-sm border border-dashed rounded-xl">
@@ -286,20 +297,20 @@ function LeadershipSummaryView({
         {selfArchetype && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-400">You see yourself as</span>
-            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize ${ARCHETYPE_COLORS[selfArchetype] ?? 'bg-gray-100 text-gray-600'}`}>{selfArchetype}</span>
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${ARCHETYPE_COLORS[selfArchetype] ?? 'bg-gray-100 text-gray-600'}`}>{t(`layer1:result.triads.${selfArchetype}`)}</span>
           </div>
         )}
         {summary.dominantArchetype && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-400">{archetypeMismatch ? '→ peers see you as' : '· peers agree:'}</span>
-            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize ${ARCHETYPE_COLORS[summary.dominantArchetype] ?? 'bg-gray-100 text-gray-600'}`}>{summary.dominantArchetype}</span>
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${ARCHETYPE_COLORS[summary.dominantArchetype] ?? 'bg-gray-100 text-gray-600'}`}>{t(`layer1:result.triads.${summary.dominantArchetype}`)}</span>
           </div>
         )}
       </div>
 
       {archetypeMismatch && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800">
-          <span className="font-semibold">Archetype mismatch</span> — You see yourself as a <span className="font-semibold capitalize">{selfArchetype}</span> but your peers perceive you as a <span className="font-semibold capitalize">{summary.dominantArchetype}</span>.
+          <span className="font-semibold">Archetype mismatch</span> — You see yourself as <span className="font-semibold">{t(`layer1:result.triads.${selfArchetype}`)}</span> but your peers perceive you as <span className="font-semibold">{t(`layer1:result.triads.${summary.dominantArchetype}`)}</span>.
         </div>
       )}
 

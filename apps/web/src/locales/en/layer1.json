@@ -1,0 +1,62 @@
+{
+  "page": {
+    "title": "Leadership",
+    "subtitle": "Self-assessment and 360° peer feedback."
+  },
+  "tabs": {
+    "mine": "My Leadership",
+    "others": "How Others See Me",
+    "rate": "Feedback to Others"
+  },
+  "result": {
+    "eyebrow": "Right now",
+    "headlineByArchetype": {
+      "expert":      "You lead as an Expert (directing, coercive)",
+      "coordinator": "You lead as a Coordinator (demanding, pacesetting)",
+      "peer":        "You lead as a Peer (conducting, democratic)",
+      "coach":       "You lead as a Coach (coaching)",
+      "strategist":  "You lead as a Strategist (catalyzing, visionary)"
+    },
+    "secondaryByArchetype": {
+      "expert":      "+ secondary (demanding, pacesetting)",
+      "coordinator": "+ secondary (conducting, democratic)",
+      "peer":        "+ secondary (coaching)",
+      "coach":       "+ secondary (catalyzing, visionary)",
+      "strategist":  "+ secondary (coaching)"
+    },
+    "triads": {
+      "expert":      "Expert (directing, coercive)",
+      "coordinator": "Coordinator (demanding, pacesetting)",
+      "peer":        "Peer (conducting, democratic)",
+      "coach":       "Coach (coaching)",
+      "strategist":  "Strategist (catalyzing, visionary)"
+    },
+    "retake": "Retake assessment",
+    "back": "← Back",
+    "deeperRead": "Want a deeper read? Take Layer 2 — Behavioral Core",
+    "deeperReadHint": "10 min",
+    "deeperSectionHeading": "Deeper read — Behavioral Core",
+    "deeperPlaceholderIntro": "Take the 10-min Behavioral Core to unlock:",
+    "deeperPlaceholder": {
+      "subProfile": "Your behavioral sub-profile (1 of 17)",
+      "drives": "4 stable behavioral drives (Dominance, Extraversion, Patience, Formality)",
+      "strengths": "Behavioral strengths and growth areas",
+      "environment": "Ideal environment, communication style, where you easily perform",
+      "distribution": "Goleman style distribution radar"
+    },
+    "deeperCTA": "Continue: Behavioral Core (10 min) →"
+  },
+  "golemanStyles": {
+    "coercive": "Coercive",
+    "authoritative": "Authoritative",
+    "pacesetting": "Pacesetting",
+    "democratic": "Democratic",
+    "coaching": "Coaching",
+    "visionary": "Visionary"
+  },
+  "timeBudget": {
+    "elapsed": "{{minutes}}m {{seconds}}s",
+    "over": "over budget",
+    "target": "{{minutes}}m target"
+  }
+}

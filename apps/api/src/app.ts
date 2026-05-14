@@ -3,6 +3,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import { assessmentsRouter } from './routes/assessments.js'
 import { peerAssessmentsRouter } from './routes/peer-assessments.js'
+import { behavioralCoreRouter } from './routes/behavioral-core.js'
 
 export function createApp(): Express {
   const app = express()
@@ -16,6 +17,7 @@ export function createApp(): Express {
   })
 
   app.use('/assessments', assessmentsRouter)
+  app.use('/assessments/behavioral-core', behavioralCoreRouter)
   app.use('/peer-assessments', peerAssessmentsRouter)
 
   return app

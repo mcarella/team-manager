@@ -1,0 +1,21 @@
+{
+  "actions": {
+    "continue": "Continue",
+    "back": "Back",
+    "logout": "Log out"
+  },
+  "roles": {
+    "member": {
+      "label": "Team Member",
+      "description": "Complete your assessments and export your profile."
+    },
+    "manager": {
+      "label": "Manager",
+      "description": "Build and analyze your teams."
+    },
+    "company": {
+      "label": "Company",
+      "description": "Overview all teams and individuals."
+    }
+  }
+}

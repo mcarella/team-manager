@@ -8,7 +8,7 @@ import CVFResultCard from '../components/CVFResultCard.js'
 type EntityId = string // 'org' | 'team:<id>' | 'manager:<id>'
 
 export default function CompanyProfilePage() {
-  const { members, teams } = useStore()
+  const { members, teams, assessmentDepth, setAssessmentDepth } = useStore()
 
   const [entityA, setEntityA] = useState<EntityId>('org')
   const [entityB, setEntityB] = useState<EntityId>('')
@@ -64,6 +64,51 @@ export default function CompanyProfilePage() {
           Compare CVF profiles across teams, managers, and the whole organisation.
         </p>
       </div>
+
+      {/* Assessment Configuration — org-wide depth setting */}
+      <section className="w-full max-w-lg bg-white border border-gray-200 rounded-2xl p-5 space-y-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Assessment configuration</p>
+          <h2 className="text-base font-semibold mt-0.5">Leadership assessment depth</h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Sets how much leadership data we collect from each member. Affects the "My Leadership" page.
+          </p>
+        </div>
+        <div role="radiogroup" aria-label="Assessment depth" className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            role="radio"
+            aria-checked={assessmentDepth === 'shallow'}
+            onClick={() => setAssessmentDepth('shallow')}
+            className={`text-left rounded-xl border p-3 transition-colors ${
+              assessmentDepth === 'shallow'
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-400'
+            }`}
+          >
+            <p className="text-sm font-semibold">Shallow</p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Layer 1 only — the 12-question ORGANIC archetype read (~3 min per member).
+            </p>
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={assessmentDepth === 'deeper'}
+            onClick={() => setAssessmentDepth('deeper')}
+            className={`text-left rounded-xl border p-3 transition-colors ${
+              assessmentDepth === 'deeper'
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-400'
+            }`}
+          >
+            <p className="text-sm font-semibold">Deeper</p>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Layer 1 + Behavioral Core — adds 86-adjective trait profile (~10 min more).
+            </p>
+          </button>
+        </div>
+      </section>
 
       {/* Entity pickers */}
       <div className="w-full max-w-lg grid grid-cols-2 gap-4">

@@ -1,5 +1,6 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useStore } from '../store/index.js'
+import LanguageToggle from './LanguageToggle.js'
 
 interface NavItem {
   label: string
@@ -98,6 +99,7 @@ export default function TopBar() {
             {name}
           </span>
         ))}
+        <LanguageToggle />
         <button
           onClick={handleLogout}
           className="text-xs text-gray-400 hover:text-gray-700 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"

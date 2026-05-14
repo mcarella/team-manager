@@ -38,6 +38,47 @@ export interface LeadershipAssessment {
   completedAt: Date
 }
 
+// Behavioral Core (Layer 2) — our own behavioral instrument, not PI.
+// Source: docs/references/index/assessment-mock.jsx (86 adjectives, 2-pass) +
+//         docs/references/index/archetypes-reference-guide.pdf (17 sub-profile centroids).
+
+export interface BehavioralCoreFactors {
+  dominance: number     // 0-100
+  extraversion: number  // 0-100
+  patience: number      // 0-100
+  formality: number     // 0-100
+}
+
+// Goleman 6-style radar. Stores the full distribution under the hood —
+// UI may project to a single dominant style. See DESIGN-Q: single-vs-distribution.
+export type GolemanRadar = Record<GolemansStyle, number> // 0-100 per style
+
+export type BehavioralCoreSubProfile =
+  | 'ricercatore'   | 'direttore'    | 'esperto'
+  | 'visionario'    | 'pioniere'     | 'armonizzatore'
+  | 'capitano'      | 'mediatore'    | 'ribelle'
+  | 'persuasore'    | 'ambasciatore' | 'camaleonte'
+  | 'artigiano'     | 'guardiano'    | 'operatore'
+  | 'individualista' | 'studioso'
+
+// Binary selection per the reference instrument: the user PICKS adjectives that
+// describe them in each pass. Selected = contributes its weight; unselected = 0.
+export interface BehavioralCoreAnswers {
+  selfConcept: string[] // adjective IDs picked for "how others expect you to be"
+  self: string[]        // adjective IDs picked for "who you really are"
+}
+
+export interface BehavioralCoreAssessment {
+  userId: string
+  answers: BehavioralCoreAnswers
+  selfConceptFactors: BehavioralCoreFactors // raw from pass 1
+  selfFactors: BehavioralCoreFactors        // raw from pass 2
+  factors: BehavioralCoreFactors            // synthesis: 0.6 * self + 0.4 * selfConcept
+  golemanRadar: GolemanRadar
+  subProfile: BehavioralCoreSubProfile
+  completedAt: Date
+}
+
 // CVF Assessment
 
 export interface CVFCategory {
@@ -89,6 +130,7 @@ export interface SkillAssessment {
 export interface TeamMemberProfile {
   user: User
   leadership?: LeadershipAssessment
+  behavioralCore?: BehavioralCoreAssessment
   cvf?: CVFAssessment
   skills: SkillAssessment[]
 }

@@ -116,3 +116,85 @@ describe('POST /assessments/cvf', () => {
     expect(res.status).toBe(400)
   })
 })
+
+describe('POST /assessments/behavioral-core', () => {
+  const validBody = {
+    userId: 'user-1',
+    answers: {
+      selfConcept: ['a01', 'a02', 'b01', 'c01', 'd01'],
+      self:        ['a01', 'a07', 'b02', 'c02', 'd02'],
+    },
+  }
+
+  it('returns 200 with synthesized factors, Goleman radar and a matched sub-profile', async () => {
+    const res = await request(app)
+      .post('/assessments/behavioral-core')
+      .send(validBody)
+
+    expect(res.status).toBe(200)
+    expect(res.body).toMatchObject({
+      userId: 'user-1',
+      selfConceptFactors: expect.objectContaining({
+        dominance: expect.any(Number),
+        extraversion: expect.any(Number),
+        patience: expect.any(Number),
+        formality: expect.any(Number),
+      }),
+      selfFactors: expect.objectContaining({
+        dominance: expect.any(Number),
+      }),
+      factors: expect.objectContaining({
+        dominance: expect.any(Number),
+        extraversion: expect.any(Number),
+        patience: expect.any(Number),
+        formality: expect.any(Number),
+      }),
+      golemanRadar: expect.objectContaining({
+        coercive: expect.any(Number),
+        authoritative: expect.any(Number),
+        pacesetting: expect.any(Number),
+        democratic: expect.any(Number),
+        coaching: expect.any(Number),
+        visionary: expect.any(Number),
+      }),
+      subProfile: expect.any(String),
+    })
+  })
+
+  it('accepts empty selections (returns near-neutral factors)', async () => {
+    const res = await request(app)
+      .post('/assessments/behavioral-core')
+      .send({ userId: 'user-1', answers: { selfConcept: [], self: [] } })
+    expect(res.status).toBe(200)
+    expect(res.body.factors.dominance).toBeGreaterThanOrEqual(40)
+    expect(res.body.factors.dominance).toBeLessThanOrEqual(55)
+  })
+
+  it('returns 400 when userId is missing', async () => {
+    const res = await request(app)
+      .post('/assessments/behavioral-core')
+      .send({ answers: { selfConcept: [], self: [] } })
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 400 when answers are missing', async () => {
+    const res = await request(app)
+      .post('/assessments/behavioral-core')
+      .send({ userId: 'user-1' })
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 400 when answers is the wrong shape (flat array)', async () => {
+    const res = await request(app)
+      .post('/assessments/behavioral-core')
+      .send({ userId: 'user-1', answers: ['a01', 'a02'] })
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 400 when selfConcept is missing from answers', async () => {
+    const res = await request(app)
+      .post('/assessments/behavioral-core')
+      .send({ userId: 'user-1', answers: { self: ['a01'] } })
+    expect(res.status).toBe(400)
+  })
+})
