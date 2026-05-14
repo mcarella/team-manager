@@ -46,6 +46,36 @@
     },
     "deeperCTA": "Continue: Behavioral Core (10 min) →"
   },
+  "peerLayer2": {
+    "ctaAfterL1": "Give the deeper read too (5 min) →",
+    "heading": "Deeper read — adjectives",
+    "instructions": "Pick adjectives that describe how {{name}} actually behaves at work. Single pass, anonymous — they only see aggregated results.",
+    "minimumHint": "Pick at least {{min}} adjectives. Fewer and the read won't be distinctive.",
+    "selectionProgress": "{{count}} of {{min}} minimum",
+    "selectionCount_one": "{{count}} adjective selected",
+    "selectionCount_other": "{{count}} adjectives selected",
+    "submit": "Submit deeper read",
+    "saving": "Saving…",
+    "saved": "✓ Deeper read submitted",
+    "cancel": "Cancel",
+    "editDeeper": "Edit deeper read →",
+    "sidebarL1Title": "L1 submitted",
+    "sidebarL1L2Title": "L1 + Layer 2 deeper read submitted"
+  },
+  "peerLayer2Summary": {
+    "heatmapHeading": "How peers describe you — adjective heatmap",
+    "drivesHeading": "Peer-perceived Behavioral Core",
+    "closestSubProfileLabel": "Closest peer-perceived sub-profile:",
+    "deltaHeading": "Self vs peer drives",
+    "notEnoughTitle": "Peer Behavioral Core — not enough data yet",
+    "notEnoughBody": "At least 2 peer deeper-read submissions are needed before the adjective heatmap and peer drives can be shown. ({{count}} so far.)",
+    "selfHint": "Take your own Behavioral Core (10 min) to enable the self-vs-peer comparison.",
+    "selfHintCTA": "Take it now →",
+    "selfHintLabel": "Tip:",
+    "verdictAligned": "✓ Aligned — peers see you close to how you see yourself.",
+    "verdictPartial": "↗ Partially aligned — minor gaps on at least one factor.",
+    "verdictBlindSpot": "⚠ Blind spot — a factor differs by {{delta}} between self and peer perception."
+  },
   "golemanStyles": {
     "coercive": "Coercive",
     "authoritative": "Authoritative",

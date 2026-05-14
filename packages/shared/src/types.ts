@@ -184,6 +184,39 @@ export interface PeerLeadershipSummary {
   totalEvaluators: number
 }
 
+// Peer Behavioral Core Assessment (Layer 2 × 360° feedback)
+
+export interface PeerBehavioralCoreAssessment {
+  assessorId: string
+  subjectId: string
+  picks: string[] // adjective IDs the peer selected describing the subject (single pass, not Self-Concept + Self)
+  factors: BehavioralCoreFactors
+  subProfile: BehavioralCoreSubProfile
+  createdAt: Date
+}
+
+export interface PeerBehavioralCoreSummary {
+  subjectId: string
+  totalEvaluators: number
+  /** Frequency: adjectiveId → number of peers who picked it. */
+  adjectiveFrequency: Record<string, number>
+  /** Aggregated factors across peers (weighted by pick frequency, scaled 0-100). */
+  factors: BehavioralCoreFactors
+  /** Sub-profile match against the aggregated factors. */
+  subProfile: BehavioralCoreSubProfile | null
+  /** How many peers landed on each sub-profile individually (for diversity insight). */
+  subProfileCounts: Record<string, number>
+}
+
+/** Enriched view of a single adjective's peer-pick frequency, for the heatmap render. */
+export interface AdjectiveFrequency {
+  adjectiveId: string
+  count: number
+  factor: 'dominance' | 'extraversion' | 'patience' | 'formality' | 'objectivity'
+  /** Signed weight from the instrument (positive = high-factor, negative = low-factor). */
+  weight: number
+}
+
 // Peer CVF Assessment (manager rating by team members)
 
 export interface PeerCVFAssessment {
@@ -218,4 +251,55 @@ export interface KiviatData {
   archetypeDistribution: Record<Archetype, number>
   cvfAverage: CVFScores
   skillsAverage: Record<string, number> // skillId → avg level
+}
+
+// Layer 3 — Saboteur Assessment
+
+export type SaboteurId =
+  | 'judge'
+  | 'stickler'
+  | 'pleaser'
+  | 'hyperAchiever'
+  | 'victim'
+  | 'hyperRational'
+  | 'hyperVigilant'
+  | 'restless'
+  | 'controller'
+  | 'avoider'
+
+export type SagePowerId = 'empathize' | 'explore' | 'innovate' | 'navigate' | 'activate'
+
+export type LikertValue = 1 | 2 | 3 | 4 | 5
+
+export type SaboteurScores = Record<SaboteurId, number> // each 0-10
+
+export type PQLevel = 'critical' | 'mixed' | 'good' | 'excellent' | 'mastery'
+
+export interface PQInterpretation {
+  level: PQLevel
+  /** Translation key for the headline label (e.g. 'layer3:pq.levels.excellent.label'). */
+  labelKey: string
+  /** Translation key for the body description. */
+  descriptionKey: string
+  /** Hex color hint for the gauge — UI may override via tokens. */
+  color: string
+}
+
+export interface SaboteurAssessment {
+  userId: string
+  /** 50 answers in question-bank declaration order. Each 1-5. */
+  saboteurAnswers: LikertValue[]
+  /** 24 emotion pairs, each `{ pos: 1-5, neg: 1-5 }`. */
+  pqAnswers: Array<{ pos: LikertValue; neg: LikertValue }>
+  saboteurScores: SaboteurScores
+  /** Sorted descending by score; ties broken by canonical declaration order. */
+  rankedSaboteurs: SaboteurId[]
+  /** Convenience: first 3 of rankedSaboteurs. */
+  topSaboteurs: SaboteurId[]
+  /** 0-100. */
+  pqScore: number
+  pqInterpretation: PQInterpretation
+  /** Top 3 sage powers, frequency-weighted by topSaboteur antidotes (rank-weighted). */
+  recommendedSagePowers: SagePowerId[]
+  completedAt: Date
 }

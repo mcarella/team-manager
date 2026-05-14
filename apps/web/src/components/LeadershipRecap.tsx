@@ -138,26 +138,25 @@ export default function LeadershipRecap({ leadership, behavioralCore, assessment
 
 function KiviatPanel({
   heading,
-  cardClass,
   accent,
   footer,
   children,
 }: {
   heading: string
-  cardClass: string
+  cardClass?: string
   accent: string
   footer?: React.ReactNode
   children: React.ReactNode
 }) {
   return (
-    <section className={`rounded-2xl border-2 p-5 ${cardClass}`}>
+    <section className="rounded-2xl border-2 border-gray-200 bg-white p-5">
       <p
         className="text-xs font-semibold uppercase tracking-widest opacity-70 mb-3"
         style={{ color: accent }}
       >
         {heading}
       </p>
-      <div className="bg-white/50 rounded-xl p-4">
+      <div className="p-1">
         {children}
       </div>
       {footer && <div className="pt-3">{footer}</div>}

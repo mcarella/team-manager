@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { computeLeadershipScores, computeArchetype } from '@team-manager/core'
 import type { CVFAssessment } from '@team-manager/shared'
 import { useStore } from '../store/index.js'
 import CVFForm from '../components/CVFForm.js'
+import AdjectiveSelectionGrid from '../components/AdjectiveSelectionGrid.js'
 import { API_BASE } from '../lib/api.js'
 import { LEVEL_LABELS, LEVEL_COLORS, LEVEL_ACTIVE } from '../lib/skill-levels.js'
 import { thirdPersonQuestions } from '../lib/leadership-constants.js'
@@ -14,7 +16,8 @@ type Tab = 'leadership' | 'skills' | 'cvf'
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function RateManagerPage() {
-  const { currentUserId, currentRole, members, roles, teams, managerTeamIds } = useStore()
+  const { t } = useTranslation(['layer1'])
+  const { currentUserId, currentRole, members, roles, teams, managerTeamIds, assessmentDepth } = useStore()
   const navigate = useNavigate()
 
   const [tab, setTab] = useState<Tab>('leadership')
@@ -23,6 +26,13 @@ export default function RateManagerPage() {
   const [leadershipAnswers, setLeadershipAnswers] = useState<number[]>(Array(12).fill(5))
   const [leadershipSaving, setLeadershipSaving] = useState(false)
   const [leadershipSaved, setLeadershipSaved] = useState(false)
+
+  // Leadership — Layer 2 (deeper read) state
+  const [showDeeperL2, setShowDeeperL2] = useState(false)
+  const [peerL2Picks, setPeerL2Picks] = useState<Set<string>>(new Set())
+  const [peerL2Saving, setPeerL2Saving] = useState(false)
+  const [peerL2Saved, setPeerL2Saved] = useState(false)
+  const PEER_L2_MIN = 15
 
   // Skills state
   const [skillLevels, setSkillLevels] = useState<Record<string, number>>({})
@@ -65,12 +75,21 @@ export default function RateManagerPage() {
     .flatMap(r => r.skills)
     .filter((s, i, arr) => arr.findIndex(x => x.id === s.id) === i)
 
-  // Prefetch previous leadership answers
+  // Prefetch previous leadership + L2 answers
   useEffect(() => {
     fetch(`${API_BASE}/peer-assessments/leadership/${managerId}/my-assessment/${userId}`)
       .then(r => r.json())
       .then((data: { answers: number[] } | null) => {
         if (data?.answers) setLeadershipAnswers(data.answers)
+      })
+      .catch(() => {})
+    fetch(`${API_BASE}/peer-assessments/behavioral-core/${managerId}/my-assessment/${userId}`)
+      .then(r => r.json())
+      .then((data: { picks: string[] } | null) => {
+        if (data?.picks) {
+          setPeerL2Picks(new Set(data.picks))
+          setPeerL2Saved(true)
+        }
       })
       .catch(() => {})
     const prefill: Record<string, number> = {}
@@ -92,6 +111,33 @@ export default function RateManagerPage() {
       setLeadershipSaved(true)
     } finally {
       setLeadershipSaving(false)
+    }
+  }
+
+  const togglePeerL2Pick = (id: string) => {
+    setPeerL2Picks(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const handlePeerL2Submit = async () => {
+    setPeerL2Saving(true)
+    try {
+      await fetch(`${API_BASE}/peer-assessments/behavioral-core`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assessorId: userId,
+          subjectId: managerId,
+          picks: [...peerL2Picks],
+        }),
+      })
+      setPeerL2Saved(true)
+    } finally {
+      setPeerL2Saving(false)
     }
   }
 
@@ -177,6 +223,95 @@ export default function RateManagerPage() {
               {leadershipSaved && <span className="text-sm text-green-700 font-medium">✓ Submitted anonymously</span>}
             </div>
           </form>
+
+          {/* Deeper read CTA — same pattern as Feedback to Others */}
+          {assessmentDepth === 'deeper' && leadershipSaved && !showDeeperL2 && !peerL2Saved && (
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={() => setShowDeeperL2(true)}
+                className="text-sm font-semibold text-indigo-700 hover:underline"
+              >
+                {t('layer1:peerLayer2.ctaAfterL1')}
+              </button>
+            </div>
+          )}
+
+          {/* Already-submitted state */}
+          {peerL2Saved && !showDeeperL2 && (
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <p className="text-sm text-green-700 font-medium">{t('layer1:peerLayer2.saved')}</p>
+              <button
+                type="button"
+                onClick={() => setShowDeeperL2(true)}
+                className="mt-2 text-xs text-indigo-700 hover:underline"
+              >
+                {t('layer1:peerLayer2.editDeeper')}
+              </button>
+            </div>
+          )}
+
+          {/* Deeper read form */}
+          {showDeeperL2 && (() => {
+            const belowMin = peerL2Picks.size < PEER_L2_MIN
+            return (
+              <div className="mt-6 pt-4 border-t border-gray-200 space-y-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-indigo-700">
+                    {t('layer1:peerLayer2.heading')}
+                  </p>
+                  <p className="text-sm mt-1">
+                    {t('layer1:peerLayer2.instructions', { name: managerName })}
+                  </p>
+                </div>
+
+                <AdjectiveSelectionGrid
+                  selected={peerL2Picks}
+                  onToggle={togglePeerL2Pick}
+                  disabled={peerL2Saving}
+                />
+
+                <div className="flex items-center justify-between gap-3 pt-2">
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-xs font-mono ${belowMin ? 'text-amber-700' : 'text-gray-500'}`}>
+                      {belowMin
+                        ? t('layer1:peerLayer2.selectionProgress', { count: peerL2Picks.size, min: PEER_L2_MIN })
+                        : t('layer1:peerLayer2.selectionCount', { count: peerL2Picks.size })}
+                    </p>
+                    <div className="h-1 mt-1.5 rounded-full bg-gray-100 overflow-hidden max-w-[200px]">
+                      <div
+                        className={`h-full rounded-full transition-all ${belowMin ? 'bg-amber-500' : 'bg-emerald-500'}`}
+                        style={{ width: `${Math.min(100, (peerL2Picks.size / PEER_L2_MIN) * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setShowDeeperL2(false)}
+                      disabled={peerL2Saving}
+                      className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      {t('layer1:peerLayer2.cancel')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handlePeerL2Submit}
+                      disabled={peerL2Saving || belowMin}
+                      className="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      {peerL2Saving ? t('layer1:peerLayer2.saving') : t('layer1:peerLayer2.submit')}
+                    </button>
+                  </div>
+                </div>
+                {belowMin && (
+                  <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                    {t('layer1:peerLayer2.minimumHint', { min: PEER_L2_MIN })}
+                  </p>
+                )}
+              </div>
+            )
+          })()}
         </div>
       )}
 

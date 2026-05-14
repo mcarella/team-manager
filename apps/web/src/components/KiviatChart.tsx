@@ -1,4 +1,4 @@
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, Tooltip } from 'recharts'
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, Tooltip, Legend } from 'recharts'
 
 interface Axis {
   label: string
@@ -9,11 +9,22 @@ interface Axis {
   secondaryLabel?: string
 }
 
+interface OverlaySeries {
+  name: string
+  /** One value per axis, in the same order as `axes`. */
+  values: number[]
+  color: string
+}
+
 interface Props {
   axes: Axis[]
   /** Maximum possible value (e.g., 20 for ORGANIC behavior scores, 100 for drives). */
   fullMark: number
   color: string
+  /** Name for the primary series (used in legend when overlay is present). Defaults to "You". */
+  seriesName?: string
+  /** Optional second series rendered on top of the primary one — used for self-vs-peer overlays. */
+  overlay?: OverlaySeries
   /** Axis labels to emphasize (bolder, larger, accent-colored). */
   highlightLabels?: string[]
   width?: number
@@ -37,6 +48,8 @@ export default function KiviatChart({
   axes,
   fullMark,
   color,
+  seriesName = 'You',
+  overlay,
   highlightLabels,
   width,
   height,
@@ -47,7 +60,12 @@ export default function KiviatChart({
   const w = width  ?? (hasSecondary ? 460 : 420)
   const h = height ?? (hasSecondary ? 380 : 340)
 
-  const data = axes.map(a => ({ axis: a.label, Score: a.value, fullMark }))
+  const data = axes.map((a, i) => {
+    const row: Record<string, string | number> = { axis: a.label, fullMark }
+    row[seriesName] = a.value
+    if (overlay) row[overlay.name] = overlay.values[i] ?? 0
+    return row
+  })
   const highlightSet = new Set(highlightLabels ?? [])
   // Lookup from primary label → secondary so the tick renderer can find it
   // (Recharts hands us only the primary `axis` string in the tick payload).
@@ -102,8 +120,20 @@ export default function KiviatChart({
         dataKey="axis"
         tick={useCustomTick ? renderTick : { fontSize: 12, fontWeight: 600, fill: '#374151' }}
       />
-      <Radar name="Score" dataKey="Score" stroke={color} fill={color} fillOpacity={0.25} />
+      <Radar name={seriesName} dataKey={seriesName} stroke={color} fill={color} fillOpacity={overlay ? 0.18 : 0.25} strokeWidth={2} />
+      {overlay && (
+        <Radar
+          name={overlay.name}
+          dataKey={overlay.name}
+          stroke={overlay.color}
+          fill={overlay.color}
+          fillOpacity={0.15}
+          strokeWidth={2}
+          strokeDasharray="4 3"
+        />
+      )}
       <Tooltip formatter={(v) => [`${Math.round(Number(v))} / ${fullMark}`, '']} />
+      {overlay && <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 11, paddingTop: 4 }} iconSize={10} />}
     </RadarChart>
   )
 }

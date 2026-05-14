@@ -16,6 +16,7 @@ import { BEHAVIOR_DETAILS, GOLEMAN_STYLE_MOTTOS } from '../lib/leadership-consta
 import { ARCHETYPE_CARD_COLORS, ARCHETYPE_ACCENTS } from '../lib/archetype-colors.js'
 import TimeBudgetChip from '../components/TimeBudgetChip.js'
 import GolemanRadarChart from '../components/GolemanRadarChart.js'
+import AdjectiveSelectionGrid from '../components/AdjectiveSelectionGrid.js'
 
 type Phase = 'selfConcept' | 'self' | 'submitting' | 'result'
 
@@ -61,18 +62,6 @@ const DEEP_DIVE_FIELDS = [
 // failure mode users complain about.
 const MIN_SELECTIONS_PER_PASS = 15
 
-// Shuffle adjectives once per page-mount to mitigate selection-order bias.
-function useShuffledAdjectives() {
-  return useMemo(() => {
-    const copy = [...ADJECTIVES]
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[copy[i], copy[j]] = [copy[j]!, copy[i]!]
-    }
-    return copy
-  }, [])
-}
-
 export default function Layer2BehavioralCorePage() {
   const { t } = useTranslation(['layer2', 'layer1'])
   const navigate = useNavigate()
@@ -90,8 +79,6 @@ export default function Layer2BehavioralCorePage() {
   const [result, setResult] = useState<BehavioralCoreAssessment | null>(existingAssessment ?? null)
   const [error, setError] = useState<string | null>(null)
   const [showDiff, setShowDiff] = useState(false)
-
-  const adjectives = useShuffledAdjectives()
 
   const toggleAdjective = (id: string) => {
     const setter = phase === 'selfConcept' ? setSelfConcept : setSelf
@@ -464,27 +451,11 @@ export default function Layer2BehavioralCorePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-          {adjectives.map(adj => {
-            const selected = currentSelection.has(adj.id)
-            return (
-              <button
-                key={adj.id}
-                type="button"
-                onClick={() => toggleAdjective(adj.id)}
-                aria-pressed={selected}
-                disabled={submitting}
-                className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors text-left ${
-                  selected
-                    ? 'bg-forma-accent text-white border-forma-accent'
-                    : 'bg-forma-surface text-forma-text border-forma-border hover:border-forma-border-hover'
-                } disabled:opacity-50`}
-              >
-                {t(`layer2:adjectives.${adj.id}`)}
-              </button>
-            )
-          })}
-        </div>
+        <AdjectiveSelectionGrid
+          selected={currentSelection}
+          onToggle={toggleAdjective}
+          disabled={submitting}
+        />
 
         {(() => {
           const belowMin = currentSelection.size < MIN_SELECTIONS_PER_PASS

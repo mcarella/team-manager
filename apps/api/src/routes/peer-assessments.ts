@@ -1,7 +1,21 @@
 import { Router, type Router as ExpressRouter } from 'express'
 import { z } from 'zod'
-import { aggregatePeerSkillAssessments, aggregatePeerLeadershipAssessments, aggregatePeerCVFAssessments, computeLeadershipScores, computeArchetype } from '@team-manager/core'
-import type { PeerSkillAssessment, PeerLeadershipAssessment, PeerCVFAssessment } from '@team-manager/shared'
+import {
+  aggregatePeerSkillAssessments,
+  aggregatePeerLeadershipAssessments,
+  aggregatePeerCVFAssessments,
+  aggregatePeerBehavioralCoreAssessments,
+  computeLeadershipScores,
+  computeArchetype,
+  computeBehavioralCoreFactors,
+  matchSubProfile,
+} from '@team-manager/core'
+import type {
+  PeerSkillAssessment,
+  PeerLeadershipAssessment,
+  PeerCVFAssessment,
+  PeerBehavioralCoreAssessment,
+} from '@team-manager/shared'
 
 export const peerAssessmentsRouter: ExpressRouter = Router()
 
@@ -9,11 +23,13 @@ export const peerAssessmentsRouter: ExpressRouter = Router()
 const peerSkillStore: PeerSkillAssessment[] = []
 const peerLeadershipStore: PeerLeadershipAssessment[] = []
 const peerCVFStore: PeerCVFAssessment[] = []
+const peerBehavioralCoreStore: PeerBehavioralCoreAssessment[] = []
 
 export function _resetStore(): void {
   peerSkillStore.length = 0
   peerLeadershipStore.length = 0
   peerCVFStore.length = 0
+  peerBehavioralCoreStore.length = 0
 }
 
 const PeerSkillSchema = z.object({
@@ -187,6 +203,64 @@ peerAssessmentsRouter.get('/cvf/:subjectId/summary', (req, res) => {
 peerAssessmentsRouter.get('/cvf/:subjectId/my-assessment/:assessorId', (req, res) => {
   const { subjectId, assessorId } = req.params
   const found = peerCVFStore.find(
+    (a) => a.subjectId === subjectId && a.assessorId === assessorId,
+  )
+  res.json(found ?? null)
+})
+
+// ─── Peer Behavioral Core (Layer 2 × 360°) ──────────────────────────────────
+
+const PeerBehavioralCoreSchema = z.object({
+  assessorId: z.string().min(1),
+  subjectId:  z.string().min(1),
+  picks:      z.array(z.string()),
+})
+
+peerAssessmentsRouter.post('/behavioral-core', (req, res) => {
+  const parsed = PeerBehavioralCoreSchema.safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() })
+    return
+  }
+
+  const { assessorId, subjectId, picks } = parsed.data
+
+  if (assessorId === subjectId) {
+    res.status(400).json({ error: 'Cannot evaluate yourself' })
+    return
+  }
+
+  const factors = computeBehavioralCoreFactors(picks)
+  const subProfile = matchSubProfile(factors)
+  const assessment: PeerBehavioralCoreAssessment = {
+    assessorId, subjectId, picks, factors, subProfile, createdAt: new Date(),
+  }
+
+  const existingIdx = peerBehavioralCoreStore.findIndex(
+    (a) => a.assessorId === assessorId && a.subjectId === subjectId,
+  )
+  if (existingIdx >= 0) {
+    peerBehavioralCoreStore[existingIdx] = assessment
+  } else {
+    peerBehavioralCoreStore.push(assessment)
+  }
+
+  res.status(201).json(assessment)
+})
+
+peerAssessmentsRouter.get('/behavioral-core/:subjectId/summary', (req, res) => {
+  const { subjectId } = req.params
+  if (!subjectId) {
+    res.status(400).json({ error: 'subjectId is required' })
+    return
+  }
+  const summary = aggregatePeerBehavioralCoreAssessments(subjectId, peerBehavioralCoreStore)
+  res.json(summary)
+})
+
+peerAssessmentsRouter.get('/behavioral-core/:subjectId/my-assessment/:assessorId', (req, res) => {
+  const { subjectId, assessorId } = req.params
+  const found = peerBehavioralCoreStore.find(
     (a) => a.subjectId === subjectId && a.assessorId === assessorId,
   )
   res.json(found ?? null)
